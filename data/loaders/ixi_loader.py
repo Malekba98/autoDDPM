@@ -79,3 +79,27 @@ class IXILoader(DefaultDataset):
             ]
         )  # , Binarize()])
         return default_t_label
+
+
+class mask_preprocessing_loader(IXILoader):
+    def __init__(
+        self,
+        data_dir,
+        file_type="",
+        label_dir=None,
+        mask_dir=None,
+        target_size=(256, 256),
+        test=False,
+    ):
+        super(mask_preprocessing_loader, self).__init__(
+            data_dir, file_type, label_dir, mask_dir, target_size, test
+        )
+
+    def get_label(self, idx):
+        if self.label_dir is not None:
+            return self.seg_t(self.label_files[idx])
+        else:
+            return 0
+
+    def __getitem__(self, idx):
+        return self.im_t(self.files[idx])
