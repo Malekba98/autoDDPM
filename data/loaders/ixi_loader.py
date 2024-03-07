@@ -2,7 +2,7 @@ import torchvision.transforms as transforms
 
 from core.DataLoader import DefaultDataset
 from transforms.preprocessing import *
-
+import logging
 
 class Flip:
     """
@@ -95,6 +95,7 @@ class mask_preprocessing_loader(IXILoader):
             data_dir, file_type, label_dir, mask_dir, target_size, test
         )
 
+
     def get_label(self, idx):
         if self.label_dir is not None:
             return self.seg_t(self.label_files[idx])
@@ -102,4 +103,4 @@ class mask_preprocessing_loader(IXILoader):
             return 0
 
     def __getitem__(self, idx):
-        return self.im_t(self.files[idx])
+        return self.im_t(self.files[idx]), self.get_label(idx), idx

@@ -56,7 +56,6 @@ class DefaultDataset(Dataset):
         else:
             self.files = [glob.glob(data_dir_i + file_type) for data_dir_i in data_dir]
         self.nr_items = len(self.files)
-
         logging.info(
             "DefaultDataset::init(): Loading {} files from: {}".format(
                 self.nr_items, data_dir
