@@ -86,14 +86,14 @@ trainer:
           class_name: IXILoader
         data_dir:
           train:
-            - './data/Atlas/splits/atlas_train_png.csv'
+            - './data/ATLAS/splits/atlas_train_png.csv'
           val:  
-            - './data/Atlas/splits/atlas_train_png.csv'
+            - './data/ATLAS/splits/atlas_train_png.csv'
         label_dir:
           train:
-            - './data/Atlas/splits/atlas_train_mask_png.csv'
+            - './data/ATLAS/splits/atlas_train_mask_png.csv'
           val:
-            - './data/Atlas/splits/atlas_train_mask_png.csv'
+            - './data/ATLAS/splits/atlas_train_mask_png.csv'
 
 # Downstream tasks
 downstream_tasks:  
