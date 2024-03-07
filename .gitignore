@@ -1,0 +1,9 @@
+.idea
+*.pyc
+.vscode
+*.jpg
+*.jpeg
+*.png
+*.DS_Store
+*._log
+wandb/
