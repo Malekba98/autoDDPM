@@ -6,11 +6,12 @@ class VGGEncoder(nn.Module):
     """
     VGG Encoder used to extract feature representations for e.g., perceptual losses
     """
+
     def __init__(self, layers=[1, 6, 11, 20]):
-    #def __init__(self, layers=[4, 9, 16, 23]):
+        # def __init__(self, layers=[4, 9, 16, 23]):
         super(VGGEncoder, self).__init__()
         vgg = torchvision.models.vgg19(pretrained=True).features
-        #vgg = torchvision.models.vgg16(pretrained=True).features
+        # vgg = torchvision.models.vgg16(pretrained=True).features
         self.encoder = nn.ModuleList()
         temp_seq = nn.Sequential()
         for i in range(max(layers) + 1):

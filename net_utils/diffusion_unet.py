@@ -92,7 +92,9 @@ class CrossAttention(nn.Module):
         super().__init__()
         self.use_flash_attention = use_flash_attention
         inner_dim = num_head_channels * num_attention_heads
-        cross_attention_dim = cross_attention_dim if cross_attention_dim is not None else query_dim
+        cross_attention_dim = (
+            cross_attention_dim if cross_attention_dim is not None else query_dim
+        )
 
         self.scale = 1 / math.sqrt(num_head_channels)
         self.num_heads = num_attention_heads
@@ -103,7 +105,9 @@ class CrossAttention(nn.Module):
         self.to_k = nn.Linear(cross_attention_dim, inner_dim, bias=False)
         self.to_v = nn.Linear(cross_attention_dim, inner_dim, bias=False)
 
-        self.to_out = nn.Sequential(nn.Linear(inner_dim, query_dim), nn.Dropout(dropout))
+        self.to_out = nn.Sequential(
+            nn.Linear(inner_dim, query_dim), nn.Dropout(dropout)
+        )
 
     def reshape_heads_to_batch_dim(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -111,14 +115,18 @@ class CrossAttention(nn.Module):
         """
         batch_size, seq_len, dim = x.shape
         x = x.reshape(batch_size, seq_len, self.num_heads, dim // self.num_heads)
-        x = x.permute(0, 2, 1, 3).reshape(batch_size * self.num_heads, seq_len, dim // self.num_heads)
+        x = x.permute(0, 2, 1, 3).reshape(
+            batch_size * self.num_heads, seq_len, dim // self.num_heads
+        )
         return x
 
     def reshape_batch_dim_to_heads(self, x: torch.Tensor) -> torch.Tensor:
         """Combine the output of the attention heads back into the hidden state dimension."""
         batch_size, seq_len, dim = x.shape
         x = x.reshape(batch_size // self.num_heads, self.num_heads, seq_len, dim)
-        x = x.permute(0, 2, 1, 3).reshape(batch_size // self.num_heads, seq_len, dim * self.num_heads)
+        x = x.permute(0, 2, 1, 3).reshape(
+            batch_size // self.num_heads, seq_len, dim * self.num_heads
+        )
         return x
 
     def _memory_efficient_attention_xformers(
@@ -130,14 +138,22 @@ class CrossAttention(nn.Module):
         x = xformers.ops.memory_efficient_attention(query, key, value, attn_bias=None)
         return x
 
-    def _attention(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
+    def _attention(
+        self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor
+    ) -> torch.Tensor:
         dtype = query.dtype
         if self.upcast_attention:
             query = query.float()
             key = key.float()
 
         attention_scores = torch.baddbmm(
-            torch.empty(query.shape[0], query.shape[1], key.shape[1], dtype=query.dtype, device=query.device),
+            torch.empty(
+                query.shape[0],
+                query.shape[1],
+                key.shape[1],
+                dtype=query.dtype,
+                device=query.device,
+            ),
             query,
             key.transpose(-1, -2),
             beta=0,
@@ -149,7 +165,9 @@ class CrossAttention(nn.Module):
         x = torch.bmm(attention_probs, value)
         return x
 
-    def forward(self, x: torch.Tensor, context: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, context: torch.Tensor | None = None
+    ) -> torch.Tensor:
         query = self.to_q(x)
         context = context if context is not None else x
         key = self.to_k(context)
@@ -204,7 +222,12 @@ class BasicTransformerBlock(nn.Module):
             upcast_attention=upcast_attention,
             use_flash_attention=use_flash_attention,
         )  # is a self-attention
-        self.ff = MLPBlock(hidden_size=num_channels, mlp_dim=num_channels * 4, act="GEGLU", dropout_rate=dropout)
+        self.ff = MLPBlock(
+            hidden_size=num_channels,
+            mlp_dim=num_channels * 4,
+            act="GEGLU",
+            dropout_rate=dropout,
+        )
         self.attn2 = CrossAttention(
             query_dim=num_channels,
             cross_attention_dim=cross_attention_dim,
@@ -218,7 +241,9 @@ class BasicTransformerBlock(nn.Module):
         self.norm2 = nn.LayerNorm(num_channels)
         self.norm3 = nn.LayerNorm(num_channels)
 
-    def forward(self, x: torch.Tensor, context: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, context: torch.Tensor | None = None
+    ) -> torch.Tensor:
         # 1. Self-Attention
         x = self.attn1(self.norm1(x)) + x
 
@@ -268,7 +293,12 @@ class SpatialTransformer(nn.Module):
         self.in_channels = in_channels
         inner_dim = num_attention_heads * num_head_channels
 
-        self.norm = nn.GroupNorm(num_groups=norm_num_groups, num_channels=in_channels, eps=norm_eps, affine=True)
+        self.norm = nn.GroupNorm(
+            num_groups=norm_num_groups,
+            num_channels=in_channels,
+            eps=norm_eps,
+            affine=True,
+        )
 
         self.proj_in = Convolution(
             spatial_dims=spatial_dims,
@@ -307,7 +337,9 @@ class SpatialTransformer(nn.Module):
             )
         )
 
-    def forward(self, x: torch.Tensor, context: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, context: torch.Tensor | None = None
+    ) -> torch.Tensor:
         # note: if no context is given, cross-attention defaults to self-attention
         batch = channel = height = width = depth = -1
         if self.spatial_dims == 2:
@@ -324,7 +356,9 @@ class SpatialTransformer(nn.Module):
         if self.spatial_dims == 2:
             x = x.permute(0, 2, 3, 1).reshape(batch, height * width, inner_dim)
         if self.spatial_dims == 3:
-            x = x.permute(0, 2, 3, 4, 1).reshape(batch, height * width * depth, inner_dim)
+            x = x.permute(0, 2, 3, 4, 1).reshape(
+                batch, height * width * depth, inner_dim
+            )
 
         for block in self.transformer_blocks:
             x = block(x, context=context)
@@ -367,10 +401,17 @@ class AttentionBlock(nn.Module):
         self.spatial_dims = spatial_dims
         self.num_channels = num_channels
 
-        self.num_heads = num_channels // num_head_channels if num_head_channels is not None else 1
+        self.num_heads = (
+            num_channels // num_head_channels if num_head_channels is not None else 1
+        )
         self.scale = 1 / math.sqrt(num_channels / self.num_heads)
 
-        self.norm = nn.GroupNorm(num_groups=norm_num_groups, num_channels=num_channels, eps=norm_eps, affine=True)
+        self.norm = nn.GroupNorm(
+            num_groups=norm_num_groups,
+            num_channels=num_channels,
+            eps=norm_eps,
+            affine=True,
+        )
 
         self.to_q = nn.Linear(num_channels, num_channels)
         self.to_k = nn.Linear(num_channels, num_channels)
@@ -381,13 +422,17 @@ class AttentionBlock(nn.Module):
     def reshape_heads_to_batch_dim(self, x: torch.Tensor) -> torch.Tensor:
         batch_size, seq_len, dim = x.shape
         x = x.reshape(batch_size, seq_len, self.num_heads, dim // self.num_heads)
-        x = x.permute(0, 2, 1, 3).reshape(batch_size * self.num_heads, seq_len, dim // self.num_heads)
+        x = x.permute(0, 2, 1, 3).reshape(
+            batch_size * self.num_heads, seq_len, dim // self.num_heads
+        )
         return x
 
     def reshape_batch_dim_to_heads(self, x: torch.Tensor) -> torch.Tensor:
         batch_size, seq_len, dim = x.shape
         x = x.reshape(batch_size // self.num_heads, self.num_heads, seq_len, dim)
-        x = x.permute(0, 2, 1, 3).reshape(batch_size // self.num_heads, seq_len, dim * self.num_heads)
+        x = x.permute(0, 2, 1, 3).reshape(
+            batch_size // self.num_heads, seq_len, dim * self.num_heads
+        )
         return x
 
     def _memory_efficient_attention_xformers(
@@ -399,9 +444,17 @@ class AttentionBlock(nn.Module):
         x = xformers.ops.memory_efficient_attention(query, key, value, attn_bias=None)
         return x
 
-    def _attention(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor) -> torch.Tensor:
+    def _attention(
+        self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor
+    ) -> torch.Tensor:
         attention_scores = torch.baddbmm(
-            torch.empty(query.shape[0], query.shape[1], key.shape[1], dtype=query.dtype, device=query.device),
+            torch.empty(
+                query.shape[0],
+                query.shape[1],
+                key.shape[1],
+                dtype=query.dtype,
+                device=query.device,
+            ),
             query,
             key.transpose(-1, -2),
             beta=0,
@@ -454,7 +507,9 @@ class AttentionBlock(nn.Module):
         return x + residual
 
 
-def get_timestep_embedding(timesteps: torch.Tensor, embedding_dim: int, max_period: int = 10000) -> torch.Tensor:
+def get_timestep_embedding(
+    timesteps: torch.Tensor, embedding_dim: int, max_period: int = 10000
+) -> torch.Tensor:
     """
     Create sinusoidal timestep embeddings following the implementation in Ho et al. "Denoising Diffusion Probabilistic
     Models" https://arxiv.org/abs/2006.11239.
@@ -467,7 +522,9 @@ def get_timestep_embedding(timesteps: torch.Tensor, embedding_dim: int, max_peri
     assert len(timesteps.shape) == 1, "Timesteps should be a 1d-array"
 
     half_dim = embedding_dim // 2
-    exponent = -math.log(max_period) * torch.arange(start=0, end=half_dim, dtype=torch.float32, device=timesteps.device)
+    exponent = -math.log(max_period) * torch.arange(
+        start=0, end=half_dim, dtype=torch.float32, device=timesteps.device
+    )
     freqs = torch.exp(exponent / half_dim)
 
     args = timesteps[:, None].float() * freqs[None, :]
@@ -494,7 +551,12 @@ class Downsample(nn.Module):
     """
 
     def __init__(
-        self, spatial_dims: int, num_channels: int, use_conv: bool, out_channels: int | None = None, padding: int = 1
+        self,
+        spatial_dims: int,
+        num_channels: int,
+        use_conv: bool,
+        out_channels: int | None = None,
+        padding: int = 1,
     ) -> None:
         super().__init__()
         self.num_channels = num_channels
@@ -534,7 +596,12 @@ class Upsample(nn.Module):
     """
 
     def __init__(
-        self, spatial_dims: int, num_channels: int, use_conv: bool, out_channels: int | None = None, padding: int = 1
+        self,
+        spatial_dims: int,
+        num_channels: int,
+        use_conv: bool,
+        out_channels: int | None = None,
+        padding: int = 1,
     ) -> None:
         super().__init__()
         self.num_channels = num_channels
@@ -608,7 +675,12 @@ class ResnetBlock(nn.Module):
         self.up = up
         self.down = down
 
-        self.norm1 = nn.GroupNorm(num_groups=norm_num_groups, num_channels=in_channels, eps=norm_eps, affine=True)
+        self.norm1 = nn.GroupNorm(
+            num_groups=norm_num_groups,
+            num_channels=in_channels,
+            eps=norm_eps,
+            affine=True,
+        )
         self.nonlinearity = nn.SiLU()
         self.conv1 = Convolution(
             spatial_dims=spatial_dims,
@@ -628,7 +700,12 @@ class ResnetBlock(nn.Module):
 
         self.time_emb_proj = nn.Linear(temb_channels, self.out_channels)
 
-        self.norm2 = nn.GroupNorm(num_groups=norm_num_groups, num_channels=self.out_channels, eps=norm_eps, affine=True)
+        self.norm2 = nn.GroupNorm(
+            num_groups=norm_num_groups,
+            num_channels=self.out_channels,
+            eps=norm_eps,
+            affine=True,
+        )
         self.conv2 = zero_module(
             Convolution(
                 spatial_dims=spatial_dims,
@@ -757,7 +834,10 @@ class DownBlock(nn.Module):
             self.downsampler = None
 
     def forward(
-        self, hidden_states: torch.Tensor, temb: torch.Tensor, context: torch.Tensor | None = None
+        self,
+        hidden_states: torch.Tensor,
+        temb: torch.Tensor,
+        context: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, list[torch.Tensor]]:
         del context
         output_states = []
@@ -862,7 +942,10 @@ class AttnDownBlock(nn.Module):
             self.downsampler = None
 
     def forward(
-        self, hidden_states: torch.Tensor, temb: torch.Tensor, context: torch.Tensor | None = None
+        self,
+        hidden_states: torch.Tensor,
+        temb: torch.Tensor,
+        context: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, list[torch.Tensor]]:
         del context
         output_states = []
@@ -979,7 +1062,10 @@ class CrossAttnDownBlock(nn.Module):
             self.downsampler = None
 
     def forward(
-        self, hidden_states: torch.Tensor, temb: torch.Tensor, context: torch.Tensor | None = None
+        self,
+        hidden_states: torch.Tensor,
+        temb: torch.Tensor,
+        context: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, list[torch.Tensor]]:
         output_states = []
 
@@ -1049,7 +1135,10 @@ class AttnMidBlock(nn.Module):
         )
 
     def forward(
-        self, hidden_states: torch.Tensor, temb: torch.Tensor, context: torch.Tensor | None = None
+        self,
+        hidden_states: torch.Tensor,
+        temb: torch.Tensor,
+        context: torch.Tensor | None = None,
     ) -> torch.Tensor:
         del context
         hidden_states = self.resnet_1(hidden_states, temb)
@@ -1122,7 +1211,10 @@ class CrossAttnMidBlock(nn.Module):
         )
 
     def forward(
-        self, hidden_states: torch.Tensor, temb: torch.Tensor, context: torch.Tensor | None = None
+        self,
+        hidden_states: torch.Tensor,
+        temb: torch.Tensor,
+        context: torch.Tensor | None = None,
     ) -> torch.Tensor:
         hidden_states = self.resnet_1(hidden_states, temb)
         hidden_states = self.attention(hidden_states, context=context)
@@ -1166,7 +1258,9 @@ class UpBlock(nn.Module):
         resnets = []
 
         for i in range(num_res_blocks):
-            res_skip_channels = in_channels if (i == num_res_blocks - 1) else out_channels
+            res_skip_channels = (
+                in_channels if (i == num_res_blocks - 1) else out_channels
+            )
             resnet_in_channels = prev_output_channel if i == 0 else out_channels
 
             resnets.append(
@@ -1195,7 +1289,10 @@ class UpBlock(nn.Module):
                 )
             else:
                 self.upsampler = Upsample(
-                    spatial_dims=spatial_dims, num_channels=out_channels, use_conv=True, out_channels=out_channels
+                    spatial_dims=spatial_dims,
+                    num_channels=out_channels,
+                    use_conv=True,
+                    out_channels=out_channels,
                 )
         else:
             self.upsampler = None
@@ -1263,7 +1360,9 @@ class AttnUpBlock(nn.Module):
         attentions = []
 
         for i in range(num_res_blocks):
-            res_skip_channels = in_channels if (i == num_res_blocks - 1) else out_channels
+            res_skip_channels = (
+                in_channels if (i == num_res_blocks - 1) else out_channels
+            )
             resnet_in_channels = prev_output_channel if i == 0 else out_channels
 
             resnets.append(
@@ -1303,7 +1402,10 @@ class AttnUpBlock(nn.Module):
                 )
             else:
                 self.upsampler = Upsample(
-                    spatial_dims=spatial_dims, num_channels=out_channels, use_conv=True, out_channels=out_channels
+                    spatial_dims=spatial_dims,
+                    num_channels=out_channels,
+                    use_conv=True,
+                    out_channels=out_channels,
                 )
         else:
             self.upsampler = None
@@ -1378,7 +1480,9 @@ class CrossAttnUpBlock(nn.Module):
         attentions = []
 
         for i in range(num_res_blocks):
-            res_skip_channels = in_channels if (i == num_res_blocks - 1) else out_channels
+            res_skip_channels = (
+                in_channels if (i == num_res_blocks - 1) else out_channels
+            )
             resnet_in_channels = prev_output_channel if i == 0 else out_channels
 
             resnets.append(
@@ -1422,7 +1526,10 @@ class CrossAttnUpBlock(nn.Module):
                 )
             else:
                 self.upsampler = Upsample(
-                    spatial_dims=spatial_dims, num_channels=out_channels, use_conv=True, out_channels=out_channels
+                    spatial_dims=spatial_dims,
+                    num_channels=out_channels,
+                    use_conv=True,
+                    out_channels=out_channels,
                 )
         else:
             self.upsampler = None
@@ -1675,13 +1782,19 @@ class DiffusionModelUNet(nn.Module):
 
         # All number of channels should be multiple of num_groups
         if any((out_channel % norm_num_groups) != 0 for out_channel in num_channels):
-            raise ValueError("DiffusionModelUNet expects all num_channels being multiple of norm_num_groups")
+            raise ValueError(
+                "DiffusionModelUNet expects all num_channels being multiple of norm_num_groups"
+            )
 
         if len(num_channels) != len(attention_levels):
-            raise ValueError("DiffusionModelUNet expects num_channels being same size of attention_levels")
+            raise ValueError(
+                "DiffusionModelUNet expects num_channels being same size of attention_levels"
+            )
 
         if isinstance(num_head_channels, int):
-            num_head_channels = ensure_tuple_rep(num_head_channels, len(attention_levels))
+            num_head_channels = ensure_tuple_rep(
+                num_head_channels, len(attention_levels)
+            )
 
         if len(num_head_channels) != len(attention_levels):
             raise ValueError(
@@ -1725,7 +1838,9 @@ class DiffusionModelUNet(nn.Module):
         # time
         time_embed_dim = num_channels[0] * 4
         self.time_embed = nn.Sequential(
-            nn.Linear(num_channels[0], time_embed_dim), nn.SiLU(), nn.Linear(time_embed_dim, time_embed_dim)
+            nn.Linear(num_channels[0], time_embed_dim),
+            nn.SiLU(),
+            nn.Linear(time_embed_dim, time_embed_dim),
         )
 
         # class embedding
@@ -1787,7 +1902,9 @@ class DiffusionModelUNet(nn.Module):
         for i in range(len(reversed_block_out_channels)):
             prev_output_channel = output_channel
             output_channel = reversed_block_out_channels[i]
-            input_channel = reversed_block_out_channels[min(i + 1, len(num_channels) - 1)]
+            input_channel = reversed_block_out_channels[
+                min(i + 1, len(num_channels) - 1)
+            ]
 
             is_final_block = i == len(num_channels) - 1
 
@@ -1815,7 +1932,12 @@ class DiffusionModelUNet(nn.Module):
 
         # out
         self.out = nn.Sequential(
-            nn.GroupNorm(num_groups=norm_num_groups, num_channels=num_channels[0], eps=norm_eps, affine=True),
+            nn.GroupNorm(
+                num_groups=norm_num_groups,
+                num_channels=num_channels[0],
+                eps=norm_eps,
+                affine=True,
+            ),
             nn.SiLU(),
             zero_module(
                 Convolution(
@@ -1856,7 +1978,9 @@ class DiffusionModelUNet(nn.Module):
         # 2. class
         if self.num_class_embeds is not None:
             if class_labels is None:
-                raise ValueError("class_labels should be provided when num_class_embeds > 0")
+                raise ValueError(
+                    "class_labels should be provided when num_class_embeds > 0"
+                )
             class_emb = self.class_embedding(class_labels)
             class_emb = class_emb.to(dtype=x.dtype)
             emb = emb + class_emb
@@ -1866,10 +1990,14 @@ class DiffusionModelUNet(nn.Module):
 
         # 4. down
         if context is not None and self.with_conditioning is False:
-            raise ValueError("model should have with_conditioning = True if context is provided")
+            raise ValueError(
+                "model should have with_conditioning = True if context is provided"
+            )
         down_block_res_samples: list[torch.Tensor] = [h]
         for downsample_block in self.down_blocks:
-            h, res_samples = downsample_block(hidden_states=h, temb=emb, context=context)
+            h, res_samples = downsample_block(
+                hidden_states=h, temb=emb, context=context
+            )
             for residual in res_samples:
                 down_block_res_samples.append(residual)
 
@@ -1879,8 +2007,15 @@ class DiffusionModelUNet(nn.Module):
         # 6. up
         for upsample_block in self.up_blocks:
             res_samples = down_block_res_samples[-len(upsample_block.resnets) :]
-            down_block_res_samples = down_block_res_samples[: -len(upsample_block.resnets)]
-            h = upsample_block(hidden_states=h, res_hidden_states_list=res_samples, temb=emb, context=context)
+            down_block_res_samples = down_block_res_samples[
+                : -len(upsample_block.resnets)
+            ]
+            h = upsample_block(
+                hidden_states=h,
+                res_hidden_states_list=res_samples,
+                temb=emb,
+                context=context,
+            )
 
         # 7. output block
         h = self.out(h)
@@ -1942,12 +2077,18 @@ class DiffusionModelEncoder(nn.Module):
 
         # All number of channels should be multiple of num_groups
         if any((out_channel % norm_num_groups) != 0 for out_channel in num_channels):
-            raise ValueError("DiffusionModelEncoder expects all num_channels being multiple of norm_num_groups")
+            raise ValueError(
+                "DiffusionModelEncoder expects all num_channels being multiple of norm_num_groups"
+            )
         if len(num_channels) != len(attention_levels):
-            raise ValueError("DiffusionModelEncoder expects num_channels being same size of attention_levels")
+            raise ValueError(
+                "DiffusionModelEncoder expects num_channels being same size of attention_levels"
+            )
 
         if isinstance(num_head_channels, int):
-            num_head_channels = ensure_tuple_rep(num_head_channels, len(attention_levels))
+            num_head_channels = ensure_tuple_rep(
+                num_head_channels, len(attention_levels)
+            )
 
         if len(num_head_channels) != len(attention_levels):
             raise ValueError(
@@ -1977,7 +2118,9 @@ class DiffusionModelEncoder(nn.Module):
         # time
         time_embed_dim = num_channels[0] * 4
         self.time_embed = nn.Sequential(
-            nn.Linear(num_channels[0], time_embed_dim), nn.SiLU(), nn.Linear(time_embed_dim, time_embed_dim)
+            nn.Linear(num_channels[0], time_embed_dim),
+            nn.SiLU(),
+            nn.Linear(time_embed_dim, time_embed_dim),
         )
 
         # class embedding
@@ -2013,7 +2156,12 @@ class DiffusionModelEncoder(nn.Module):
 
             self.down_blocks.append(down_block)
 
-        self.out = nn.Sequential(nn.Linear(4096, 512), nn.ReLU(), nn.Dropout(0.1), nn.Linear(512, self.out_channels))
+        self.out = nn.Sequential(
+            nn.Linear(4096, 512),
+            nn.ReLU(),
+            nn.Dropout(0.1),
+            nn.Linear(512, self.out_channels),
+        )
 
     def forward(
         self,
@@ -2041,7 +2189,9 @@ class DiffusionModelEncoder(nn.Module):
         # 2. class
         if self.num_class_embeds is not None:
             if class_labels is None:
-                raise ValueError("class_labels should be provided when num_class_embeds > 0")
+                raise ValueError(
+                    "class_labels should be provided when num_class_embeds > 0"
+                )
             class_emb = self.class_embedding(class_labels)
             class_emb = class_emb.to(dtype=x.dtype)
             emb = emb + class_emb
@@ -2051,7 +2201,9 @@ class DiffusionModelEncoder(nn.Module):
 
         # 4. down
         if context is not None and self.with_conditioning is False:
-            raise ValueError("model should have with_conditioning = True if context is provided")
+            raise ValueError(
+                "model should have with_conditioning = True if context is provided"
+            )
         for downsample_block in self.down_blocks:
             h, _ = downsample_block(hidden_states=h, temb=emb, context=context)
 

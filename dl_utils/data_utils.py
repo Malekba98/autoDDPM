@@ -1,7 +1,8 @@
 import csv
+import glob
+
 import numpy as np
 import tqdm
-import glob
 
 
 def generate_csv(img_path, output_path, dataset_name):
@@ -12,9 +13,9 @@ def generate_csv(img_path, output_path, dataset_name):
     @param: output_path: str
         path to output train csv
     """
-    train_path = output_path + dataset_name + '_train.csv'
-    val_path = output_path + dataset_name + '_val.csv'
-    test_path = output_path + dataset_name + '_test.csv'
+    train_path = output_path + dataset_name + "_train.csv"
+    val_path = output_path + dataset_name + "_val.csv"
+    test_path = output_path + dataset_name + "_test.csv"
 
     np.random.seed(2109)
     train_keys = glob.glob(img_path)
@@ -29,7 +30,7 @@ def generate_csv(img_path, output_path, dataset_name):
             val_files.append([scan])
         else:
             train_files.append([scan])
-    top_row = ['filename']
+    top_row = ["filename"]
     write_csv(train_files, train_path, top_row)
     write_csv(val_files, val_path, top_row)
     write_csv(test_files, test_path, top_row)
@@ -39,8 +40,10 @@ def write_csv(file, path, top_row):
     """
     Write files to csv
     """
-    with open(path, 'w') as csvfile:
-        csvW = csv.writer(csvfile, delimiter=',',  quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    with open(path, "w") as csvfile:
+        csvW = csv.writer(
+            csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL
+        )
         csvW.writerow(top_row)
         for datar in tqdm.tqdm(file):
             csvW.writerow(datar)
@@ -58,8 +61,8 @@ def get_data_from_csv(path_to_csv):
         path_to_csv = [path_to_csv]
     for single_csv in path_to_csv:
         ct = 0
-        with open(single_csv, newline='') as csv_file:
-            p_reader = csv.reader(csv_file, delimiter=',', quotechar='|')
+        with open(single_csv, newline="") as csv_file:
+            p_reader = csv.reader(csv_file, delimiter=",", quotechar="|")
             for row in p_reader:
                 if type(row) == list:
                     row = row[0]

@@ -1,2 +1,2 @@
-from .data_utils import *
 from .config_utils import *
+from .data_utils import *
