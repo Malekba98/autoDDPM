@@ -116,7 +116,7 @@ You have to choose a threshold for binarizing the probable anomaly masks of the 
 Run the main script with the corresponding config like this:
 
 ```bash
-python core/Main.py --config_path ./projects/autoddpm/autoddpm.yaml
+python core/Main.py --config_path ./projects/braincf/brain_cf.yaml
 ```
 
 Refer to the autoddpm.yaml for the default configuration. Store the pre-trained model from <a href="https://www.dropbox.com/s/ooq7vdp9fp4ufag/latest_model.pt.zip?dl=0"> HERE</a> into the specified directory to skip the training part.
