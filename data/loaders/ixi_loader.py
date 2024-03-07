@@ -29,8 +29,8 @@ class IXILoader(DefaultDataset):
                                         ,AssertChannelFirst()
                                         ,self.RES
                                         # ,AdjustIntensity()
-                                        ,transforms.ToPILImage(), transforms.RandomAffine(10, (0.1, 0.1), (0.9, 1.1)),
-                                        transforms.RandomHorizontalFlip(0.5),
+                                        ,transforms.ToPILImage(),# transforms.RandomAffine(10, (0.1, 0.1), (0.9, 1.1)),
+                                        #transforms.RandomHorizontalFlip(0.5),
                                         # transforms.ColorJitter(brightness=(0.8, 1.2), contrast=(0.8,1.2)),
                                         transforms.ToTensor()
                                         ])
