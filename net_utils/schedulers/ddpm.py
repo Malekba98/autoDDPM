@@ -171,6 +171,90 @@ class DDPMScheduler(Scheduler):
             variance = frac * max_log + (1 - frac) * min_log
 
         return variance
+    
+    def update_auxiliary_image(self, noise_map, sample, timestep, model_output, predicted_variance, generator=None):
+        if model_output.shape[1] == sample.shape[1] * 2 and self.variance_type in ["learned", "learned_range"]:
+            model_output, predicted_variance = torch.split(model_output, sample.shape[1], dim=1)
+        else:
+            predicted_variance = None
+
+        # 1. compute alphas, betas
+        alpha_prod_t = self.alphas_cumprod[timestep]
+        alpha_prod_t_prev = self.alphas_cumprod[timestep - 1] if timestep > 0 else torch.tensor(1.0)
+        beta_prod_t = 1 - alpha_prod_t
+        beta_prod_t_prev = 1 - alpha_prod_t_prev
+
+        # 2. compute predicted original sample from predicted noise also called
+        # "predicted x_0" of formula (15) from https://arxiv.org/pdf/2006.11239.pdf
+        if self.prediction_type == "epsilon":
+            pred_original_sample = (sample - beta_prod_t ** (0.5) * model_output) / alpha_prod_t ** (0.5)
+        elif self.prediction_type == "sample":
+            pred_original_sample = model_output
+        elif self.prediction_type == "v_prediction":
+            pred_original_sample = (alpha_prod_t**0.5) * sample - (beta_prod_t**0.5) * model_output
+
+        # 3. Clip "predicted x_0"
+        if self.clip_sample:
+            pred_original_sample = torch.clamp(pred_original_sample, -1, 1)
+
+        # 4. Compute coefficients for pred_original_sample x_0 and current sample x_t
+        # See formula (7) from https://arxiv.org/pdf/2006.11239.pdf
+        pred_original_sample_coeff = (alpha_prod_t_prev ** (0.5) * self.betas[timestep]) / beta_prod_t
+        current_sample_coeff = self.alphas[timestep] ** (0.5) * beta_prod_t_prev / beta_prod_t
+
+        # 5. Compute predicted previous sample µ_t
+        # See formula (7) from https://arxiv.org/pdf/2006.11239.pdf
+        mean_drift = pred_original_sample_coeff * pred_original_sample + current_sample_coeff * sample
+
+        # 6. Add noise
+        if timestep > 0:
+            sigma = (self._get_variance(timestep, predicted_variance=predicted_variance) ** 0.5) 
+
+
+        auxiliary_image = mean_drift + sigma * noise_map
+        return auxiliary_image
+
+    def extract_noise_map(self, prev_sample, sample,timestep, model_output, predicted_variance, generator=None):
+        if model_output.shape[1] == sample.shape[1] * 2 and self.variance_type in ["learned", "learned_range"]:
+            model_output, predicted_variance = torch.split(model_output, sample.shape[1], dim=1)
+        else:
+            predicted_variance = None
+
+        # 1. compute alphas, betas
+        alpha_prod_t = self.alphas_cumprod[timestep]
+        alpha_prod_t_prev = self.alphas_cumprod[timestep - 1] if timestep > 0 else torch.tensor(1.0)
+        beta_prod_t = 1 - alpha_prod_t
+        beta_prod_t_prev = 1 - alpha_prod_t_prev
+
+        # 2. compute predicted original sample from predicted noise also called
+        # "predicted x_0" of formula (15) from https://arxiv.org/pdf/2006.11239.pdf
+        if self.prediction_type == "epsilon":
+            pred_original_sample = (sample - beta_prod_t ** (0.5) * model_output) / alpha_prod_t ** (0.5)
+        elif self.prediction_type == "sample":
+            pred_original_sample = model_output
+        elif self.prediction_type == "v_prediction":
+            pred_original_sample = (alpha_prod_t**0.5) * sample - (beta_prod_t**0.5) * model_output
+
+        # 3. Clip "predicted x_0"
+        if self.clip_sample:
+            pred_original_sample = torch.clamp(pred_original_sample, -1, 1)
+
+        # 4. Compute coefficients for pred_original_sample x_0 and current sample x_t
+        # See formula (7) from https://arxiv.org/pdf/2006.11239.pdf
+        pred_original_sample_coeff = (alpha_prod_t_prev ** (0.5) * self.betas[timestep]) / beta_prod_t
+        current_sample_coeff = self.alphas[timestep] ** (0.5) * beta_prod_t_prev / beta_prod_t
+
+        # 5. Compute predicted previous sample µ_t
+        # See formula (7) from https://arxiv.org/pdf/2006.11239.pdf
+        mean_drift = pred_original_sample_coeff * pred_original_sample + current_sample_coeff * sample
+
+        # 6. Add noise
+        if timestep > 0:
+            sigma = (self._get_variance(timestep, predicted_variance=predicted_variance) ** 0.5) 
+
+        noise_map = (prev_sample - mean_drift) / sigma 
+
+        return noise_map
 
     def step(
         self,

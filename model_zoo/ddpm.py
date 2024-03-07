@@ -392,6 +392,121 @@ class DDPM(nn.Module):
                 "x_rec": final_inpainted_image,
             },
         )
+    
+    def Radedit(self, patho_mask: torch.Tensor, edit_mask: torch.Tensor,original_image: torch.Tensor,noise_level: int | None = 1000, w_cfg: int = 10):
+        (auxiliary_images, noise_maps) = self._ddpm_inversion(original_image,noise_level)
+
+        keep_mask = 1 - edit_mask
+
+        edited_image = auxiliary_images[-1]
+        timesteps_reverse = torch.from_numpy(np.arange(1, noise_level + 1)[::-1])
+
+        for t in timesteps_reverse:
+            predicted_noise_cond = self.unet(torch.cat((edited_image,patho_mask),dim=1), timesteps=t, context=None)
+
+            predicted_noise_uncond = self.unet(edited_image, timesteps=t, context=None)
+
+            predicted_noise = predicted_noise_uncond + w_cfg * (predicted_noise_cond - predicted_noise_uncond)
+
+            predicted_noise = edit_mask * predicted_noise + (1 - edit_mask) * predicted_noise_uncond
+
+            edited_image = self.inference_scheduler.update_auxiliary_image(noise_maps[t-1], sample=edited_image, timesteps=t-1, model_output=predicted_noise)
+
+            edited_image = keep_mask * auxiliary_images[t-2] + (1 - keep_mask) * edited_image
+
+        return edited_image
+        
+
+    def diffedit_with_ddpm_inversion(self,patho_mask: torch.Tensor,edit_mask: torch.Tensor, original_image: torch.Tensor,T: int | None = 1000, w_cfg: int = 10, T_skip: int = 1):
+        (auxiliary_images, noise_maps) = self._ddpm_inversion(original_image,T)
+
+        edited_image = auxiliary_images[-1]
+        timesteps_reverse = torch.from_numpy(np.arange(1, T + 1)[::-1])
+
+        for t in timesteps_reverse:
+            predicted_noise_cond = self.unet(torch.cat((edited_image,patho_mask),dim=1), timesteps=t, context=None)
+
+            predicted_noise_uncond = self.unet(edited_image, timesteps=t, context=None)
+
+            predicted_noise = predicted_noise_uncond + w_cfg * (predicted_noise_cond - predicted_noise_uncond)
+
+            edited_image = self.inference_scheduler.update_auxiliary_image(noise_maps[t-1], sample=edited_image, timesteps=t-1, model_output=predicted_noise)
+
+            edited_image = edit_mask * edited_image + (1 - edit_mask) * auxiliary_images[t-2]
+
+        return edited_image
+
+    def _ddpm_inversion(self, original_image: torch.Tensor,T: int | None = 1000):
+        auxiliary_images = []
+        timesteps = torch.from_numpy(np.arange(1, T + 1))
+        for t in timesteps:
+            noise = torch.randn_like(original_image)
+            auxiliary_image = self.inference_scheduler.add_noise(original_image, noise, t)
+            auxiliary_images.append(auxiliary_image)
+
+        timesteps_reverse = torch.from_numpy(np.arange(1,T+1)[::-1])
+        noise_maps = []
+        for t in timesteps_reverse:
+            predicted_noise = self.unet(auxiliary_images[t-1], timesteps=t, context=None)
+            noise_map = self.inference_scheduler.extract_noise_map(prev_sample=auxiliary_images[t-2], sample=auxiliary_images[t-1],timesteps=t,model_output=predicted_noise)
+            auxiliary_images[t-2] = self.inference_scheduler.update_auxiliary_image(noise_map, sample=auxiliary_images[t-1],timesteps=t-1,model_output=predicted_noise)
+
+            noise_maps.append(noise_map)
+
+        return (auxiliary_images, noise_maps)
+    
+    def repaint(self, original_images: torch.tensor, inpaint_mask: torch.tensor, verbose=True):
+        batch_size = original_images.shape[0]
+        timesteps = self.inference_scheduler.get_timesteps(noise_level=999)
+
+        # image = torch.randn_like(original_image)
+        
+        
+        # (generates) then adds noise to the original samples up to noise level 999. 
+        # the generated signal (image) is not exactly a random gaussian. it is almost
+        # a random gaussian. because it still has some information from the original image if 
+        # alpha ( of the scheduler) is not 0 for the last step T (999 here).
+        # see Abbeel lecture L6 on diff models time: 1h:07 mins for more info.
+        # https://www.youtube.com/watch?v=DsEDMjdxOv4&t=5145s&ab_channel=PieterAbbeel
+        noise = generate_noise(
+            self.train_scheduler.noise_type, original_images)
+        image = self.inference_scheduler.add_noise(original_samples=original_images,noise=noise,timesteps=999)
+
+        if verbose and has_tqdm:
+            progress_bar = tqdm(timesteps)
+        else:
+            progress_bar = iter(timesteps)
+
+        for t in progress_bar:
+            # generate known part with forward process q()
+            if t>0:
+                noise = generate_noise(self.inference_scheduler.noise_type, original_images)
+            else:
+                noise = torch.zeros_like(original_images)
+
+            timesteps = torch.full([batch_size], t, device=self.device).long()
+            x_known = self.inference_scheduler.add_noise(original_samples=original_images, noise=noise, timesteps=timesteps)
+
+            for u in range(self.resample_steps):
+                # generate uknown part of diffusion reverse process
+                predicted_noise = self.unet(image,timesteps=torch.tensor((t,)).to(image.device), context=None)
+                
+                # inference_scheduler.step() internallhy checks if t>0. if t>0, noise z=0 in the 
+                # sampling equation. take a look at # 6. Add noise, line 203 in the .step() function
+                x_unknown, _ = self.inference_scheduler.step(predicted_noise,t,image)
+
+                # join known and uknown parts
+                image = inpaint_mask * x_unknown + (1 - inpaint_mask) * x_known
+
+                if t > 0 and u < (self.resample_steps - 1):
+                    # sample from q(xt/x_t-1): diffuse back to xt
+                    image = (
+                            torch.sqrt(1 - self.inference_scheduler.betas[t - 1]) * image
+                            + torch.sqrt(self.inference_scheduler.betas[t - 1])
+                            * torch.randn_like(original_images, device=self.device)
+                            )
+
+        return image
 
     @torch.no_grad()
     def sample(
