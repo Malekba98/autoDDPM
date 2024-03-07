@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 
 
-def normalized_cross_correlation(x, y, return_map, reduction='mean', eps=1e-8):
-    """ N-dimensional normalized cross correlation (NCC)
+def normalized_cross_correlation(x, y, return_map, reduction="mean", eps=1e-8):
+    """N-dimensional normalized cross correlation (NCC)
     Args:
         x (~torch.Tensor): Input tensor.
         y (~torch.Tensor): Input tensor.
@@ -31,24 +31,26 @@ def normalized_cross_correlation(x, y, return_map, reduction='mean', eps=1e-8):
     x = x - x_mean
     y = y - y_mean
 
-    dev_xy = torch.mul(x,y)
-    dev_xx = torch.mul(x,x)
-    dev_yy = torch.mul(y,y)
+    dev_xy = torch.mul(x, y)
+    dev_xx = torch.mul(x, x)
+    dev_yy = torch.mul(y, y)
 
     dev_xx_sum = torch.sum(dev_xx, dim=1, keepdim=True)
     dev_yy_sum = torch.sum(dev_yy, dim=1, keepdim=True)
 
-    ncc = torch.div(dev_xy + eps / dev_xy.shape[1],
-                    torch.sqrt( torch.mul(dev_xx_sum, dev_yy_sum)) + eps)
+    ncc = torch.div(
+        dev_xy + eps / dev_xy.shape[1],
+        torch.sqrt(torch.mul(dev_xx_sum, dev_yy_sum)) + eps,
+    )
     ncc_map = ncc.view(b, *shape[1:])
 
     # reduce
-    if reduction == 'mean':
+    if reduction == "mean":
         ncc = torch.mean(torch.sum(ncc, dim=1))
-    elif reduction == 'sum':
+    elif reduction == "sum":
         ncc = torch.sum(ncc)
     else:
-        raise KeyError('unsupported reduction type: %s' % reduction)
+        raise KeyError("unsupported reduction type: %s" % reduction)
 
     if not return_map:
         return ncc
@@ -57,17 +59,15 @@ def normalized_cross_correlation(x, y, return_map, reduction='mean', eps=1e-8):
 
 
 class NormalizedCrossCorrelation(nn.Module):
-    """ N-dimensional normalized cross correlation (NCC)
+    """N-dimensional normalized cross correlation (NCC)
     Args:
         eps (float, optional): Epsilon value for numerical stability. Defaults to 1e-8.
         return_map (bool, optional): If True, also return the correlation map. Defaults to False.
         reduction (str, optional): Specifies the reduction to apply to the output:
             ``'mean'`` | ``'sum'``. Defaults to ``'mean'``.
     """
-    def __init__(self,
-                 eps=1e-8,
-                 return_map=False,
-                 reduction='mean'):
+
+    def __init__(self, eps=1e-8, return_map=False, reduction="mean"):
 
         super(NormalizedCrossCorrelation, self).__init__()
 
@@ -77,22 +77,23 @@ class NormalizedCrossCorrelation(nn.Module):
 
     def forward(self, x, y):
 
-        return normalized_cross_correlation(x, y,
-                            self._return_map, self._reduction, self._eps)
+        return normalized_cross_correlation(
+            x, y, self._return_map, self._reduction, self._eps
+        )
 
 
 class NCC(NormalizedCrossCorrelation):
-    """ N-dimensional normalized cross correlation loss (NCC-loss)
+    """N-dimensional normalized cross correlation loss (NCC-loss)
     Args:
         eps (float, optional): Epsilon value for numerical stability. Defaults to 1e-8.
         return_map (bool, optional): If True, also return the correlation map. Defaults to False.
         reduction (str, optional): Specifies the reduction to apply to the output:
             ``'mean'`` | ``'sum'``. Defaults to ``'mean'``.
     """
+
     def __init__(self):
         super(NCC, self).__init__()
 
     def forward(self, x, y):
         gc = super().forward(x, y)
         return 1.0 - gc
-

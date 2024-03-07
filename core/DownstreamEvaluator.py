@@ -3,6 +3,7 @@ DownstreamEvaluator.py
 
 Run Downstream Tasks after training has finished
 """
+
 import os
 
 
@@ -30,7 +31,7 @@ class DownstreamEvaluator(object):
         self.checkpoint_path = checkpoint_path
         if not os.path.exists(self.checkpoint_path):
             os.makedirs(self.checkpoint_path)
-        self.image_path = checkpoint_path + '/images/'
+        self.image_path = checkpoint_path + "/images/"
         if not os.path.exists(self.image_path):
             os.makedirs(self.image_path)
         super(DownstreamEvaluator, self).__init__()
@@ -43,4 +44,6 @@ class DownstreamEvaluator(object):
         :param global_model: dict
             dictionary with the model weights of the federated collaborators
         """
-        raise NotImplementedError("[DownstreamEvaluator::start_task]: Please Implement start_task() method")
+        raise NotImplementedError(
+            "[DownstreamEvaluator::start_task]: Please Implement start_task() method"
+        )

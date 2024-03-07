@@ -62,23 +62,30 @@ class DDIMScheduler(Scheduler):
             https://imagen.research.google/video/paper.pdf)
     """
 
-    def __init__(self, set_alpha_to_one: bool = True, steps_offset: int = 0, **kwargs) -> None:
+    def __init__(
+        self, set_alpha_to_one: bool = True, steps_offset: int = 0, **kwargs
+    ) -> None:
         super().__init__(**kwargs)
         if self.prediction_type.lower() not in ["epsilon", "sample", "v_prediction"]:
             raise ValueError(
-                f"prediction_type given as {self.prediction_type} must be one of `epsilon`, `sample`, or" " `v_prediction`"
+                f"prediction_type given as {self.prediction_type} must be one of `epsilon`, `sample`, or"
+                " `v_prediction`"
             )
 
         # At every step in ddim, we are looking into the previous alphas_cumprod
         # For the final step, there is no previous alphas_cumprod because we are already at 0
         # `set_alpha_to_one` decides whether we set this parameter simply to one or
         # whether we use the final alpha of the "non-previous" one.
-        self.final_alpha_cumprod = torch.tensor(1.0) if set_alpha_to_one else self.alphas_cumprod[0]
+        self.final_alpha_cumprod = (
+            torch.tensor(1.0) if set_alpha_to_one else self.alphas_cumprod[0]
+        )
 
         # standard deviation of the initial noise distribution
         self.init_noise_sigma = 1.0
         self.steps_offset = steps_offset
-        self.timesteps = torch.from_numpy(np.arange(0, self.num_train_timesteps)[::-1].astype(np.int64))
+        self.timesteps = torch.from_numpy(
+            np.arange(0, self.num_train_timesteps)[::-1].astype(np.int64)
+        )
 
     def get_timesteps(self, noise_level):
         """
@@ -87,9 +94,13 @@ class DDIMScheduler(Scheduler):
         Args:
             noise_level: the noise level used to generate the samples.
         """
-        return torch.from_numpy(np.append(np.arange(1, noise_level+1)[::-self.step_ratio], 0).copy())
+        return torch.from_numpy(
+            np.append(np.arange(1, noise_level + 1)[:: -self.step_ratio], 0).copy()
+        )
 
-    def set_timesteps(self, num_inference_steps: int, device: str | torch.device | None = None) -> None:
+    def set_timesteps(
+        self, num_inference_steps: int, device: str | torch.device | None = None
+    ) -> None:
         """
         Sets the discrete timesteps used for the diffusion chain. Initialises the timesteps attribute.
 
@@ -112,11 +123,17 @@ class DDIMScheduler(Scheduler):
 
     def _get_variance(self, timestep: int, prev_timestep: torch.Tensor) -> torch.Tensor:
         alpha_prod_t = self.alphas_cumprod[timestep]
-        alpha_prod_t_prev = self.alphas_cumprod[prev_timestep] if prev_timestep >= 0 else self.final_alpha_cumprod
+        alpha_prod_t_prev = (
+            self.alphas_cumprod[prev_timestep]
+            if prev_timestep >= 0
+            else self.final_alpha_cumprod
+        )
         beta_prod_t = 1 - alpha_prod_t
         beta_prod_t_prev = 1 - alpha_prod_t_prev
 
-        variance = (beta_prod_t_prev / beta_prod_t) * (1 - alpha_prod_t / alpha_prod_t_prev)
+        variance = (beta_prod_t_prev / beta_prod_t) * (
+            1 - alpha_prod_t / alpha_prod_t_prev
+        )
 
         return variance
 
@@ -160,21 +177,33 @@ class DDIMScheduler(Scheduler):
 
         # 2. compute alphas, betas
         alpha_prod_t = self.alphas_cumprod[timestep]
-        alpha_prod_t_prev = self.alphas_cumprod[prev_timestep] if prev_timestep >= 0 else self.final_alpha_cumprod
+        alpha_prod_t_prev = (
+            self.alphas_cumprod[prev_timestep]
+            if prev_timestep >= 0
+            else self.final_alpha_cumprod
+        )
 
         beta_prod_t = 1 - alpha_prod_t
 
         # 3. compute predicted original sample from predicted noise also called
         # "predicted x_0" of formula (12) from https://arxiv.org/pdf/2010.02502.pdf
         if self.prediction_type == "epsilon":
-            pred_original_sample = (sample - beta_prod_t ** (0.5) * model_output) / alpha_prod_t ** (0.5)
+            pred_original_sample = (
+                sample - beta_prod_t ** (0.5) * model_output
+            ) / alpha_prod_t ** (0.5)
             pred_epsilon = model_output
         elif self.prediction_type == "sample":
             pred_original_sample = model_output
-            pred_epsilon = (sample - alpha_prod_t ** (0.5) * pred_original_sample) / beta_prod_t ** (0.5)
+            pred_epsilon = (
+                sample - alpha_prod_t ** (0.5) * pred_original_sample
+            ) / beta_prod_t ** (0.5)
         elif self.prediction_type == "v_prediction":
-            pred_original_sample = (alpha_prod_t**0.5) * sample - (beta_prod_t**0.5) * model_output
-            pred_epsilon = (alpha_prod_t**0.5) * model_output + (beta_prod_t**0.5) * sample
+            pred_original_sample = (alpha_prod_t**0.5) * sample - (
+                beta_prod_t**0.5
+            ) * model_output
+            pred_epsilon = (alpha_prod_t**0.5) * model_output + (
+                beta_prod_t**0.5
+            ) * sample
 
         # 4. Clip "predicted x_0"
         if self.clip_sample:
@@ -186,17 +215,23 @@ class DDIMScheduler(Scheduler):
         std_dev_t = eta * variance ** (0.5)
 
         # 6. compute "direction pointing to x_t" of formula (12) from https://arxiv.org/pdf/2010.02502.pdf
-        pred_sample_direction = (1 - alpha_prod_t_prev - std_dev_t**2) ** (0.5) * pred_epsilon
+        pred_sample_direction = (1 - alpha_prod_t_prev - std_dev_t**2) ** (
+            0.5
+        ) * pred_epsilon
 
         # 7. compute x_t-1 without "random noise" of formula (12) from https://arxiv.org/pdf/2010.02502.pdf
-        pred_prev_sample = alpha_prod_t_prev ** (0.5) * pred_original_sample + pred_sample_direction
+        pred_prev_sample = (
+            alpha_prod_t_prev ** (0.5) * pred_original_sample + pred_sample_direction
+        )
 
         if eta > 0:
             # randn_like does not support generator https://github.com/pytorch/pytorch/issues/27072
             device = model_output.device if torch.is_tensor(model_output) else "cpu"
             noise = generate_noise(self.noise_type, model_output, timestep)
 
-            variance = self._get_variance(timestep, prev_timestep) ** (0.5) * eta * noise
+            variance = (
+                self._get_variance(timestep, prev_timestep) ** (0.5) * eta * noise
+            )
 
             pred_prev_sample = pred_prev_sample + variance
 
@@ -233,7 +268,11 @@ class DDIMScheduler(Scheduler):
 
         # 2. compute alphas, betas at timestep t+1
         alpha_prod_t = self.alphas_cumprod[timestep]
-        alpha_prod_t_prev = self.alphas_cumprod[prev_timestep] if prev_timestep >= 0 else self.final_alpha_cumprod
+        alpha_prod_t_prev = (
+            self.alphas_cumprod[prev_timestep]
+            if prev_timestep >= 0
+            else self.final_alpha_cumprod
+        )
 
         beta_prod_t = 1 - alpha_prod_t
 
@@ -241,14 +280,22 @@ class DDIMScheduler(Scheduler):
         # "predicted x_0" of formula (12) from https://arxiv.org/pdf/2010.02502.pdf
 
         if self.prediction_type == "epsilon":
-            pred_original_sample = (sample - beta_prod_t ** (0.5) * model_output) / alpha_prod_t ** (0.5)
+            pred_original_sample = (
+                sample - beta_prod_t ** (0.5) * model_output
+            ) / alpha_prod_t ** (0.5)
             pred_epsilon = model_output
         elif self.prediction_type == "sample":
             pred_original_sample = model_output
-            pred_epsilon = (sample - alpha_prod_t ** (0.5) * pred_original_sample) / beta_prod_t ** (0.5)
+            pred_epsilon = (
+                sample - alpha_prod_t ** (0.5) * pred_original_sample
+            ) / beta_prod_t ** (0.5)
         elif self.prediction_type == "v_prediction":
-            pred_original_sample = (alpha_prod_t**0.5) * sample - (beta_prod_t**0.5) * model_output
-            pred_epsilon = (alpha_prod_t**0.5) * model_output + (beta_prod_t**0.5) * sample
+            pred_original_sample = (alpha_prod_t**0.5) * sample - (
+                beta_prod_t**0.5
+            ) * model_output
+            pred_epsilon = (alpha_prod_t**0.5) * model_output + (
+                beta_prod_t**0.5
+            ) * sample
 
         # 4. Clip "predicted x_0"
         if self.clip_sample:
@@ -258,6 +305,8 @@ class DDIMScheduler(Scheduler):
         pred_sample_direction = (1 - alpha_prod_t_prev) ** (0.5) * pred_epsilon
 
         # 6. compute x_t+1 without "random noise" of formula (12) from https://arxiv.org/pdf/2010.02502.pdf
-        pred_post_sample = alpha_prod_t_prev ** (0.5) * pred_original_sample + pred_sample_direction
+        pred_post_sample = (
+            alpha_prod_t_prev ** (0.5) * pred_original_sample + pred_sample_direction
+        )
 
         return pred_post_sample, pred_original_sample

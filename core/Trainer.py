@@ -4,22 +4,26 @@ Trainer.py
 Default class for running training
 
 """
-import wandb
+
 import copy
-from dl_utils import *
-from torchinfo import summary
-from torch.nn import MSELoss
-from torch.optim.adam import Adam
-from torch.optim.lr_scheduler import ExponentialLR, CosineAnnealingLR, ReduceLROnPlateau
-from optim.losses import PerceptualLoss
 import os
 
+from torch.nn import MSELoss
+from torch.optim.adam import Adam
+from torch.optim.lr_scheduler import CosineAnnealingLR, ExponentialLR, ReduceLROnPlateau
+from torchinfo import summary
 
-class EarlyStopping():
+import wandb
+from dl_utils import *
+from optim.losses import PerceptualLoss
+
+
+class EarlyStopping:
     """
     Early stopping to stop the training when the loss does not improve after
     certain epochs.
     """
+
     def __init__(self, patience=25, min_delta=10e-9):
         """
         :param patience: how many epochs to wait before stopping when loss is
@@ -44,11 +48,13 @@ class EarlyStopping():
             return False
         else:
             self.counter += 1
-            print(f"INFO: Early stopping counter {self.counter} of {self.patience} with {self.best_loss - val_loss}")
+            print(
+                f"INFO: Early stopping counter {self.counter} of {self.patience} with {self.best_loss - val_loss}"
+            )
 
             if self.counter >= self.patience:
                 self.counter = 0
-                print('INFO: Early stopping')
+                print("INFO: Early stopping")
                 return True
 
 
@@ -63,8 +69,8 @@ class Trainer:
         :param model: torch.nn.module
             Neural network
         """
-        if 'checkpoint_path' in training_params:
-            self.client_path = training_params['checkpoint_path']
+        if "checkpoint_path" in training_params:
+            self.client_path = training_params["checkpoint_path"]
             if not os.path.exists(self.client_path):
                 os.makedirs(self.client_path)
 
@@ -77,51 +83,81 @@ class Trainer:
         self.model = model.train().to(self.device)
         self.test_model = copy.deepcopy(model.eval().to(self.device))
 
-        patience = training_params['patience'] if 'patience' in training_params.keys() else 25
+        patience = (
+            training_params["patience"] if "patience" in training_params.keys() else 25
+        )
         self.early_stopping = EarlyStopping(patience=patience)
 
         self.log_wandb = log_wandb
 
         wandb.watch(self.model)
-        input_size = (1, 1, self.training_params['input_size'][0],  self.training_params['input_size'][1])
-        print(f'Input size of summery is: {input_size}')
+        input_size = (
+            1,
+            1,
+            self.training_params["input_size"][0],
+            self.training_params["input_size"][1],
+        )
+        print(f"Input size of summery is: {input_size}")
         summary(model, input_size)
 
         # Optimizer
-        opt_params = training_params['optimizer_params']
+        opt_params = training_params["optimizer_params"]
         self.optimizer = Adam(self.model.parameters(), **opt_params)
 
         self.lr_scheduler = None
-        lr_sch_type = training_params['lr_scheduler'] if 'lr_scheduler' in training_params.keys() else 'none'
+        lr_sch_type = (
+            training_params["lr_scheduler"]
+            if "lr_scheduler" in training_params.keys()
+            else "none"
+        )
 
-        if lr_sch_type == 'cosine':
-            self.optimizer = Adam(self.model.parameters(), lr=training_params['optimizer_params']['lr'],
-                                  amsgrad=True, weight_decay=0.00001)
+        if lr_sch_type == "cosine":
+            self.optimizer = Adam(
+                self.model.parameters(),
+                lr=training_params["optimizer_params"]["lr"],
+                amsgrad=True,
+                weight_decay=0.00001,
+            )
             self.lr_scheduler = CosineAnnealingLR(optimizer=self.optimizer, T_max=100)
-        elif lr_sch_type == 'plateau':
-            self.lr_scheduler = ReduceLROnPlateau(optimizer=self.optimizer, mode='min', factor=0.1)
-        elif lr_sch_type == 'exponential':
+        elif lr_sch_type == "plateau":
+            self.lr_scheduler = ReduceLROnPlateau(
+                optimizer=self.optimizer, mode="min", factor=0.1
+            )
+        elif lr_sch_type == "exponential":
             self.lr_scheduler = ExponentialLR(optimizer=self.optimizer, gamma=0.97)
 
-        loss_class = import_module(training_params['loss']['module_name'],
-                                   training_params['loss']['class_name'])
-        self.criterion_rec = loss_class(**(training_params['loss']['params'])) \
-            if training_params['loss']['params'] is not None else loss_class()
+        loss_class = import_module(
+            training_params["loss"]["module_name"],
+            training_params["loss"]["class_name"],
+        )
+        self.criterion_rec = (
+            loss_class(**(training_params["loss"]["params"]))
+            if training_params["loss"]["params"] is not None
+            else loss_class()
+        )
 
-        if 'transformer' not in training_params.keys():
+        if "transformer" not in training_params.keys():
             self.transform = None
         else:
-            transform_class = import_module(training_params['transformer']['module_name'],
-                                            training_params['transformer']['class_name']) \
-                if 'module_name' in training_params['transformer'].keys() else None
+            transform_class = (
+                import_module(
+                    training_params["transformer"]["module_name"],
+                    training_params["transformer"]["class_name"],
+                )
+                if "module_name" in training_params["transformer"].keys()
+                else None
+            )
 
-            self.transform = transform_class(**(training_params['transformer']['params'])) \
-                if transform_class is not None else None
+            self.transform = (
+                transform_class(**(training_params["transformer"]["params"]))
+                if transform_class is not None
+                else None
+            )
 
         self.criterion_MSE = MSELoss().to(device)
         self.criterion_PL = PerceptualLoss(device=device)
         self.min_val_loss = np.inf
-        self.alfa = training_params['alfa'] if 'alfa' in training_params.keys() else 0
+        self.alfa = training_params["alfa"] if "alfa" in training_params.keys() else 0
 
         self.best_weights = self.model.state_dict()
         self.best_opt_weights = self.optimizer.state_dict()
@@ -142,7 +178,9 @@ class Trainer:
         # return self.model.state_dict()
         raise NotImplementedError("[Trainer::train]: Please Implement train() method")
 
-    def test(self, model_weights, test_data, task='Val', optimizer_weights=None, epoch=0):
+    def test(
+        self, model_weights, test_data, task="Val", optimizer_weights=None, epoch=0
+    ):
         """
         :param model_weights: weights of the global model
         :return:

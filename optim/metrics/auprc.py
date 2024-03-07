@@ -1,4 +1,5 @@
-from sklearn.metrics import precision_recall_curve, average_precision_score
+from sklearn.metrics import average_precision_score, precision_recall_curve
+
 
 def compute_auprc(y_pred, y):
     y_pred = y_pred.flatten()
