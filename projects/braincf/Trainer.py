@@ -169,18 +169,17 @@ class PTrainer(Trainer):
         with torch.no_grad():
             for data in test_data:
                 x = data[0].to(self.device)
-                patho_masks = data[1].to(self.device)
+                patho_masks = data[3].to(self.device)
                 brain_masks = data[2].to(self.device)
                 
-                b, c, h, w = x.shape
+                
+                b, _, _, _ = x.shape
                 test_total += b
 
                 x_, _ = self.test_model.sample_from_image(
                     x,patho_masks,brain_masks, noise_level=self.model.noise_level_recon
                 )
 
-                #print("x_", x_.shape)
-                #print("x", x.shape)
                 loss_rec = self.criterion_rec(x_, x)
                 loss_mse = self.criterion_MSE(x_, x)
                 loss_pl = self.criterion_PL(x_, x)
@@ -189,20 +188,24 @@ class PTrainer(Trainer):
                 metrics[task + "_loss_mse"] += loss_mse.item() * x.size(0)
                 metrics[task + "_loss_pl"] += loss_pl.item() * x.size(0)
 
-        rec = x_.detach().cpu()[0].numpy()
-        rec[0, 0], rec[0, 1] = 0, 1
-        img = x.detach().cpu()[0].numpy()
-        img[0, 0], img[0, 1] = 0, 1
-        grid_image = np.hstack([img, rec])
+                for batch_idx in range(b):
+                    rec = x_[batch_idx].detach().cpu().numpy()
+                    rec[0, 0], rec[0, 1] = 0, 1
+                    img = x[batch_idx].detach().cpu().numpy()
+                    img[0, 0], img[0, 1] = 0, 1
+                    
+                    brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
+                    patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+                    grid_image = np.hstack([img,patho_mask,brain_mask, rec])
 
-        wandb.log(
-            {
-                task
-                + "/Example_": [
-                    wandb.Image(grid_image, caption="Iteration_" + str(epoch))
-                ]
-            }
-        )
+                    wandb.log(
+                        {
+                            task
+                            + "/Example_": [
+                                wandb.Image(grid_image, caption="Iteration_" + str(epoch))
+                            ]
+                        }
+                    )
 
         for metric_key in metrics.keys():
             metric_name = task + "/" + str(metric_key)
