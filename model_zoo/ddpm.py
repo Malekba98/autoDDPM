@@ -194,7 +194,7 @@ class DDPM(nn.Module):
 
         self.ano_map = AnomalyMap()
 
-    def forward(self, inputs, noise=None, timesteps=None, condition=None):
+    def forward(self, inputs,patho_masks=None, brain_masks=None, noise=None, timesteps=None, condition=None):
         # only for torch_summary to work
         if noise is None:
             noise = torch.randn_like(inputs)
@@ -209,7 +209,16 @@ class DDPM(nn.Module):
         noisy_image = self.train_scheduler.add_noise(
             original_samples=inputs, noise=noise, timesteps=timesteps
         )
-        return self.unet(x=noisy_image, timesteps=timesteps, context=condition)
+
+        unet_input = noisy_image
+
+        if patho_masks is not None:
+            unet_input = torch.cat((noisy_image, patho_masks), dim=1)
+
+        if brain_masks is not None:
+            unet_input = torch.cat((unet_input, brain_masks), dim=1)
+
+        return self.unet(x=unet_input, timesteps=timesteps, context=condition)
 
     @torch.no_grad()
     def get_anomaly(
@@ -427,20 +436,29 @@ class DDPM(nn.Module):
                 context=conditioning,
             )
 
+            #print("model_output", model_output.size())
+
+
             # 2. compute previous image: x_t -> x_t-1
-            image, _ = self.inference_scheduler.step(model_output, t, image)
+            denoised_image, _ = self.inference_scheduler.step(model_output, t, image[:,0,:,:].unsqueeze(1))
+            image[:,0,:,:] = denoised_image[:,0,:,:]
+
+            #print("image size", image.size())
+            #print("denoised image size", denoised_image.size())
             if save_intermediates and t % intermediate_steps == 0:
                 intermediates.append(image)
         if save_intermediates:
-            return image, intermediates
+            return denoised_image, intermediates
         else:
-            return image
+            return denoised_image
 
     @torch.no_grad()
     # function to noise and then sample from the noise given an image to get healthy reconstructions of anomalous input images
     def sample_from_image(
         self,
         inputs: torch.Tensor,
+        patho_masks: torch.Tensor | None = None,
+        brain_masks: torch.Tensor | None = None,
         noise_level: int | None = 500,
         save_intermediates: bool | None = False,
         intermediate_steps: int | None = 100,
@@ -463,14 +481,22 @@ class DDPM(nn.Module):
         noised_image = self.train_scheduler.add_noise(
             original_samples=inputs, noise=noise, timesteps=t
         )
+
+        unet_input = noised_image
+        if patho_masks is not None:
+            unet_input = torch.cat((noised_image, patho_masks), dim=1)
+        if brain_masks is not None:
+            unet_input = torch.cat((unet_input, brain_masks), dim=1)
+
         image = self.sample(
-            input_noise=noised_image,
+            input_noise=unet_input,
             noise_level=noise_level,
             save_intermediates=save_intermediates,
             intermediate_steps=intermediate_steps,
             conditioning=conditioning,
             verbose=verbose,
         )
+        print("sample from image output size", image.size())
         return image, {"z": None}
 
     @torch.no_grad()

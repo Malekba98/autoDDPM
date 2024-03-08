@@ -2,7 +2,11 @@ import torchvision.transforms as transforms
 
 from core.DataLoader import DefaultDataset
 from transforms.preprocessing import *
-import logging
+import glob
+
+
+from dl_utils import get_data_from_csv
+
 
 class Flip:
     """
@@ -41,12 +45,8 @@ class IXILoader(DefaultDataset):
                 Pad((1, 1)),  # Flip(), #  Slice(),
                 AddChannelIfNeeded(),
                 AssertChannelFirst(),
-                self.RES
-                # ,AdjustIntensity()
-                ,
-                transforms.ToPILImage(),  # transforms.RandomAffine(10, (0.1, 0.1), (0.9, 1.1)),
-                # transforms.RandomHorizontalFlip(0.5),
-                # transforms.ColorJitter(brightness=(0.8, 1.2), contrast=(0.8,1.2)),
+                self.RES,
+                transforms.ToPILImage(),
                 transforms.ToTensor(),
             ]
         )
@@ -81,6 +81,41 @@ class IXILoader(DefaultDataset):
         return default_t_label
 
 
+class AtlasLoader(IXILoader):
+    def __init__(
+        self,
+        data_dir,
+        file_type="",
+        label_dir=None,
+        mask_dir=None,
+        target_size=(256, 256),
+        test=False,
+    ):
+        self.mask_dir = mask_dir
+        if mask_dir is not None:
+            if "csv" in mask_dir[0]:
+                self.mask_files = get_data_from_csv(mask_dir)
+            else:
+                self.mask_files = [
+                    glob.glob(mask_dir_i + file_type) for mask_dir_i in mask_dir
+                ]
+        super(AtlasLoader, self).__init__(
+            data_dir, file_type, label_dir, mask_dir, target_size, test
+        )
+
+    def get_label(self, idx):
+        if self.label_dir is not None:
+            patho_mask = self.seg_t(self.label_files[idx])
+        if self.mask_dir is not None:
+            brain_mask = self.seg_t(self.mask_files[idx])
+            # print(mask_label.shape)
+        return (patho_mask, brain_mask)
+
+    def __getitem__(self, idx):
+        return (
+            self.im_t(self.files[idx]),
+            *self.get_label(idx))
+
 class mask_preprocessing_loader(IXILoader):
     def __init__(
         self,
@@ -91,10 +126,18 @@ class mask_preprocessing_loader(IXILoader):
         target_size=(256, 256),
         test=False,
     ):
+        self.mask_dir = mask_dir
+        if mask_dir is not None:
+            if "csv" in mask_dir[0]:
+                self.mask_files = get_data_from_csv(mask_dir)
+            else:
+                self.mask_files = [
+                    glob.glob(mask_dir_i + file_type) for mask_dir_i in mask_dir
+                ]
+
         super(mask_preprocessing_loader, self).__init__(
             data_dir, file_type, label_dir, mask_dir, target_size, test
         )
-
 
     def get_label(self, idx):
         if self.label_dir is not None:
@@ -103,4 +146,11 @@ class mask_preprocessing_loader(IXILoader):
             return 0
 
     def __getitem__(self, idx):
-        return self.im_t(self.files[idx]), self.get_label(idx), idx, self.files[idx], self.label_files[idx]
+        return (
+            self.im_t(self.files[idx]),
+            self.get_label(idx),
+            idx,
+            self.files[idx], # filename
+            self.label_files[idx], # mask_filename
+            self.mask_files[idx], # brain_mask_filename
+        )
