@@ -16,7 +16,9 @@ class AtlasLoader(IXILoader):
         mask_dir=None,
         target_size=(256, 256),
         test=False,
+        dilation_kernel=3
     ):
+        self.dilation_kernel = dilation_kernel
         self.mask_dir = mask_dir
         if mask_dir is not None:
             if "csv" in mask_dir[0]:
@@ -42,9 +44,7 @@ class AtlasLoader(IXILoader):
     def get_dilated_mask(self, idx):
         (patho_mask,brain_mask) = self.get_label(idx)
 
-        dilated_patho_mask = dilate_mask(patho_mask, kernel=15)
-        #print("size of dilated mask", dilated_patho_mask.shape)
-        #print("size of brain mask", brain_mask.shape)
+        dilated_patho_mask = dilate_mask(patho_mask, kernel=self.dilation_kernel)
         dilated_patho_mask[brain_mask == 0] = 0
         return dilated_patho_mask
     
