@@ -53,6 +53,9 @@ class PTrainer(Trainer):
             for data in self.train_ds:
                 # Input
                 images = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
+                brain_masks = data[2].to(self.device)
+
                 count_images += images.shape[0]
                 transformed_images = (
                     self.transform(images) if self.transform is not None else images
@@ -77,16 +80,29 @@ class PTrainer(Trainer):
                         self.model.train_scheduler.num_train_timesteps,
                     )
 
-                    # Get model prediction
-                    pred = self.model(
+                    if self.training_params["training_mode"] == "semantic synthesis":
+                        # Get model prediction
+                        pred = self.model(
+                            inputs=transformed_images,
+                            patho_masks=patho_masks,
+                            brain_masks=brain_masks,
+                            noise=noise,
+                            timesteps=timesteps,
+                        )
+                    else:
+                        # Get model prediction
+                        pred = self.model(
                         inputs=transformed_images, noise=noise, timesteps=timesteps
                     )
 
+                    
                     target = (
                         transformed_images
                         if self.model.prediction_type == "sample"
                         else noise
                     )
+                    #print("prediction size", pred.size())
+                    #print("target size", target.size())
                     loss = self.criterion_rec(pred.float(), target.float())
 
                 scaler.scale(loss).backward()
@@ -139,7 +155,7 @@ class PTrainer(Trainer):
                 'test_total': 0
             }
         """
-        return
+        
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
         self.test_model.eval()
@@ -152,14 +168,19 @@ class PTrainer(Trainer):
 
         with torch.no_grad():
             for data in test_data:
-                x = data[0]
+                x = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
+                brain_masks = data[2].to(self.device)
+                
                 b, c, h, w = x.shape
                 test_total += b
-                x = x.to(self.device)
 
                 x_, _ = self.test_model.sample_from_image(
-                    x, noise_level=self.model.noise_level_recon
+                    x,patho_masks,brain_masks, noise_level=self.model.noise_level_recon
                 )
+
+                #print("x_", x_.shape)
+                #print("x", x.shape)
                 loss_rec = self.criterion_rec(x_, x)
                 loss_mse = self.criterion_MSE(x_, x)
                 loss_pl = self.criterion_PL(x_, x)

@@ -192,7 +192,7 @@ class DefaultDataLoader(pl.LightningDataModule):
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             shuffle=True,
-            drop_last=True,
+            drop_last=False,
             pin_memory=True,
         )
 

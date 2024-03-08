@@ -1,6 +1,6 @@
 name: BrainCF
 target_size: &target_size !!python/tuple [128, 128]
-train_batch_size: &tbatch_size 16
+train_batch_size: &tbatch_size 32
 downstream_batch_size: &dbatch_size 16
 checkpoint_path: &checkpoint_path './projects/braincf/weights/runs/'
 #
@@ -24,7 +24,7 @@ model:
   class_name: DDPM
   params:
     spatial_dims: 2
-    in_channels: 1
+    in_channels: 3
     out_channels: 1
     num_channels: 
       - 128
@@ -63,8 +63,9 @@ trainer:
     input_size: *target_size
     checkpoint_path: *checkpoint_path
     batch_size: *tbatch_size
-    nr_epochs: 3000
-    val_interval: 200
+    nr_epochs: 1500
+    val_interval: 500
+    training_mode: "semantic synthesis"
     # Loss
     loss:
       module_name: optim.losses.ln_losses
@@ -74,7 +75,7 @@ trainer:
       lr: 1.0e-4
   # Data Loader
   data_loader:
-    # IXI-T1
+    # Atlas-T1
     module_name: core.DataLoader
     class_name: DefaultDataLoader
     params:
@@ -82,18 +83,23 @@ trainer:
         target_size: *target_size
         batch_size: *tbatch_size
         dataset_module:
-          module_name: data.loaders.ixi_loader
-          class_name: IXILoader
+          module_name: data.loaders.atlas_loader
+          class_name: AtlasLoader
         data_dir:
           train:
-            - './data/ATLAS/splits/atlas_train_png.csv'
+            - './data/ATLAS/splits_over_100/atlas_train_png.csv'
           val:  
-            - './data/ATLAS/splits/atlas_train_png.csv'
+            - './data/ATLAS/splits_over_100/atlas_val_png.csv'
         label_dir:
           train:
-            - './data/ATLAS/splits/atlas_train_mask_png.csv'
+            - './data/ATLAS/splits_over_100/atlas_train_mask_png.csv'
           val:
-            - './data/ATLAS/splits/atlas_train_mask_png.csv'
+            - './data/ATLAS/splits_over_100/atlas_val_mask_png.csv'
+        mask_dir:
+          train:
+            - './data/ATLAS/splits_over_100/atlas_train_brain_mask_png.csv'
+          val:
+            - './data/ATLAS/splits_over_100/atlas_val_brain_mask_png.csv'
 
 # Downstream tasks
 downstream_tasks:  
