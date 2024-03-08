@@ -7,7 +7,7 @@ checkpoint_path: &checkpoint_path './projects/braincf/weights/runs/'
 # Experiment
 #
 experiment:
-  name: DDPM
+  name: Semantic_synthesis
   task: train
   weights:
 
@@ -64,7 +64,7 @@ trainer:
     checkpoint_path: *checkpoint_path
     batch_size: *tbatch_size
     nr_epochs: 1500
-    val_interval: 500
+    val_interval: 200
     training_mode: "semantic synthesis"
     # Loss
     loss:
@@ -80,6 +80,7 @@ trainer:
     class_name: DefaultDataLoader
     params:
       args:
+        dilation_kernel: 3
         target_size: *target_size
         batch_size: *tbatch_size
         dataset_module:
