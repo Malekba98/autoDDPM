@@ -112,9 +112,8 @@ class AtlasLoader(IXILoader):
         return (patho_mask, brain_mask)
 
     def __getitem__(self, idx):
-        return (
-            self.im_t(self.files[idx]),
-            *self.get_label(idx))
+        return (self.im_t(self.files[idx]), *self.get_label(idx))
+
 
 class mask_preprocessing_loader(IXILoader):
     def __init__(
@@ -150,7 +149,7 @@ class mask_preprocessing_loader(IXILoader):
             self.im_t(self.files[idx]),
             self.get_label(idx),
             idx,
-            self.files[idx], # filename
-            self.label_files[idx], # mask_filename
-            self.mask_files[idx], # brain_mask_filename
+            self.files[idx],  # filename
+            self.label_files[idx],  # mask_filename
+            self.mask_files[idx],  # brain_mask_filename
         )

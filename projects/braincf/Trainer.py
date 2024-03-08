@@ -92,17 +92,16 @@ class PTrainer(Trainer):
                     else:
                         # Get model prediction
                         pred = self.model(
-                        inputs=transformed_images, noise=noise, timesteps=timesteps
-                    )
+                            inputs=transformed_images, noise=noise, timesteps=timesteps
+                        )
 
-                    
                     target = (
                         transformed_images
                         if self.model.prediction_type == "sample"
                         else noise
                     )
-                    #print("prediction size", pred.size())
-                    #print("target size", target.size())
+                    # print("prediction size", pred.size())
+                    # print("target size", target.size())
                     loss = self.criterion_rec(pred.float(), target.float())
 
                 scaler.scale(loss).backward()
@@ -155,7 +154,7 @@ class PTrainer(Trainer):
                 'test_total': 0
             }
         """
-        
+
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
         self.test_model.eval()
@@ -169,15 +168,17 @@ class PTrainer(Trainer):
         with torch.no_grad():
             for data in test_data:
                 x = data[0].to(self.device)
-                patho_masks = data[3].to(self.device)
+                patho_masks = data[1].to(self.device)
                 brain_masks = data[2].to(self.device)
-                
-                
+
                 b, _, _, _ = x.shape
                 test_total += b
 
                 x_, _ = self.test_model.sample_from_image(
-                    x,patho_masks,brain_masks, noise_level=self.model.noise_level_recon
+                    x,
+                    patho_masks,
+                    brain_masks,
+                    noise_level=self.model.noise_level_recon,
                 )
 
                 loss_rec = self.criterion_rec(x_, x)
@@ -193,16 +194,18 @@ class PTrainer(Trainer):
                     rec[0, 0], rec[0, 1] = 0, 1
                     img = x[batch_idx].detach().cpu().numpy()
                     img[0, 0], img[0, 1] = 0, 1
-                    
+
                     brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
-                    grid_image = np.hstack([img,patho_mask,brain_mask, rec])
+                    grid_image = np.hstack([img, patho_mask, brain_mask, rec])
 
                     wandb.log(
                         {
                             task
                             + "/Example_": [
-                                wandb.Image(grid_image, caption="Iteration_" + str(epoch))
+                                wandb.Image(
+                                    grid_image, caption="Iteration_" + str(epoch)
+                                )
                             ]
                         }
                     )
@@ -229,3 +232,65 @@ class PTrainer(Trainer):
             self.early_stop = self.early_stopping(epoch_val_loss)
             if self.lr_scheduler is not None:
                 self.lr_scheduler.step(epoch_val_loss)
+
+    def repaint(self, model_weights, test_data, task="repaint"):
+
+        self.test_model.load_state_dict(model_weights)
+        self.test_model.to(self.device)
+        self.test_model.eval()
+        metrics = {
+            task + "_loss_rec": 0,
+            task + "_loss_mse": 0,
+            task + "_loss_pl": 0,
+        }
+        test_total = 0
+
+        with torch.no_grad():
+            for data in test_data:
+                x = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
+                brain_masks = data[2].to(self.device)
+                dilated_patho_masks = data[3].to(self.device)
+
+                b, _, _, _ = x.shape
+                test_total += b
+
+                x_, _ = self.test_model.repaint(
+                    original_images=x,
+                    inpaint_masks=dilated_patho_masks,
+                    patho_masks=patho_masks,
+                    brain_masks=brain_masks,
+                )
+
+                loss_rec = self.criterion_rec(x_, x)
+                loss_mse = self.criterion_MSE(x_, x)
+                loss_pl = self.criterion_PL(x_, x)
+
+                metrics[task + "_loss_rec"] += loss_rec.item() * x.size(0)
+                metrics[task + "_loss_mse"] += loss_mse.item() * x.size(0)
+                metrics[task + "_loss_pl"] += loss_pl.item() * x.size(0)
+
+                for batch_idx in range(b):
+                    rec = x_[batch_idx].detach().cpu().numpy()
+                    rec[0, 0], rec[0, 1] = 0, 1
+                    img = x[batch_idx].detach().cpu().numpy()
+                    img[0, 0], img[0, 1] = 0, 1
+
+                    brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
+                    patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+                    grid_image = np.hstack([img, patho_mask, brain_mask, rec])
+
+                    wandb.log(
+                        {
+                            task
+                            + "/Example_": [
+                                wandb.Image(
+                                    grid_image, caption="Iteration_" + str(epoch)
+                                )
+                            ]
+                        }
+                    )
+        for metric_key in metrics.keys():
+            metric_name = task + "/" + str(metric_key)
+            metric_score = metrics[metric_key] / test_total
+            wandb.log({metric_name: metric_score})

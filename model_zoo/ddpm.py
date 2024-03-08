@@ -194,7 +194,15 @@ class DDPM(nn.Module):
 
         self.ano_map = AnomalyMap()
 
-    def forward(self, inputs,patho_masks=None, brain_masks=None, noise=None, timesteps=None, condition=None):
+    def forward(
+        self,
+        inputs,
+        patho_masks=None,
+        brain_masks=None,
+        noise=None,
+        timesteps=None,
+        condition=None,
+    ):
         # only for torch_summary to work
         if noise is None:
             noise = torch.randn_like(inputs)
@@ -402,6 +410,78 @@ class DDPM(nn.Module):
             },
         )
 
+    def repaint(
+        self,
+        original_images: torch.tensor,
+        inpaint_masks: torch.tensor,
+        patho_masks: torch.tensor,
+        brain_masks: torch.tensor,
+        verbose=True,
+    ):
+        batch_size = original_images.shape[0]
+        timesteps = self.inference_scheduler.get_timesteps(noise_level=999)
+
+        # image = torch.randn_like(original_image)
+
+        # (generates) then adds noise to the original samples up to noise level 999.
+        # the generated signal (image) is not exactly a random gaussian. it is almost
+        # a random gaussian. because it still has some information from the original image if
+        # alpha ( of the scheduler) is not 0 for the last step T (999 here).
+        # see Abbeel lecture L6 on diff models time: 1h:07 mins for more info.
+        # https://www.youtube.com/watch?v=DsEDMjdxOv4&t=5145s&ab_channel=PieterAbbeel
+
+        noise = generate_noise(self.train_scheduler.noise_type, original_images)
+        image = self.inference_scheduler.add_noise(
+            original_samples=original_images, noise=noise, timesteps=999
+        )
+
+        if verbose and has_tqdm:
+            progress_bar = tqdm(timesteps)
+        else:
+            progress_bar = iter(timesteps)
+
+        for t in progress_bar:
+
+            for u in range(self.resample_steps):
+                # generate known part with forward process q()
+                if t > 0:
+                    noise = generate_noise(
+                        self.inference_scheduler.noise_type, original_images
+                    )
+                else:
+                    noise = torch.zeros_like(original_images)
+
+                timesteps = torch.full([batch_size], t, device=self.device).long()
+                x_known = self.inference_scheduler.add_noise(
+                    original_samples=original_images, noise=noise, timesteps=timesteps
+                )
+
+                # generate uknown part of diffusion reverse process
+                predicted_noise = self.unet(
+                    torch.cat((image, patho_masks, brain_masks), dim=1),
+                    timesteps=torch.tensor((t,)).to(image.device),
+                    context=None,
+                )
+
+                # inference_scheduler.step() internallhy checks if t>0. if t>0, noise z=0 in the
+                # sampling equation. take a look at # 6. Add noise, line 203 in the .step() function
+                x_unknown, _ = self.inference_scheduler.step(predicted_noise, t, image)
+
+                # join known and uknown parts
+                image = inpaint_masks * x_unknown + (1 - inpaint_masks) * x_known
+
+                if t > 0 and u < (self.resample_steps - 1):
+                    # sample from q(xt/x_t-1): diffuse back to xt
+                    image = torch.sqrt(
+                        1 - self.inference_scheduler.betas[t - 1]
+                    ) * image + torch.sqrt(
+                        self.inference_scheduler.betas[t - 1]
+                    ) * torch.randn_like(
+                        original_images, device=self.device
+                    )
+
+        return image
+
     @torch.no_grad()
     def sample(
         self,
@@ -436,15 +516,16 @@ class DDPM(nn.Module):
                 context=conditioning,
             )
 
-            #print("model_output", model_output.size())
-
+            # print("model_output", model_output.size())
 
             # 2. compute previous image: x_t -> x_t-1
-            denoised_image, _ = self.inference_scheduler.step(model_output, t, image[:,0,:,:].unsqueeze(1))
-            image[:,0,:,:] = denoised_image[:,0,:,:]
+            denoised_image, _ = self.inference_scheduler.step(
+                model_output, t, image[:, 0, :, :].unsqueeze(1)
+            )
+            image[:, 0, :, :] = denoised_image[:, 0, :, :]
 
-            #print("image size", image.size())
-            #print("denoised image size", denoised_image.size())
+            # print("image size", image.size())
+            # print("denoised image size", denoised_image.size())
             if save_intermediates and t % intermediate_steps == 0:
                 intermediates.append(image)
         if save_intermediates:

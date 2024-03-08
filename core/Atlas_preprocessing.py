@@ -45,7 +45,7 @@ for data in loader:
         print("filename", filename[0])
         print("mask_filename", mask_filename[0])
         print("brain_mask_filename", brain_mask_filename[0])
-        
+
         with open("Atlas_brain_mask_over_100.csv", "a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([brain_mask_filename[0]])
