@@ -103,4 +103,4 @@ class mask_preprocessing_loader(IXILoader):
             return 0
 
     def __getitem__(self, idx):
-        return self.im_t(self.files[idx]), self.get_label(idx), idx, self.files[idx]
+        return self.im_t(self.files[idx]), self.get_label(idx), idx, self.files[idx], self.label_files[idx]
