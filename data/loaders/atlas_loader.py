@@ -5,6 +5,7 @@ import glob
 from data.loaders.ixi_loader import IXILoader
 
 from dl_utils import get_data_from_csv
+from dl_utils.mask_utils import dilate_mask
 
 class AtlasLoader(IXILoader):
     def __init__(
@@ -29,14 +30,26 @@ class AtlasLoader(IXILoader):
         )
 
     def get_label(self, idx):
+        patho_mask = 0
+        brain_mask = 0
+
         if self.label_dir is not None:
             patho_mask = self.seg_t(self.label_files[idx])
         if self.mask_dir is not None:
             brain_mask = self.seg_t(self.mask_files[idx])
-            # print(mask_label.shape)
         return (patho_mask, brain_mask)
+    
+    def get_dilated_mask(self, idx):
+        (patho_mask,brain_mask) = self.get_label(idx)
+
+        dilated_patho_mask = dilate_mask(patho_mask, kernel=15)
+        #print("size of dilated mask", dilated_patho_mask.shape)
+        #print("size of brain mask", brain_mask.shape)
+        dilated_patho_mask[brain_mask == 0] = 0
+        return dilated_patho_mask
     
     def __getitem__(self, idx):
         return (
             self.im_t(self.files[idx]),
-            *self.get_label(idx))
+            *self.get_label(idx),
+            self.get_dilated_mask(idx))
