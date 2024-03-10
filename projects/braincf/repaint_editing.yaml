@@ -1,6 +1,6 @@
 name: BrainCF
 target_size: &target_size !!python/tuple [128, 128]
-train_batch_size: &tbatch_size 32
+train_batch_size: &tbatch_size 1
 downstream_batch_size: &dbatch_size 16
 checkpoint_path: &checkpoint_path './projects/braincf/weights/runs/'
 #
@@ -9,7 +9,7 @@ checkpoint_path: &checkpoint_path './projects/braincf/weights/runs/'
 experiment:
   name: repaint
   task: repaint
-  weights: ./projects/braincf/weights/runs/2024_03_08_19_20_58_561738/best_model.pth
+  weights: ./projects/braincf/weights/runs/2024_03_08_19_20_58_561738/best_model.pt
 
 device: gpu
 configurator:
@@ -45,6 +45,7 @@ model:
     noise_type: "gaussian"
     method: "anoDDPM"
     prediction_type: "epsilon"
+    resample_steps: 10
 
     # Thresholds on stroke data: 71, 570
     threshold_low: 1
@@ -79,7 +80,7 @@ trainer:
     class_name: DefaultDataLoader
     params:
       args:
-        dilation_kernel: 15
+        dilation_kernel: 18
         target_size: *target_size
         batch_size: *tbatch_size
         dataset_module:
@@ -87,13 +88,15 @@ trainer:
           class_name: AtlasLoader
         data_dir:
           test:
-            - './data/ATLAS/splits_over_100/atlas_test_png.csv'
+            - './data/ATLAS/splits_healthy/Atlas_healthy.csv'
+            #- './data/fastMRI/normal_train.csv'
         label_dir:
           test:
             - './data/ATLAS/splits_over_100/atlas_val_mask_png.csv'
         mask_dir:
           test:
-            - './data/ATLAS/splits_over_100/atlas_test_brain_mask_png.csv'
+            - './data/ATLAS/splits_healthy/Atlas_brain_mask_healthy.csv'
+            #- './data/fastMRI/normal_brain_mask_train.csv'
 
 # Downstream tasks
 downstream_tasks:  
