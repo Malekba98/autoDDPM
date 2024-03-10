@@ -431,8 +431,11 @@ class DDPM(nn.Module):
         # https://www.youtube.com/watch?v=DsEDMjdxOv4&t=5145s&ab_channel=PieterAbbeel
 
         noise = generate_noise(self.train_scheduler.noise_type, original_images)
+
+        timesteps_full_noise = torch.full([batch_size], 999, device=self.device).long()
+
         image = self.inference_scheduler.add_noise(
-            original_samples=original_images, noise=noise, timesteps=999
+            original_samples=original_images, noise=noise, timesteps=timesteps_full_noise
         )
 
         if verbose and has_tqdm:
