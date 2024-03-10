@@ -11,7 +11,7 @@ from data.loaders.ixi_loader import mask_preprocessing_loader
 import csv
 import os
 
-PIXELS_THRESHOLD = 100
+PIXELS_THRESHOLD = 1
 dataset = mask_preprocessing_loader(
     image_dir,
     label_dir=label_dir,
@@ -25,14 +25,14 @@ loader = DataLoader(
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 sum = 0
-if os.path.exists("Atlas_over_100.csv"):
-    os.remove("Atlas_over_100.csv")
+if os.path.exists(f"Atlas_over_{PIXELS_THRESHOLD}.csv"):
+    os.remove(f"Atlas_over_{PIXELS_THRESHOLD}.csv")
 
-if os.path.exists("Atlas_mask_over_100.csv"):
-    os.remove("Atlas_mask_over_100.csv")
+if os.path.exists(f"Atlas_mask_over_{PIXELS_THRESHOLD}.csv"):
+    os.remove(f"Atlas_mask_over_{PIXELS_THRESHOLD}.csv")
 
-if os.path.exists("Atlas_brain_mask_over_100.csv"):
-    os.remove("Atlas_brain_mask_over_100.csv")
+if os.path.exists(f"Atlas_brain_mask_over_{PIXELS_THRESHOLD}.csv"):
+    os.remove(f"Atlas_brain_mask_over_{PIXELS_THRESHOLD}.csv")
 
 for data in loader:
     image = data[0].to(device)
@@ -46,15 +46,15 @@ for data in loader:
         print("mask_filename", mask_filename[0])
         print("brain_mask_filename", brain_mask_filename[0])
 
-        with open("Atlas_brain_mask_over_100.csv", "a", newline="") as file:
+        with open(f"Atlas_brain_mask_over_{PIXELS_THRESHOLD}.csv", "a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([brain_mask_filename[0]])
 
-        with open("Atlas_mask_over_100.csv", "a", newline="") as file:
+        with open(f"Atlas_mask_over_{PIXELS_THRESHOLD}.csv", "a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([mask_filename[0]])
 
-        with open("Atlas_over_100.csv", "a", newline="") as file:
+        with open(f"Atlas_over_{PIXELS_THRESHOLD}.csv", "a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([filename[0]])
         sum += 1
@@ -64,7 +64,7 @@ train_size = int(train_ratio * sum)
 train_file = "atlas_train_png.csv"
 val_file = "atlas_val_png.csv"
 
-with open("Atlas_over_100.csv", "r") as file:
+with open(f"Atlas_over_{PIXELS_THRESHOLD}.csv", "r") as file:
     reader = csv.reader(file)
     data = list(reader)
 
@@ -91,7 +91,7 @@ print("Validation file saved at:", val_file_path)
 
 # do same for masks
 
-with open("Atlas_mask_over_100.csv", "r") as file:
+with open(f"Atlas_mask_over_{PIXELS_THRESHOLD}.csv", "r") as file:
     reader = csv.reader(file)
     data = list(reader)
 
@@ -117,7 +117,7 @@ print("mask Validation file saved at:", val_file_path)
 
 # do same for brain mask
 
-with open("Atlas_brain_mask_over_100.csv", "r") as file:
+with open(f"Atlas_brain_mask_over_{PIXELS_THRESHOLD}.csv", "r") as file:
     reader = csv.reader(file)
     data = list(reader)
 
@@ -141,4 +141,4 @@ print("brain mask Train file saved at:", train_file_path)
 print("brain mask Validation file saved at:", val_file_path)
 
 
-print("number of over 100 pixels", sum)
+print(f"number of over {PIXELS_THRESHOLD} pixels", sum)
