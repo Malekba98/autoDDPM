@@ -63,8 +63,8 @@ trainer:
     input_size: *target_size
     checkpoint_path: *checkpoint_path
     batch_size: *tbatch_size
-    nr_epochs: 1500
-    val_interval: 200
+    nr_epochs: 2000
+    val_interval: 300
     training_mode: "semantic synthesis"
     # Loss
     loss:
@@ -88,19 +88,19 @@ trainer:
           class_name: AtlasLoader
         data_dir:
           train:
-            - './data/ATLAS/splits_over_100/atlas_train_png.csv'
+            - './data/ATLAS/splits_over_1/atlas_train_png.csv'
           val:  
-            - './data/ATLAS/splits_over_100/atlas_val_png.csv'
+            - './data/ATLAS/splits_over_1/atlas_val_png.csv'
         label_dir:
           train:
-            - './data/ATLAS/splits_over_100/atlas_train_mask_png.csv'
+            - './data/ATLAS/splits_over_1/atlas_train_mask_png.csv'
           val:
-            - './data/ATLAS/splits_over_100/atlas_val_mask_png.csv'
+            - './data/ATLAS/splits_over_1/atlas_val_mask_png.csv'
         mask_dir:
           train:
-            - './data/ATLAS/splits_over_100/atlas_train_brain_mask_png.csv'
+            - './data/ATLAS/splits_over_1/atlas_train_brain_mask_png.csv'
           val:
-            - './data/ATLAS/splits_over_100/atlas_val_brain_mask_png.csv'
+            - './data/ATLAS/splits_over_1/atlas_val_brain_mask_png.csv'
 
 # Downstream tasks
 downstream_tasks:  
