@@ -393,7 +393,7 @@ class DDPM(nn.Module):
             },
         )
     
-    def Radedit(self, patho_mask: torch.Tensor, edit_mask: torch.Tensor,original_image: torch.Tensor,noise_level: int | None = 1000, w_cfg: int = 10):
+    def Radedit(self, patho_mask: torch.Tensor, edit_mask: torch.Tensor,brain_mask: torch.Tensor,original_image: torch.Tensor,noise_level: int | None = 1000, w_cfg: int = 10):
         (auxiliary_images, noise_maps) = self._ddpm_inversion(original_image,noise_level)
 
         keep_mask = 1 - edit_mask
@@ -402,9 +402,9 @@ class DDPM(nn.Module):
         timesteps_reverse = torch.from_numpy(np.arange(1, noise_level + 1)[::-1])
 
         for t in timesteps_reverse:
-            predicted_noise_cond = self.unet(torch.cat((edited_image,patho_mask),dim=1), timesteps=t, context=None)
+            predicted_noise_cond = self.unet(torch.cat((edited_image,patho_mask,brain_mask),dim=1), timesteps=t, context=None)
 
-            predicted_noise_uncond = self.unet(edited_image, timesteps=t, context=None)
+            predicted_noise_uncond = self.unet(torch.cat((edited_image,torch.zeros_like(patho_mask),brain_mask),dim=1), timesteps=t, context=None)
 
             predicted_noise = predicted_noise_uncond + w_cfg * (predicted_noise_cond - predicted_noise_uncond)
 
