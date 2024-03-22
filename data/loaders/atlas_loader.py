@@ -1,7 +1,6 @@
 import glob
 
 from transforms.preprocessing import *
-import glob
 from data.loaders.ixi_loader import IXILoader
 
 from dl_utils import get_data_from_csv

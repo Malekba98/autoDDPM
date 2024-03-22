@@ -11,7 +11,6 @@ import os
 from torch.nn import MSELoss
 from torch.optim.adam import Adam
 from torch.optim.lr_scheduler import CosineAnnealingLR, ExponentialLR, ReduceLROnPlateau
-from torchinfo import summary
 
 import wandb
 from dl_utils import *

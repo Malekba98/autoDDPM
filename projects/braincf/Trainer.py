@@ -11,6 +11,7 @@ from optim.losses.image_losses import *
 from optim.losses.ln_losses import *
 import cv2
 
+
 class PTrainer(Trainer):
     def __init__(self, training_params, model, data, device, log_wandb=True):
         super(PTrainer, self).__init__(training_params, model, data, device, log_wandb)
@@ -263,7 +264,7 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                x_= self.test_model.repaint(
+                x_ = self.test_model.repaint(
                     original_images=x,
                     inpaint_masks=dilated_patho_masks,
                     patho_masks=patho_masks,
@@ -293,27 +294,33 @@ class PTrainer(Trainer):
 
                     rec_rgb_clean = cv2.cvtColor(rec[0], cv2.COLOR_GRAY2RGB)
 
-                    contours, _ = cv2.findContours(patho_mask[0].astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                    contours, _ = cv2.findContours(
+                        patho_mask[0].astype(np.uint8),
+                        cv2.RETR_EXTERNAL,
+                        cv2.CHAIN_APPROX_SIMPLE,
+                    )
                     rec_rgb = cv2.cvtColor(rec[0], cv2.COLOR_GRAY2RGB)
                     cv2.drawContours(rec_rgb, contours, -1, (128, 0, 0), 1)
-                    contours_of_changed_area, _ = cv2.findContours(dilated_mask[0].astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                    cv2.drawContours(rec_rgb, contours_of_changed_area, -1, (0, 128, 0), 1)
-                    
+                    contours_of_changed_area, _ = cv2.findContours(
+                        dilated_mask[0].astype(np.uint8),
+                        cv2.RETR_EXTERNAL,
+                        cv2.CHAIN_APPROX_SIMPLE,
+                    )
+                    cv2.drawContours(
+                        rec_rgb, contours_of_changed_area, -1, (0, 128, 0), 1
+                    )
+
                     img_rgb = cv2.cvtColor(img[0], cv2.COLOR_GRAY2RGB)
                     cv2.drawContours(img_rgb, contours, -1, (128, 0, 0), 1)
 
-                    grid_image = np.vstack([np.hstack([img_rgb_clean*255,img_rgb*255]), np.hstack([rec_rgb_clean*255,rec_rgb*255])])
-                    
-                    wandb.log(
-                        {
-                            task
-                            + "/Example_": [
-                                wandb.Image(
-                                    grid_image
-                                )
-                            ]
-                        }
+                    grid_image = np.vstack(
+                        [
+                            np.hstack([img_rgb_clean * 255, img_rgb * 255]),
+                            np.hstack([rec_rgb_clean * 255, rec_rgb * 255]),
+                        ]
                     )
+
+                    wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
         for metric_key in metrics.keys():
             metric_name = task + "/" + str(metric_key)
             metric_score = metrics[metric_key] / test_total

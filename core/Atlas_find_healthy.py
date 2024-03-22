@@ -25,14 +25,14 @@ loader = DataLoader(
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 sum = 0
-if os.path.exists(f"Atlas_healthy.csv"):
-    os.remove(f"Atlas_healthy.csv")
+if os.path.exists("Atlas_healthy.csv"):
+    os.remove("Atlas_healthy.csv")
 
-if os.path.exists(f"Atlas_mask_healthy.csv"):
-    os.remove(f"Atlas_mask_healthy.csv")
+if os.path.exists("Atlas_mask_healthy.csv"):
+    os.remove("Atlas_mask_healthy.csv")
 
-if os.path.exists(f"Atlas_brain_mask_healthy.csv"):
-    os.remove(f"Atlas_brain_mask_healthy.csv")
+if os.path.exists("Atlas_brain_mask_healthy.csv"):
+    os.remove("Atlas_brain_mask_healthy.csv")
 
 for data in loader:
     image = data[0].to(device)
