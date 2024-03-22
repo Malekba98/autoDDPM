@@ -113,6 +113,11 @@ You have to choose a threshold for binarizing the probable anomaly masks of the 
 
 #### 7). Run the pipeline
 
+If you encounter nodule called fata not found error, Run
+'''bash
+export PYTHONPATH="${PYTHONPATH}:/home/malek/autoDDPM"
+'''
+
 Run the main script with the corresponding config like this:
 
 ```bash

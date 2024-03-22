@@ -11,7 +11,6 @@ import os
 from torch.nn import MSELoss
 from torch.optim.adam import Adam
 from torch.optim.lr_scheduler import CosineAnnealingLR, ExponentialLR, ReduceLROnPlateau
-from torchinfo import summary
 
 import wandb
 from dl_utils import *
@@ -97,8 +96,8 @@ class Trainer:
             self.training_params["input_size"][0],
             self.training_params["input_size"][1],
         )
-        #print(f"Input size of summery is: {input_size}")
-        #summary(model, input_size)
+        # print(f"Input size of summery is: {input_size}")
+        # summary(model, input_size)
 
         # Optimizer
         opt_params = training_params["optimizer_params"]

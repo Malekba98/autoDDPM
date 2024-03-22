@@ -158,7 +158,9 @@ class DefaultDataLoader(pl.LightningDataModule):
             if "mask_dir" in akeys
             else {"train": None, "val": None, "test": None}
         )
-        self.dilation_kernel = args["dilation_kernel"] if "dilation_kernel" in akeys else 3
+        self.dilation_kernel = (
+            args["dilation_kernel"] if "dilation_kernel" in akeys else 3
+        )
         self.target_size = args["target_size"] if "target_size" in akeys else (64, 64)
         self.batch_size = args["batch_size"] if "batch_size" in akeys else 8
         self.num_workers = args["num_workers"] if "num_workers" in akeys else 2
