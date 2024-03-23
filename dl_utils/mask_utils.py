@@ -15,7 +15,7 @@ def dilate_mask(mask, kernel=15):
     # print("size of dilated mask before numpying", dilated_mask.shape)
     mask = mask[0].detach().cpu().numpy()
     if np.sum(mask) < 1:
-        dilated_mask = mask
+        dilated_mask = torch.from_numpy(mask).to(device).unsqueeze(0)
         return dilated_mask
 
     dilated_mask = cv2.dilate(mask, kernel, iterations=1)
