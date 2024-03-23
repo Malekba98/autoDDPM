@@ -533,16 +533,16 @@ class DDPM(nn.Module):
             context=None,
         )
         # contrast the conditional and unconditional noise predictions
-        mask_guidance_map = (
+        differential_noise_map = (
             torch.abs(predicted_noise_target - predicted_noise_source)
             .reshape(batch_size, num_maps_per_mask, *predicted_noise_target.shape[-3:])
             .mean([1, 2])
         )
 
-        clamp_magnitude = mask_guidance_map.mean() * mask_thresholding_ratio
+        clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
 
-        predicted_masks = mask_guidance_map.clamp(0, clamp_magnitude) / clamp_magnitude
-        predicted_masks = binarize_mask(predicted_masks)
+        differential_noise_map = differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
+        predicted_masks = binarize_mask(differential_noise_map)
 
         return predicted_masks
 

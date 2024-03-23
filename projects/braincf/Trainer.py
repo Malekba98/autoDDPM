@@ -325,6 +325,7 @@ class PTrainer(Trainer):
                     )
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
+                    
         for metric_key in metrics.keys():
             metric_name = task + "/" + str(metric_key)
             metric_score = metrics[metric_key] / test_total
