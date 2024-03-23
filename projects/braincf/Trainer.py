@@ -260,17 +260,18 @@ class PTrainer(Trainer):
                 patho_masks = data[1].to(self.device)
                 brain_masks = data[2].to(self.device)
                 dilated_patho_masks = data[3].to(self.device)
+                inpaint_masks = dilated_patho_masks
 
                 b, _, _, _ = x.shape
                 test_total += b
 
                 inpaint_masks = self.test_model.generate_masks(
-                    original_images=x,patho_masks=patho_masks, brain_mask=brain_masks
+                    original_images=x, patho_masks=patho_masks, brain_masks=brain_masks
                 )
 
                 x_ = self.test_model.repaint(
                     original_images=x,
-                    inpaint_masks=dilated_patho_masks,
+                    inpaint_masks=inpaint_masks,
                     patho_masks=patho_masks,
                     brain_masks=brain_masks,
                 )
@@ -292,7 +293,7 @@ class PTrainer(Trainer):
                     brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
 
-                    dilated_mask = dilated_patho_masks[batch_idx].detach().cpu().numpy()
+                    inpaint_mask = inpaint_masks[batch_idx].detach().cpu().numpy()
 
                     img_rgb_clean = cv2.cvtColor(img[0], cv2.COLOR_GRAY2RGB)
 
@@ -306,7 +307,7 @@ class PTrainer(Trainer):
                     rec_rgb = cv2.cvtColor(rec[0], cv2.COLOR_GRAY2RGB)
                     cv2.drawContours(rec_rgb, contours, -1, (128, 0, 0), 1)
                     contours_of_changed_area, _ = cv2.findContours(
-                        dilated_mask[0].astype(np.uint8),
+                        inpaint_mask[0].astype(np.uint8),
                         cv2.RETR_EXTERNAL,
                         cv2.CHAIN_APPROX_SIMPLE,
                     )
@@ -325,7 +326,7 @@ class PTrainer(Trainer):
                     )
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
-                    
+
         for metric_key in metrics.keys():
             metric_name = task + "/" + str(metric_key)
             metric_score = metrics[metric_key] / test_total
