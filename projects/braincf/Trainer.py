@@ -264,6 +264,10 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
+                inpaint_masks = self.test_model.generate_masks(
+                    original_images=x,patho_masks=patho_masks, brain_mask=brain_masks
+                )
+
                 x_ = self.test_model.repaint(
                     original_images=x,
                     inpaint_masks=dilated_patho_masks,

@@ -28,6 +28,7 @@ from net_utils.diffusion_unet import DiffusionModelUNet
 from net_utils.schedulers.ddim import DDIMScheduler
 from net_utils.schedulers.ddpm import DDPMScheduler
 from net_utils.simplex_noise import generate_noise
+from dl_utils.mask_utils import binarize_mask
 
 has_tqdm = True
 
@@ -435,7 +436,9 @@ class DDPM(nn.Module):
         timesteps_full_noise = torch.full([batch_size], 999, device=self.device).long()
 
         image = self.inference_scheduler.add_noise(
-            original_samples=original_images, noise=noise, timesteps=timesteps_full_noise
+            original_samples=original_images,
+            noise=noise,
+            timesteps=timesteps_full_noise,
         )
 
         if verbose and has_tqdm:
@@ -484,6 +487,64 @@ class DDPM(nn.Module):
                     )
 
         return image
+
+    def generate_mask(
+        self,
+        original_images: torch.Tensor,
+        patho_masks: torch.Tensor,
+        brain_masks: torch.Tensor,
+        r=500,
+        num_maps_per_mask=1,
+        mask_thresholding_ratio=0.5,
+    ):        
+        """
+        Generate mask for inpainting automatically
+        Args:
+            original_images: input images
+            patho_masks: patho masks
+            brain_masks: brain masks
+            r: noise level
+            num_maps_per_mask: number of maps per mask
+            mask_thresholding_ratio: mask thresholding ratio
+        
+        Returns:
+            predicted_masks: predicted masks
+        """
+        # noise input images to some noise level called r (r=500 for example)
+        noise = generate_noise(
+            self.inference_scheduler.noise_type, original_images, noise_level=r
+        )
+        # add that noise to the input images
+        batch_size = original_images.shape[0]
+        timesteps = torch.full([batch_size], r, device=original_images.device).long()
+        noised_images = self.inference_scheduler.add_noise(
+            original_samples=original_images, noise=noise, timesteps=timesteps
+        )
+        # predict the noise added to original images to obtain the noised_images
+        predicted_noise_target = self.unet(
+            torch.cat((noised_images, patho_masks, brain_masks), dim=1),
+            timesteps=torch.Tensor((r,)).to(original_images.device),
+            context=None,
+        )
+
+        predicted_noise_source = self.unet(
+            torch.cat((noised_images, torch.zeros_like(patho_masks)), brain_masks),
+            timesteps=torch.Tensor((r,)).to(original_images.device),
+            context=None,
+        )
+        # contrast the conditional and unconditional noise predictions
+        mask_guidance_map = (
+            torch.abs(predicted_noise_target - predicted_noise_source)
+            .reshape(batch_size, num_maps_per_mask, *predicted_noise_target.shape[-3:])
+            .mean([1, 2])
+        )
+
+        clamp_magnitude = mask_guidance_map.mean() * mask_thresholding_ratio
+
+        predicted_masks = mask_guidance_map.clamp(0, clamp_magnitude) / clamp_magnitude
+        predicted_masks = binarize_mask(predicted_masks)
+
+        return predicted_masks
 
     @torch.no_grad()
     def sample(

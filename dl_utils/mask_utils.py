@@ -22,3 +22,8 @@ def dilate_mask(mask, kernel=15):
     dilated_mask = torch.from_numpy(dilated_mask).to(device).unsqueeze(0)
 
     return dilated_mask
+
+
+def binarize_mask(mask, threshold=0.5):
+    mask = torch.where(mask > threshold, torch.ones_like(mask), torch.zeros_like(mask))
+    return mask
