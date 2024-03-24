@@ -141,6 +141,8 @@ class DDPM(nn.Module):
         masking_threshold=-1,
         threshold_low=1,
         threshold_high=10000,
+        binarization_threshold=0.5,
+        encoding_ratio=0.5,
         image_path="",
     ):
         super().__init__()
@@ -162,6 +164,9 @@ class DDPM(nn.Module):
         self.threshold_low = threshold_low
         self.threshold_high = threshold_high
         self.image_path = image_path
+
+        self.binarization_threshold = binarization_threshold
+        self.encoding_ratio = encoding_ratio
 
         # set up scheduler and timesteps
         if train_scheduler == "ddpm":
@@ -493,9 +498,9 @@ class DDPM(nn.Module):
         original_images: torch.Tensor,
         patho_masks: torch.Tensor,
         brain_masks: torch.Tensor,
-        r=500,
-        num_maps_per_mask=1,
-        mask_thresholding_ratio=0.5,
+        num_maps_per_mask=10,
+        mask_thresholding_ratio=3,
+        guidance_scale=1.0,
     ):
         """
         Generate mask for inpainting automatically
@@ -510,46 +515,99 @@ class DDPM(nn.Module):
         Returns:
             predicted_masks: predicted masks
         """
+
+        do_classifier_free_guidance = guidance_scale > 1.0
         # noise input images to some noise level called r (r=500 for example)
-        noise = generate_noise(
-            self.inference_scheduler.noise_type, original_images
-        )
+        # for original_images of shape [batch_size, 1, h, w], use torch.repeat to make it of shape [batch_size * num_maps_per_mask, 1,h, w]
+        # repeated_original_images = original_images.repeat(num_maps_per_mask, 1, 1, 1)
+
+        # noise = generate_noise(
+        #    self.inference_scheduler.noise_type, repeated_original_images
+        # )
+
+        original_batch_size = original_images.shape[0]
+        original_images = original_images.repeat(num_maps_per_mask, 1, 1, 1)
+        patho_masks = patho_masks.repeat(num_maps_per_mask, 1, 1, 1)
+        brain_masks = brain_masks.repeat(num_maps_per_mask, 1, 1, 1)
+
+        noise = generate_noise(self.inference_scheduler.noise_type, original_images)
+
+        if num_maps_per_mask > 1:
+            print("noises are equal", torch.equal(noise[0, :, :, :], noise[1, :, :, :]))
+
+        print("shape of repeated_original_images", original_images.shape)
+        print("shape of repeated patho_masks", patho_masks.shape)
+        print("shape of repeated brain_masks", brain_masks.shape)
+
+        # batch_size,_,_,_ = original_images.shape
+        # noise = torch.randn(
+        #    batch_size * num_maps_per_mask, dtype=original_images.dtype, layout=original_images.layout
+        # ).to(original_images.device)
+
         # add that noise to the input images
         batch_size = original_images.shape[0]
-        timesteps = torch.full([batch_size], r, device=original_images.device).long()
+        timesteps = torch.full(
+            [batch_size],
+            int(self.encoding_ratio * self.noise_level_recon),
+            device=original_images.device,
+        ).long()
         noised_images = self.inference_scheduler.add_noise(
             original_samples=original_images, noise=noise, timesteps=timesteps
         )
+
         # predict the noise added to original images to obtain the noised_images
-        predicted_noise_target = self.unet(
-            torch.cat((noised_images, patho_masks, brain_masks), dim=1),
-            timesteps=torch.Tensor((r,)).to(original_images.device),
+
+        predicted_noise_source = self.unet(
+            torch.cat(
+                (noised_images, torch.zeros_like(patho_masks), brain_masks), dim=1
+            ),
+            timesteps=torch.Tensor(
+                (int(self.encoding_ratio * self.noise_level_recon),)
+            ).to(original_images.device),
             context=None,
         )
 
-        predicted_noise_source = self.unet(
-            torch.cat((noised_images, torch.zeros_like(patho_masks), brain_masks), dim=1),
-            timesteps=torch.Tensor((r,)).to(original_images.device),
+        predicted_noise_target = self.unet(
+            torch.cat((noised_images, patho_masks, brain_masks), dim=1),
+            timesteps=torch.Tensor(
+                (int(self.encoding_ratio * self.noise_level_recon),)
+            ).to(original_images.device),
             context=None,
         )
+
+        if do_classifier_free_guidance:
+            predicted_noise_target = predicted_noise_source + guidance_scale * (
+                predicted_noise_target - predicted_noise_source
+            )
+
         # contrast the conditional and unconditional noise predictions
         differential_noise_map = (
             torch.abs(predicted_noise_target - predicted_noise_source)
-            .reshape(batch_size, num_maps_per_mask, *predicted_noise_target.shape[-3:])
+            .reshape(
+                original_batch_size,
+                num_maps_per_mask,
+                *predicted_noise_target.shape[-3:],
+            )
             .mean([1, 2])
         )
         # clamp differential_noise_map between 0 and 1 with pytorch
-        differential_noise_map = differential_noise_map.clamp(0, 1)
+        # differential_noise_map = differential_noise_map.clamp(0, 1)
 
+        clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
 
-        #clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
+        differential_noise_map = (
+            differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
+        )
+        predicted_masks_non_binarized = differential_noise_map
+        predicted_masks = binarize_mask(
+            differential_noise_map, self.binarization_threshold
+        )
+        predicted_masks = predicted_masks.unsqueeze(1)
+        predicted_masks_non_binarized = predicted_masks_non_binarized.unsqueeze(1)
 
-        #differential_noise_map = (
-        #    differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
-        #)
-        #predicted_masks = binarize_mask(differential_noise_map)
-        predicted_masks = differential_noise_map
-        return predicted_masks
+        print("shape of predicted_masks", predicted_masks.shape)
+        # predicted_masks = differential_noise_map
+        return predicted_masks, predicted_masks_non_binarized
 
     @torch.no_grad()
     def sample(

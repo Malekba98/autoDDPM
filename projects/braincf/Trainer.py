@@ -265,9 +265,42 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                inpaint_masks_trial = self.test_model.generate_mask(
-                    original_images=x, patho_masks=patho_masks, brain_masks=brain_masks,r=300
+                inpaint_masks_preliminary, inpaint_masks_non_binarized = (
+                    self.test_model.generate_mask(
+                        original_images=x,
+                        patho_masks=patho_masks,
+                        brain_masks=brain_masks,
+                    )
                 )
+
+                test_mask_self_prediction = True
+                if test_mask_self_prediction:
+                    for batch_idx in range(b):
+                        non_binarized_mask = (
+                            inpaint_masks_non_binarized[batch_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        )
+                        binarized_mask = (
+                            inpaint_masks_preliminary[batch_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        )
+                        # combine the two binary masks generated mask and patho mask
+
+                        print("shape of binarized mask", binarized_mask.shape)
+                        print("shape of non binarized mask", non_binarized_mask.shape)
+                        mask_image = np.hstack([non_binarized_mask, binarized_mask])
+                        wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
+                    continue
+
+                print("shape of patho mask", patho_masks.shape)
+                print("shape of inpaint masks trial", inpaint_masks_preliminary.shape)
+
+                # combine the two binary masks masks trial and patho masks
+                inpaint_masks = torch.max(inpaint_masks_preliminary, patho_masks)
 
                 x_ = self.test_model.repaint(
                     original_images=x,
@@ -325,10 +358,18 @@ class PTrainer(Trainer):
                         ]
                     )
 
-                    generated_mask = inpaint_masks_trial[batch_idx].unsqueeze(0).detach().cpu().numpy()
-                    print('shape of generated mask',generated_mask.shape)
-                    print('shape of patho mask',patho_mask.shape)
-                    mask_image = np.hstack([generated_mask])
+                    non_binarized_mask = (
+                        inpaint_masks_non_binarized[batch_idx]
+                        .unsqueeze(0)
+                        .detach()
+                        .cpu()
+                        .numpy()
+                    )
+                    # combine the two binary masks generated mask and patho mask
+
+                    # print('shape of generated mask',generated_mask.shape)
+                    # print('shape of patho mask',patho_mask.shape)
+                    mask_image = np.hstack([non_binarized_mask])
                     wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
@@ -337,3 +378,44 @@ class PTrainer(Trainer):
             metric_name = task + "/" + str(metric_key)
             metric_score = metrics[metric_key] / test_total
             wandb.log({metric_name: metric_score})
+
+    def test_mask_self_prediction(self, model_weights, test_data, task="repaint"):
+        self.test_model.load_state_dict(model_weights)
+        self.test_model.to(self.device)
+        self.test_model.eval()
+
+        test_total = 0
+
+        with torch.no_grad():
+            for data in test_data:
+                x = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
+                brain_masks = data[2].to(self.device)
+                dilated_patho_masks = data[3].to(self.device)
+                inpaint_masks = dilated_patho_masks
+
+                b, _, _, _ = x.shape
+                test_total += b
+
+                inpaint_masks_preliminary, inpaint_masks_non_binarized = (
+                    self.test_model.generate_mask(
+                        original_images=x,
+                        patho_masks=patho_masks,
+                        brain_masks=brain_masks,
+                    )
+                )
+
+            for batch_idx in range(b):
+                non_binarized_mask = (
+                    inpaint_masks_non_binarized[batch_idx]
+                    .unsqueeze(0)
+                    .detach()
+                    .cpu()
+                    .numpy()
+                )
+                # combine the two binary masks generated mask and patho mask
+
+                # print('shape of generated mask',generated_mask.shape)
+                # print('shape of patho mask',patho_mask.shape)
+                mask_image = np.hstack([non_binarized_mask])
+                wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
