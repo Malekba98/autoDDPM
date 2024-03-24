@@ -265,8 +265,8 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                inpaint_masks = self.test_model.generate_masks(
-                    original_images=x, patho_masks=patho_masks, brain_masks=brain_masks
+                inpaint_masks_trial = self.test_model.generate_mask(
+                    original_images=x, patho_masks=patho_masks, brain_masks=brain_masks,r=300
                 )
 
                 x_ = self.test_model.repaint(
@@ -324,6 +324,12 @@ class PTrainer(Trainer):
                             np.hstack([rec_rgb_clean * 255, rec_rgb * 255]),
                         ]
                     )
+
+                    generated_mask = inpaint_masks_trial[batch_idx].unsqueeze(0).detach().cpu().numpy()
+                    print('shape of generated mask',generated_mask.shape)
+                    print('shape of patho mask',patho_mask.shape)
+                    mask_image = np.hstack([generated_mask])
+                    wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
 

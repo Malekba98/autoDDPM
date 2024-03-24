@@ -10,7 +10,8 @@ experiment:
   name: repaint
   task: repaint
   #weights: ./projects/braincf/weights/runs/2024_03_08_19_20_58_561738/best_model.pt # base semantic synth model trained on less data
-  weights: ./projects/braincf/weights/runs/2024_03_10_23_49_49_559289/best_model.pt # base semantic synth model trained on more data
+  #weights: ./projects/braincf/weights/runs/2024_03_10_23_49_49_559289/best_model.pt # base semantic synth model trained on more data
+  weights: ./projects/braincf/weights/runs/2024_03_23_13_58_55_159484/best_model.pt # base semantic synth model trained on all atlas healthy and unhealthy
 
 device: gpu
 configurator:
@@ -46,7 +47,7 @@ model:
     noise_type: "gaussian"
     method: "anoDDPM"
     prediction_type: "epsilon"
-    resample_steps: 4
+    resample_steps: 1
 
     # Thresholds on stroke data: 71, 570
     threshold_low: 1
@@ -91,13 +92,16 @@ trainer:
           test:
             - './data/ATLAS/splits_healthy/Atlas_healthy.csv'
             #- './data/fastMRI/normal_train.csv'
+            #- './data/ATLAS/splits_over_0/atlas_test_png.csv'
         label_dir:
           test:
             - './data/ATLAS/splits_over_1/atlas_val_mask_png.csv'
+            #- './data/ATLAS/splits_over_0/atlas_test_mask_png.csv'
         mask_dir:
           test:
             - './data/ATLAS/splits_healthy/Atlas_brain_mask_healthy.csv'
             #- './data/fastMRI/normal_brain_mask_train.csv'
+            #- './data/ATLAS/splits_over_0/atlas_test_brain_mask_png.csv'
 
 # Downstream tasks
 downstream_tasks:  

@@ -496,7 +496,7 @@ class DDPM(nn.Module):
         r=500,
         num_maps_per_mask=1,
         mask_thresholding_ratio=0.5,
-    ):        
+    ):
         """
         Generate mask for inpainting automatically
         Args:
@@ -506,13 +506,13 @@ class DDPM(nn.Module):
             r: noise level
             num_maps_per_mask: number of maps per mask
             mask_thresholding_ratio: mask thresholding ratio
-        
+
         Returns:
             predicted_masks: predicted masks
         """
         # noise input images to some noise level called r (r=500 for example)
         noise = generate_noise(
-            self.inference_scheduler.noise_type, original_images, noise_level=r
+            self.inference_scheduler.noise_type, original_images
         )
         # add that noise to the input images
         batch_size = original_images.shape[0]
@@ -528,7 +528,7 @@ class DDPM(nn.Module):
         )
 
         predicted_noise_source = self.unet(
-            torch.cat((noised_images, torch.zeros_like(patho_masks)), brain_masks),
+            torch.cat((noised_images, torch.zeros_like(patho_masks), brain_masks), dim=1),
             timesteps=torch.Tensor((r,)).to(original_images.device),
             context=None,
         )
@@ -538,12 +538,17 @@ class DDPM(nn.Module):
             .reshape(batch_size, num_maps_per_mask, *predicted_noise_target.shape[-3:])
             .mean([1, 2])
         )
+        # clamp differential_noise_map between 0 and 1 with pytorch
+        differential_noise_map = differential_noise_map.clamp(0, 1)
 
-        clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
 
-        differential_noise_map = differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
-        predicted_masks = binarize_mask(differential_noise_map)
+        #clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
 
+        #differential_noise_map = (
+        #    differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
+        #)
+        #predicted_masks = binarize_mask(differential_noise_map)
+        predicted_masks = differential_noise_map
         return predicted_masks
 
     @torch.no_grad()
