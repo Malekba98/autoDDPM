@@ -323,21 +323,11 @@ class PTrainer(Trainer):
                         predicted_x0_target = predicted_x0_target.split(1, dim=0)
 
                         
-                        min_value_img_rgb = img_rgb.min()
-                        max_value_img_rgb = img_rgb.max()
-                        print("min value of img_rgb", min_value_img_rgb)
-                        print("max value of img_rgb", max_value_img_rgb)
-
                         # the double slicing is to avoid   ValueError(ValueError: Un-supported shape for image conversion [2, 384, 128]
                         # when using vstack to combine the images. tensor[0][0].detach().cpu().numpy() is a numpy array of size [h,w]
                         # rescale tensor[0][0] to [0,1] from [-1,1] range
                         predicted_x0_source = [(tensor - tensor.min()) / (tensor.max() - tensor.min()) for tensor in predicted_x0_source]
                         predicted_x0_target = [(tensor - tensor.min()) / (tensor.max() - tensor.min()) for tensor in predicted_x0_target]
-
-                        min_value = predicted_x0_source[0].min()
-                        max_value = predicted_x0_source[0].max()
-                        print("min value of predicted_x0_source", min_value)
-                        print("max value of predicted_x0_source", max_value)
                         
 
                         predicted_x0_source_numpy = [tensor[0][0].detach().cpu().numpy() for tensor in predicted_x0_source]
@@ -347,13 +337,6 @@ class PTrainer(Trainer):
 
                         predicted_x0_source_numpy_rgb = [cv2.cvtColor(array, cv2.COLOR_GRAY2RGB) * 255 for array in predicted_x0_source_numpy]
                         predicted_x0_target_numpy_rgb = [cv2.cvtColor(array, cv2.COLOR_GRAY2RGB) * 255 for array in predicted_x0_target_numpy]
-                        
-                        min_value = predicted_x0_source_numpy_rgb[0].min()
-                        max_value = predicted_x0_source_numpy_rgb[0].max()
-                        print("min value of predicted_x0_source_numpy_rgb", min_value)
-                        print("max value of predicted_x0_source_numpy_rgb", max_value)
-
-
                         
                         # show whats inside the predicted_x0_source and predicted_x0_target
                         predicted_x0_source_image = np.vstack(predicted_x0_source_numpy_rgb)
