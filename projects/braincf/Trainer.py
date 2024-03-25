@@ -288,11 +288,24 @@ class PTrainer(Trainer):
                             .cpu()
                             .numpy()
                         )
+
+                        patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+                        contours, _ = cv2.findContours(
+                        patho_mask[0].astype(np.uint8),
+                        cv2.RETR_EXTERNAL,
+                        cv2.CHAIN_APPROX_SIMPLE,
+                        )
+                        img = x[batch_idx].detach().cpu().numpy()
+                        img_rgb = cv2.cvtColor(img[0], cv2.COLOR_GRAY2RGB)
+                        cv2.drawContours(img_rgb, contours, -1, (128, 0, 0), 1)
+
+                        binarized_mask_rgb = cv2.cvtColor(binarized_mask[0], cv2.COLOR_GRAY2RGB)
+                        non_binarized_mask_rgb = cv2.cvtColor(non_binarized_mask[0], cv2.COLOR_GRAY2RGB)
                         # combine the two binary masks generated mask and patho mask
 
                         print("shape of binarized mask", binarized_mask.shape)
                         print("shape of non binarized mask", non_binarized_mask.shape)
-                        mask_image = np.hstack([non_binarized_mask, binarized_mask])
+                        mask_image = np.vstack([img_rgb*255,non_binarized_mask_rgb*255, binarized_mask_rgb*255])
                         wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
                     continue
 
