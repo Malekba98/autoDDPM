@@ -500,7 +500,7 @@ class DDPM(nn.Module):
         brain_masks: torch.Tensor,
         num_maps_per_mask=10,
         mask_thresholding_ratio=6,
-        guidance_scale=1.0,
+        guidance_scale=15.0,
     ):
         """
         Generate mask for inpainting automatically
