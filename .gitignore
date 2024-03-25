@@ -4,7 +4,7 @@
 *.jpg
 *.jpeg
 #*.png
-*.pt
+.pt
 *.DS_Store
 *._log
 wandb/
