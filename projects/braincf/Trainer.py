@@ -265,7 +265,8 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                inpaint_masks_preliminary, inpaint_masks_non_binarized = (
+                # expected shape of predicted_x0_source and predicted_x0_target is [b*num_maps_per_mask,1,h,w]
+                inpaint_masks_preliminary, inpaint_masks_non_binarized, predicted_x0_source, predicted_x0_target = (
                     self.test_model.generate_mask(
                         original_images=x,
                         patho_masks=patho_masks,
@@ -283,30 +284,87 @@ class PTrainer(Trainer):
                             .numpy()
                         )
                         binarized_mask = (
-                            inpaint_masks_preliminary[batch_idx]
-                            .detach()
-                            .cpu()
-                            .numpy()
+                            inpaint_masks_preliminary[batch_idx].detach().cpu().numpy()
                         )
 
                         patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
                         contours, _ = cv2.findContours(
-                        patho_mask[0].astype(np.uint8),
-                        cv2.RETR_EXTERNAL,
-                        cv2.CHAIN_APPROX_SIMPLE,
+                            patho_mask[0].astype(np.uint8),
+                            cv2.RETR_EXTERNAL,
+                            cv2.CHAIN_APPROX_SIMPLE,
                         )
                         img = x[batch_idx].detach().cpu().numpy()
-                        img_rgb = cv2.cvtColor(img[0], cv2.COLOR_GRAY2RGB)
-                        cv2.drawContours(img_rgb, contours, -1, (128, 0, 0), 1)
 
-                        binarized_mask_rgb = cv2.cvtColor(binarized_mask[0], cv2.COLOR_GRAY2RGB)
-                        non_binarized_mask_rgb = cv2.cvtColor(non_binarized_mask[0], cv2.COLOR_GRAY2RGB)
+                        img_rgb = cv2.cvtColor(img[0], cv2.COLOR_GRAY2RGB)
+                        cv2.drawContours(img_rgb, contours, -1, (255, 0, 0), 1)
+
+
+                        binarized_mask_rgb = cv2.cvtColor(
+                            binarized_mask[0], cv2.COLOR_GRAY2RGB
+                        )
+                        non_binarized_mask_rgb = cv2.cvtColor(
+                            non_binarized_mask[0], cv2.COLOR_GRAY2RGB
+                        )
                         # combine the two binary masks generated mask and patho mask
 
-                        print("shape of binarized mask", binarized_mask.shape)
-                        print("shape of non binarized mask", non_binarized_mask.shape)
-                        mask_image = np.vstack([img_rgb*255,non_binarized_mask_rgb*255, binarized_mask_rgb*255])
+                        print("shape of binarized mask", binarized_mask_rgb.shape)
+                        print("shape of non binarized mask", non_binarized_mask_rgb.shape)
+                        mask_image = np.vstack(
+                            [
+                                img_rgb * 255,
+                                non_binarized_mask_rgb * 255,
+                                binarized_mask_rgb * 255,
+                            ]
+                        )
                         wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
+                        # predicted_x0_source is A torch of size [b*num_maps_per_mask,1,h,w], tranform it to a list of 
+                        # tensors of size [b,1,h,w] with len = num_maps_per_mask
+                        predicted_x0_source = predicted_x0_source.split(1, dim=0)
+                        predicted_x0_target = predicted_x0_target.split(1, dim=0)
+
+                        
+                        min_value_img_rgb = img_rgb.min()
+                        max_value_img_rgb = img_rgb.max()
+                        print("min value of img_rgb", min_value_img_rgb)
+                        print("max value of img_rgb", max_value_img_rgb)
+
+                        # the double slicing is to avoid   ValueError(ValueError: Un-supported shape for image conversion [2, 384, 128]
+                        # when using vstack to combine the images. tensor[0][0].detach().cpu().numpy() is a numpy array of size [h,w]
+                        # rescale tensor[0][0] to [0,1] from [-1,1] range
+                        predicted_x0_source = [(tensor - tensor.min()) / (tensor.max() - tensor.min()) for tensor in predicted_x0_source]
+                        predicted_x0_target = [(tensor - tensor.min()) / (tensor.max() - tensor.min()) for tensor in predicted_x0_target]
+
+                        min_value = predicted_x0_source[0].min()
+                        max_value = predicted_x0_source[0].max()
+                        print("min value of predicted_x0_source", min_value)
+                        print("max value of predicted_x0_source", max_value)
+                        
+
+                        predicted_x0_source_numpy = [tensor[0][0].detach().cpu().numpy() for tensor in predicted_x0_source]
+                        predicted_x0_target_numpy = [tensor[0][0].detach().cpu().numpy() for tensor in predicted_x0_target]
+
+                        # expected to be [h,w,3]
+
+                        predicted_x0_source_numpy_rgb = [cv2.cvtColor(array, cv2.COLOR_GRAY2RGB) * 255 for array in predicted_x0_source_numpy]
+                        predicted_x0_target_numpy_rgb = [cv2.cvtColor(array, cv2.COLOR_GRAY2RGB) * 255 for array in predicted_x0_target_numpy]
+                        
+                        min_value = predicted_x0_source_numpy_rgb[0].min()
+                        max_value = predicted_x0_source_numpy_rgb[0].max()
+                        print("min value of predicted_x0_source_numpy_rgb", min_value)
+                        print("max value of predicted_x0_source_numpy_rgb", max_value)
+
+
+                        
+                        # show whats inside the predicted_x0_source and predicted_x0_target
+                        predicted_x0_source_image = np.vstack(predicted_x0_source_numpy_rgb)
+                        predicted_x0_target_image = np.vstack(predicted_x0_target_numpy_rgb)
+
+                        combined_image = np.hstack([predicted_x0_source_image, predicted_x0_target_image, mask_image])
+                        wandb.log({task + "/source and target x0 predictions": [wandb.Image(combined_image)]})
+
+                        #wandb.log({task + "/predicted_x0_source_images": [wandb.Image(predicted_x0_source_image)]})
+                        #wandb.log({task + "/predicted_x0_target_images": [wandb.Image(predicted_x0_target_image)]})
+
                     continue
 
                 print("shape of patho mask", patho_masks.shape)
@@ -372,17 +430,11 @@ class PTrainer(Trainer):
                     )
 
                     non_binarized_mask = (
-                        inpaint_masks_non_binarized[batch_idx]
-                        .detach()
-                        .cpu()
-                        .numpy()
+                        inpaint_masks_non_binarized[batch_idx].detach().cpu().numpy()
                     )
                     binarized_mask = (
-                            inpaint_masks_preliminary[batch_idx]
-                            .detach()
-                            .cpu()
-                            .numpy()
-                        )
+                        inpaint_masks_preliminary[batch_idx].detach().cpu().numpy()
+                    )
                     # combine the two binary masks generated mask and patho mask
 
                     # print('shape of generated mask',generated_mask.shape)

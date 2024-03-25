@@ -498,9 +498,9 @@ class DDPM(nn.Module):
         original_images: torch.Tensor,
         patho_masks: torch.Tensor,
         brain_masks: torch.Tensor,
-        num_maps_per_mask=10,
+        num_maps_per_mask=3,
         mask_thresholding_ratio=6,
-        guidance_scale=15.0,
+        guidance_scale=1.0,
     ):
         """
         Generate mask for inpainting automatically
@@ -517,13 +517,9 @@ class DDPM(nn.Module):
         """
 
         do_classifier_free_guidance = guidance_scale > 1.0
-        # noise input images to some noise level called r (r=500 for example)
-        # for original_images of shape [batch_size, 1, h, w], use torch.repeat to make it of shape [batch_size * num_maps_per_mask, 1,h, w]
-        # repeated_original_images = original_images.repeat(num_maps_per_mask, 1, 1, 1)
+        # print('do_classifier_free_guidance', do_classifier_free_guidance)
 
-        # noise = generate_noise(
-        #    self.inference_scheduler.noise_type, repeated_original_images
-        # )
+        r = int(self.encoding_ratio * self.noise_level_recon)
 
         original_batch_size = original_images.shape[0]
         original_images = original_images.repeat(num_maps_per_mask, 1, 1, 1)
@@ -538,11 +534,6 @@ class DDPM(nn.Module):
         print("shape of repeated_original_images", original_images.shape)
         print("shape of repeated patho_masks", patho_masks.shape)
         print("shape of repeated brain_masks", brain_masks.shape)
-
-        # batch_size,_,_,_ = original_images.shape
-        # noise = torch.randn(
-        #    batch_size * num_maps_per_mask, dtype=original_images.dtype, layout=original_images.layout
-        # ).to(original_images.device)
 
         # add that noise to the input images
         batch_size = original_images.shape[0]
@@ -566,6 +557,10 @@ class DDPM(nn.Module):
             ).to(original_images.device),
             context=None,
         )
+        # estimate x0 using unconditional model
+        _, predicted_x0_source = self.inference_scheduler.step(
+            predicted_noise_source, r, noised_images
+        )
 
         predicted_noise_target = self.unet(
             torch.cat((noised_images, patho_masks, brain_masks), dim=1),
@@ -573,6 +568,10 @@ class DDPM(nn.Module):
                 (int(self.encoding_ratio * self.noise_level_recon),)
             ).to(original_images.device),
             context=None,
+        )
+
+        _, predicted_x0_target = self.inference_scheduler.step(
+            predicted_noise_target, r, noised_images
         )
 
         if do_classifier_free_guidance:
@@ -609,7 +608,12 @@ class DDPM(nn.Module):
 
         print("shape of predicted_masks", predicted_masks.shape)
         # predicted_masks = differential_noise_map
-        return predicted_masks, predicted_masks_non_binarized
+        return (
+            predicted_masks,
+            predicted_masks_non_binarized,
+            predicted_x0_source,
+            predicted_x0_target,
+        )
 
     @torch.no_grad()
     def sample(
