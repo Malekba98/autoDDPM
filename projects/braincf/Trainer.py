@@ -273,7 +273,7 @@ class PTrainer(Trainer):
                     )
                 )
 
-                test_mask_self_prediction = False
+                test_mask_self_prediction = True
                 if test_mask_self_prediction:
                     for batch_idx in range(b):
                         non_binarized_mask = (

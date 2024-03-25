@@ -499,7 +499,7 @@ class DDPM(nn.Module):
         patho_masks: torch.Tensor,
         brain_masks: torch.Tensor,
         num_maps_per_mask=10,
-        mask_thresholding_ratio=3,
+        mask_thresholding_ratio=6,
         guidance_scale=1.0,
     ):
         """
@@ -593,6 +593,8 @@ class DDPM(nn.Module):
         # clamp differential_noise_map between 0 and 1 with pytorch
         # differential_noise_map = differential_noise_map.clamp(0, 1)
 
+        # smaller values of mask_thresholding_ratio will result in more masked areas
+        # IMAGEINE threshhold=1, the value only needs to be equal to mean to be considered as the max attainable value
         clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
 
         differential_noise_map = (
