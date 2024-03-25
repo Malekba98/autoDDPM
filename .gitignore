@@ -3,7 +3,7 @@
 .vscode
 *.jpg
 *.jpeg
-*.png
+#*.png
 *.pt
 *.DS_Store
 *._log
