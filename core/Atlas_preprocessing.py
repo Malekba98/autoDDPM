@@ -11,7 +11,7 @@ from data.loaders.ixi_loader import mask_preprocessing_loader
 import csv
 import os
 
-PIXELS_THRESHOLD = 1
+PIXELS_THRESHOLD = 0
 dataset = mask_preprocessing_loader(
     image_dir,
     label_dir=label_dir,
@@ -72,6 +72,8 @@ with open(f"Atlas_over_{PIXELS_THRESHOLD}.csv", "r") as file:
 
 train_data = data[:train_size]
 val_data = data[train_size:]
+
+print("train files", train_data)
 
 output_folder = f"data/ATLAS/splits_over_{PIXELS_THRESHOLD}"
 os.makedirs(output_folder, exist_ok=True)

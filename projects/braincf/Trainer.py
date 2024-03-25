@@ -273,7 +273,7 @@ class PTrainer(Trainer):
                     )
                 )
 
-                test_mask_self_prediction = True
+                test_mask_self_prediction = False
                 if test_mask_self_prediction:
                     for batch_idx in range(b):
                         non_binarized_mask = (
@@ -360,16 +360,21 @@ class PTrainer(Trainer):
 
                     non_binarized_mask = (
                         inpaint_masks_non_binarized[batch_idx]
-                        .unsqueeze(0)
                         .detach()
                         .cpu()
                         .numpy()
                     )
+                    binarized_mask = (
+                            inpaint_masks_preliminary[batch_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        )
                     # combine the two binary masks generated mask and patho mask
 
                     # print('shape of generated mask',generated_mask.shape)
                     # print('shape of patho mask',patho_mask.shape)
-                    mask_image = np.hstack([non_binarized_mask])
+                    mask_image = np.hstack([non_binarized_mask, binarized_mask])
                     wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})

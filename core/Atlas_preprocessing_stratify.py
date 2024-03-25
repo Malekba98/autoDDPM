@@ -187,7 +187,3 @@ with open(test_file_path, "w", newline="") as file:
 print("brain mask Train file saved at:", train_file_path)
 print("brain mask Validation file saved at:", val_file_path)
 print("brain mask Test file saved at:", test_file_path)
-
-
-
-
