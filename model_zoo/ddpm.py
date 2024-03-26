@@ -573,41 +573,63 @@ class DDPM(nn.Module):
         _, predicted_x0_target = self.inference_scheduler.step(
             predicted_noise_target, r, noised_images
         )
-
-        if do_classifier_free_guidance:
-            predicted_noise_target = predicted_noise_source + guidance_scale * (
-                predicted_noise_target - predicted_noise_source
+        contrast_x0 = True
+        if contrast_x0:
+            differential_x0_map = (
+                torch.abs(predicted_x0_target - predicted_x0_source)
+                .reshape(
+                    original_batch_size,
+                    num_maps_per_mask,
+                    *predicted_x0_target.shape[-3:],
+                )
+                .mean([1, 2])
             )
-
-        # contrast the conditional and unconditional noise predictions
-        differential_noise_map = (
-            torch.abs(predicted_noise_target - predicted_noise_source)
-            .reshape(
-                original_batch_size,
-                num_maps_per_mask,
-                *predicted_noise_target.shape[-3:],
+            clamp_magnitude = differential_x0_map.mean() * mask_thresholding_ratio
+            differential_x0_map = (
+                differential_x0_map.clamp(0, clamp_magnitude) / clamp_magnitude
             )
-            .mean([1, 2])
-        )
-        # clamp differential_noise_map between 0 and 1 with pytorch
-        # differential_noise_map = differential_noise_map.clamp(0, 1)
+            predicted_masks_non_binarized = differential_x0_map
+            predicted_masks = binarize_mask(
+                differential_x0_map, self.binarization_threshold
+            )
+            predicted_masks = predicted_masks.unsqueeze(1)
+            predicted_masks_non_binarized = predicted_masks_non_binarized.unsqueeze(1)
 
-        # smaller values of mask_thresholding_ratio will result in more masked areas
-        # IMAGEINE threshhold=1, the value only needs to be equal to mean to be considered as the max attainable value
-        clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
+        else:
+            if do_classifier_free_guidance:
+                predicted_noise_target = predicted_noise_source + guidance_scale * (
+                    predicted_noise_target - predicted_noise_source
+                )
 
-        differential_noise_map = (
-            differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
-        )
-        predicted_masks_non_binarized = differential_noise_map
-        predicted_masks = binarize_mask(
-            differential_noise_map, self.binarization_threshold
-        )
-        predicted_masks = predicted_masks.unsqueeze(1)
-        predicted_masks_non_binarized = predicted_masks_non_binarized.unsqueeze(1)
+            # contrast the conditional and unconditional noise predictions
+            differential_noise_map = (
+                torch.abs(predicted_noise_target - predicted_noise_source)
+                .reshape(
+                    original_batch_size,
+                    num_maps_per_mask,
+                    *predicted_noise_target.shape[-3:],
+                )
+                .mean([1, 2])
+            )
+            # clamp differential_noise_map between 0 and 1 with pytorch
+            # differential_noise_map = differential_noise_map.clamp(0, 1)
 
-        print("shape of predicted_masks", predicted_masks.shape)
-        # predicted_masks = differential_noise_map
+            # smaller values of mask_thresholding_ratio will result in more masked areas
+            # IMAGEINE threshhold=1, the value only needs to be equal to mean to be considered as the max attainable value
+            clamp_magnitude = differential_noise_map.mean() * mask_thresholding_ratio
+
+            differential_noise_map = (
+                differential_noise_map.clamp(0, clamp_magnitude) / clamp_magnitude
+            )
+            predicted_masks_non_binarized = differential_noise_map
+            predicted_masks = binarize_mask(
+                differential_noise_map, self.binarization_threshold
+            )
+            predicted_masks = predicted_masks.unsqueeze(1)
+            predicted_masks_non_binarized = predicted_masks_non_binarized.unsqueeze(1)
+
+            print("shape of predicted_masks", predicted_masks.shape)
+            # predicted_masks = differential_noise_map
         return (
             predicted_masks,
             predicted_masks_non_binarized,

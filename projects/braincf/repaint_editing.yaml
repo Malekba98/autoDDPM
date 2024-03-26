@@ -48,7 +48,7 @@ model:
     method: "anoDDPM"
     prediction_type: "epsilon"
     resample_steps: 1
-    encoding_ratio: 0.3
+    encoding_ratio: 0.05
     binarization_threshold: 0.5
 
     # Thresholds on stroke data: 71, 570
