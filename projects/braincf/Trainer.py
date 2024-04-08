@@ -392,8 +392,8 @@ class PTrainer(Trainer):
                 print("shape of inpaint masks trial", inpaint_masks_preliminary.shape)
 
                 # combine the two binary masks masks trial and patho masks
-                #inpaint_masks = torch.max(inpaint_masks_preliminary, patho_masks)
-                inpaint_masks = brain_masks
+                inpaint_masks = torch.max(inpaint_masks_preliminary, patho_masks)
+                #inpaint_masks = brain_masks
 
                 x_ = self.test_model.repaint(
                     original_images=x,
@@ -401,28 +401,31 @@ class PTrainer(Trainer):
                     patho_masks=patho_masks,
                     brain_masks=brain_masks,
                 )
-                first_predictions = copy.deepcopy(x_)
-                for i in range(5):
-                    x_ = self.test_model.repaint(
-                        original_images=x_,
-                        inpaint_masks=inpaint_masks,
-                        patho_masks=patho_masks,
-                        brain_masks=brain_masks,
-                    )
-                last_predictions = copy.deepcopy(x_)
-                differential_prediction_maps = (
-                        torch.abs(last_predictions - first_predictions)
-                    )
-                
-                clamp_magnitude = differential_prediction_maps.mean() * 6
 
-                differential_prediction_maps = (
-                    differential_prediction_maps.clamp(0, clamp_magnitude) / clamp_magnitude
-                )
+                print_new_mask_generation_method_results = False
+                if print_new_mask_generation_method_results:
+                    first_predictions = copy.deepcopy(x_)
+                    for i in range(5):
+                        x_ = self.test_model.repaint(
+                            original_images=x_,
+                            inpaint_masks=inpaint_masks,
+                            patho_masks=patho_masks,
+                            brain_masks=brain_masks,
+                        )
+                    last_predictions = copy.deepcopy(x_)
+                    differential_prediction_maps = (
+                            torch.abs(last_predictions - first_predictions)
+                        )
+                    
+                    clamp_magnitude = differential_prediction_maps.mean() * 6
 
-                binarized_differential_prediction_maps= binarize_mask(
-                differential_prediction_maps, 0.7
-                )
+                    differential_prediction_maps = (
+                        differential_prediction_maps.clamp(0, clamp_magnitude) / clamp_magnitude
+                    )
+
+                    binarized_differential_prediction_maps= binarize_mask(
+                    differential_prediction_maps, 0.7
+                    )
 
                 loss_rec = self.criterion_rec(x_, x)
                 loss_mse = self.criterion_MSE(x_, x)
@@ -487,14 +490,15 @@ class PTrainer(Trainer):
                     wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
+                    
+                    if print_new_mask_generation_method_results:
+                        differential_prediction_map = differential_prediction_maps[batch_idx].detach().cpu().numpy()
+                        differential_prediction_map = cv2.cvtColor(differential_prediction_map[0], cv2.COLOR_GRAY2RGB)
+                        #wandb.log({task + "/differential_prediction_map": [wandb.Image(differential_prediction_map)]})
 
-                    differential_prediction_map = differential_prediction_maps[batch_idx].detach().cpu().numpy()
-                    differential_prediction_map = cv2.cvtColor(differential_prediction_map[0], cv2.COLOR_GRAY2RGB)
-                    #wandb.log({task + "/differential_prediction_map": [wandb.Image(differential_prediction_map)]})
-
-                    binarized_differential_prediction_map = binarized_differential_prediction_maps[batch_idx].detach().cpu().numpy()
-                    binarized_differential_prediction_map = cv2.cvtColor(binarized_differential_prediction_map[0], cv2.COLOR_GRAY2RGB)
-                    wandb.log({task + "/binarized_differential_prediction_map": [wandb.Image(binarized_differential_prediction_map)]})
+                        binarized_differential_prediction_map = binarized_differential_prediction_maps[batch_idx].detach().cpu().numpy()
+                        binarized_differential_prediction_map = cv2.cvtColor(binarized_differential_prediction_map[0], cv2.COLOR_GRAY2RGB)
+                        wandb.log({task + "/binarized_differential_prediction_map": [wandb.Image(binarized_differential_prediction_map)]})
 
                     
 
