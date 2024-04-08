@@ -4,7 +4,10 @@
 *.jpg
 *.jpeg
 #*.png
-.pt
+*.npy
+*.npz
+*.pkl
+*.pt
 *.DS_Store
 *._log
 wandb/
