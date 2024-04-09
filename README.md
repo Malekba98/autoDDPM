@@ -113,7 +113,7 @@ You have to choose a threshold for binarizing the probable anomaly masks of the 
 
 #### 7). Run the pipeline
 
-If you encounter nodule called data not found error, Run
+If you encounter module called data not found error, Run
 ```bash
 export PYTHONPATH="${PYTHONPATH}:/home/malek/autoDDPM"
 ```
@@ -124,18 +124,16 @@ export nnUNet_raw="/home/malek/autoDDPM/nnunet_data/nnunet_raw"
 export nnUNet_preprocessed="/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed"
 export nnUNet_results="/home/malek/autoDDPM/nnunet_data/nnunet_results" 
 ```
-PREPROCESS_TRAIN = False
 
-Run nnunet dataset preparation script once with PREPROCESS_TRAIN = False
+Run nnunet dataset preparation script once without preprocess_train arg to preprocess test data
 
 ```bash
-python core/nnunet_atlas_dataset_prepatation.py
+python core/nnunet_atlas_dataset_prepatation.py --preprocess_train
 ```
 
-and once with PREPROCESS_TRAIN = True
-
+and once with preprocess_train arg to preprocess train data
 ```bash
-python core/nnunet_atlas_dataset_prepatation.py
+python core/nnunet_atlas_dataset_prepatation.py --preprocess_train
 ```
 
 Run the main script with the corresponding config like this:
