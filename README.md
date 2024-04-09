@@ -113,11 +113,6 @@ You have to choose a threshold for binarizing the probable anomaly masks of the 
 
 #### 7). Run the pipeline
 
-If you encounter module called data not found error, Run
-```bash
-export PYTHONPATH="${PYTHONPATH}:/home/malek/autoDDPM"
-```
-
 Set nnUNet environment variables
 ``` bash
 export nnUNet_raw="/home/malek/autoDDPM/nnunet_data/nnunet_raw"
@@ -125,15 +120,32 @@ export nnUNet_preprocessed="/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed
 export nnUNet_results="/home/malek/autoDDPM/nnunet_data/nnunet_results" 
 ```
 
+In braincf conda environment:
 Run nnunet dataset preparation script once without preprocess_train arg to preprocess test data
 
 ```bash
-python core/nnunet_atlas_dataset_prepatation.py --preprocess_train
+python core/nnunet_atlas_dataset_prepatation.py
 ```
 
 and once with preprocess_train arg to preprocess train data
 ```bash
 python core/nnunet_atlas_dataset_prepatation.py --preprocess_train
+```
+
+To train nnUNet segmentation model on prepared traind data:
+Switch to nnUNet conda environment and Run: 
+```bash
+nnUNetv2_plan_and_preprocess -d 500 --verify_dataset_integrity
+nnUNetv2_train 500 2d 0
+nnUNetv2_train 500 2d 1
+nnUNetv2_train 500 2d 2
+nnUNetv2_train 500 2d 3
+nnUNetv2_train 500 2d 4
+```
+
+If you encounter module called data not found error, Run
+```bash
+export PYTHONPATH="${PYTHONPATH}:/home/malek/autoDDPM"
 ```
 
 Run the main script with the corresponding config like this:
