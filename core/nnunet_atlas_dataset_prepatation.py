@@ -8,6 +8,7 @@ mask_dir = ["./data/ATLAS/splits/atlas_train_brain_mask_png.csv"]
 from torch.utils.data import DataLoader
 import sys
 import os
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 # Get the parent directory
@@ -16,10 +17,9 @@ parent_dir_path = os.path.dirname(dir_path)
 # Add the parent directory to the system path
 sys.path.append(parent_dir_path)
 from data.loaders.ixi_loader import mask_preprocessing_loader
-import csv
 import shutil
 
-from PIL import Image 
+from PIL import Image
 import numpy as np
 import argparse
 
@@ -28,16 +28,20 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="this script preprocesses the ATLAS dataset for nnUNet")
-    parser.add_argument('--preprocess_train', action='store_true', help='preprocess the training set')
+    parser = argparse.ArgumentParser(
+        description="this script preprocesses the ATLAS dataset for nnUNet"
+    )
+    parser.add_argument(
+        "--preprocess_train", action="store_true", help="preprocess the training set"
+    )
     args = parser.parse_args()
     if args.preprocess_train:
         dataset = mask_preprocessing_loader(
-        image_dir,
-        label_dir=label_dir,
-        mask_dir=mask_dir,
-        target_size=(128, 128),
-        test=False,
+            image_dir,
+            label_dir=label_dir,
+            mask_dir=mask_dir,
+            target_size=(128, 128),
+            test=False,
         )
 
         loader = DataLoader(
@@ -56,7 +60,7 @@ if __name__ == "__main__":
             image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTr/ATLAS_{int(idx):03d}_0000.png"
             mask_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTr/ATLAS_{int(idx):03d}.png"
             shutil.copy(filename[0], image_dest)
-            #shutil.copy(mask_filename[0], mask_dest)
+            # shutil.copy(mask_filename[0], mask_dest)
 
             mask_array = np.array(Image.open(mask_filename[0]))
 
@@ -72,11 +76,11 @@ if __name__ == "__main__":
         mask_dir = ["./data/ATLAS/splits/atlas_test_png.csv"]
 
         dataset = mask_preprocessing_loader(
-        image_dir,
-        label_dir=label_dir,
-        mask_dir=mask_dir,
-        target_size=(128, 128),
-        test=False,
+            image_dir,
+            label_dir=label_dir,
+            mask_dir=mask_dir,
+            target_size=(128, 128),
+            test=False,
         )
 
         loader = DataLoader(

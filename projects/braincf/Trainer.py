@@ -13,6 +13,7 @@ import cv2
 import copy
 from dl_utils.mask_utils import binarize_mask
 
+
 class PTrainer(Trainer):
     def __init__(self, training_params, model, data, device, log_wandb=True):
         super(PTrainer, self).__init__(training_params, model, data, device, log_wandb)
@@ -393,7 +394,7 @@ class PTrainer(Trainer):
 
                 # combine the two binary masks masks trial and patho masks
                 inpaint_masks = torch.max(inpaint_masks_preliminary, patho_masks)
-                #inpaint_masks = brain_masks
+                # inpaint_masks = brain_masks
 
                 x_ = self.test_model.repaint(
                     original_images=x,
@@ -413,18 +414,19 @@ class PTrainer(Trainer):
                             brain_masks=brain_masks,
                         )
                     last_predictions = copy.deepcopy(x_)
-                    differential_prediction_maps = (
-                            torch.abs(last_predictions - first_predictions)
-                        )
-                    
+                    differential_prediction_maps = torch.abs(
+                        last_predictions - first_predictions
+                    )
+
                     clamp_magnitude = differential_prediction_maps.mean() * 6
 
                     differential_prediction_maps = (
-                        differential_prediction_maps.clamp(0, clamp_magnitude) / clamp_magnitude
+                        differential_prediction_maps.clamp(0, clamp_magnitude)
+                        / clamp_magnitude
                     )
 
-                    binarized_differential_prediction_maps= binarize_mask(
-                    differential_prediction_maps, 0.7
+                    binarized_differential_prediction_maps = binarize_mask(
+                        differential_prediction_maps, 0.7
                     )
 
                 loss_rec = self.criterion_rec(x_, x)
@@ -490,17 +492,36 @@ class PTrainer(Trainer):
                     wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
 
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
-                    
+
                     if print_new_mask_generation_method_results:
-                        differential_prediction_map = differential_prediction_maps[batch_idx].detach().cpu().numpy()
-                        differential_prediction_map = cv2.cvtColor(differential_prediction_map[0], cv2.COLOR_GRAY2RGB)
-                        #wandb.log({task + "/differential_prediction_map": [wandb.Image(differential_prediction_map)]})
+                        differential_prediction_map = (
+                            differential_prediction_maps[batch_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        )
+                        differential_prediction_map = cv2.cvtColor(
+                            differential_prediction_map[0], cv2.COLOR_GRAY2RGB
+                        )
+                        # wandb.log({task + "/differential_prediction_map": [wandb.Image(differential_prediction_map)]})
 
-                        binarized_differential_prediction_map = binarized_differential_prediction_maps[batch_idx].detach().cpu().numpy()
-                        binarized_differential_prediction_map = cv2.cvtColor(binarized_differential_prediction_map[0], cv2.COLOR_GRAY2RGB)
-                        wandb.log({task + "/binarized_differential_prediction_map": [wandb.Image(binarized_differential_prediction_map)]})
-
-                    
+                        binarized_differential_prediction_map = (
+                            binarized_differential_prediction_maps[batch_idx]
+                            .detach()
+                            .cpu()
+                            .numpy()
+                        )
+                        binarized_differential_prediction_map = cv2.cvtColor(
+                            binarized_differential_prediction_map[0], cv2.COLOR_GRAY2RGB
+                        )
+                        wandb.log(
+                            {
+                                task
+                                + "/binarized_differential_prediction_map": [
+                                    wandb.Image(binarized_differential_prediction_map)
+                                ]
+                            }
+                        )
 
         for metric_key in metrics.keys():
             metric_name = task + "/" + str(metric_key)
