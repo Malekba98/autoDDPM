@@ -72,6 +72,7 @@ class Norm98:
         # print(torch.min(img), torch.max(img))
         # print(img.shape)
         q = np.percentile(img, 98)
+        # q is a pixel value, below which 98% of the pixels lie
         img = img / q
         img[img > 1] = 1
         # return img/self.max_val
