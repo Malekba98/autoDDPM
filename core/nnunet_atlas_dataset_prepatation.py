@@ -1,9 +1,9 @@
 import torch
 
-image_dir = ["./data/ATLAS/splits/atlas_train_png.csv"]
-label_dir = ["./data/ATLAS/splits/atlas_train_mask_png.csv"]
+image_dir = ["./data/ATLAS/splits_over_1/atlas_train_png.csv"]
+label_dir = ["./data/ATLAS/splits_over_1/atlas_train_mask_png.csv"]
 
-mask_dir = ["./data/ATLAS/splits/atlas_train_brain_mask_png.csv"]
+mask_dir = ["./data/ATLAS/splits_over_1/atlas_train_brain_mask_png.csv"]
 
 from torch.utils.data import DataLoader
 import sys
