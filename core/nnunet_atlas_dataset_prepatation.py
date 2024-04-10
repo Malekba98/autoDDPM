@@ -57,8 +57,10 @@ if __name__ == "__main__":
             # copy file with filename to new directory "./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTr"
             # copy file with mask_filename to new directory "./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTr"
             # ATLAS_001_0000.png
-            image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTr/ATLAS_{int(idx):03d}_0000.png"
-            mask_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTr/ATLAS_{int(idx):03d}.png"
+            index = int(filename[0].split("_")[-1].replace(".png", ""))
+
+            image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTr/ATLAS_{index:03d}_0000.png"
+            mask_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTr/ATLAS_{index:03d}.png"
             shutil.copy(filename[0], image_dest)
             # shutil.copy(mask_filename[0], mask_dest)
 
@@ -91,5 +93,6 @@ if __name__ == "__main__":
             filename = data[3]
             idx = data[2]
 
-            image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTs/ATLAS_{int(idx):03d}_0000.png"
+            index = int(filename[0].split("_")[-1].replace(".png", ""))
+            image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTs/ATLAS_{index:03d}_0000.png"
             shutil.copy(filename[0], image_dest)
