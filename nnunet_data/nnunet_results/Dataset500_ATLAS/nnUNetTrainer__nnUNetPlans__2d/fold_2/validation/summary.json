@@ -1,0 +1,1162 @@
+{
+    "foreground_mean": {
+        "Dice": 0.597516352239499,
+        "FN": 56.59154929577465,
+        "FP": 32.28169014084507,
+        "IoU": 0.48954367411424893,
+        "TN": 16111.070422535211,
+        "TP": 184.05633802816902,
+        "n_pred": 216.33802816901408,
+        "n_ref": 240.64788732394365
+    },
+    "mean": {
+        "1": {
+            "Dice": 0.597516352239499,
+            "FN": 56.59154929577465,
+            "FP": 32.28169014084507,
+            "IoU": 0.48954367411424893,
+            "TN": 16111.070422535211,
+            "TP": 184.05633802816902,
+            "n_pred": 216.33802816901408,
+            "n_ref": 240.64788732394365
+        }
+    },
+    "metric_per_case": [
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8753993610223643,
+                    "FN": 23,
+                    "FP": 16,
+                    "IoU": 0.7784090909090909,
+                    "TN": 16208,
+                    "TP": 137,
+                    "n_pred": 153,
+                    "n_ref": 160
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_004.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_004.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.43564356435643564,
+                    "FN": 54,
+                    "FP": 3,
+                    "IoU": 0.27848101265822783,
+                    "TN": 16305,
+                    "TP": 22,
+                    "n_pred": 25,
+                    "n_ref": 76
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_014.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_014.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.9456812110418522,
+                    "FN": 41,
+                    "FP": 20,
+                    "IoU": 0.8969594594594594,
+                    "TN": 15792,
+                    "TP": 531,
+                    "n_pred": 551,
+                    "n_ref": 572
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_017.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_017.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7777777777777778,
+                    "FN": 2,
+                    "FP": 2,
+                    "IoU": 0.6363636363636364,
+                    "TN": 16373,
+                    "TP": 7,
+                    "n_pred": 9,
+                    "n_ref": 9
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_027.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_027.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.4462809917355372,
+                    "FN": 66,
+                    "FP": 1,
+                    "IoU": 0.2872340425531915,
+                    "TN": 16290,
+                    "TP": 27,
+                    "n_pred": 28,
+                    "n_ref": 93
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_031.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_031.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.375,
+                    "FN": 50,
+                    "FP": 0,
+                    "IoU": 0.23076923076923078,
+                    "TN": 16319,
+                    "TP": 15,
+                    "n_pred": 15,
+                    "n_ref": 65
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_047.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_047.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 2,
+                    "FP": 12,
+                    "IoU": 0.0,
+                    "TN": 16370,
+                    "TP": 0,
+                    "n_pred": 12,
+                    "n_ref": 2
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_050.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_050.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7262723521320495,
+                    "FN": 159,
+                    "FP": 40,
+                    "IoU": 0.5701943844492441,
+                    "TN": 15921,
+                    "TP": 264,
+                    "n_pred": 304,
+                    "n_ref": 423
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_074.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_074.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8513119533527697,
+                    "FN": 16,
+                    "FP": 35,
+                    "IoU": 0.7411167512690355,
+                    "TN": 16187,
+                    "TP": 146,
+                    "n_pred": 181,
+                    "n_ref": 162
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_082.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_082.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8605341246290801,
+                    "FN": 94,
+                    "FP": 0,
+                    "IoU": 0.7552083333333334,
+                    "TN": 16000,
+                    "TP": 290,
+                    "n_pred": 290,
+                    "n_ref": 384
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_096.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_096.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.9210727969348659,
+                    "FN": 83,
+                    "FP": 123,
+                    "IoU": 0.8536931818181818,
+                    "TN": 14976,
+                    "TP": 1202,
+                    "n_pred": 1325,
+                    "n_ref": 1285
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_102.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_102.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.3157894736842105,
+                    "FN": 6,
+                    "FP": 7,
+                    "IoU": 0.1875,
+                    "TN": 16368,
+                    "TP": 3,
+                    "n_pred": 10,
+                    "n_ref": 9
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_110.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_110.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6122448979591837,
+                    "FN": 199,
+                    "FP": 10,
+                    "IoU": 0.4411764705882353,
+                    "TN": 16010,
+                    "TP": 165,
+                    "n_pred": 175,
+                    "n_ref": 364
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_114.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_114.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.865021770682148,
+                    "FN": 74,
+                    "FP": 19,
+                    "IoU": 0.7621483375959079,
+                    "TN": 15993,
+                    "TP": 298,
+                    "n_pred": 317,
+                    "n_ref": 372
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_121.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_121.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8251748251748252,
+                    "FN": 119,
+                    "FP": 56,
+                    "IoU": 0.7023809523809523,
+                    "TN": 15796,
+                    "TP": 413,
+                    "n_pred": 469,
+                    "n_ref": 532
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_131.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_131.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8906666666666667,
+                    "FN": 15,
+                    "FP": 26,
+                    "IoU": 0.8028846153846154,
+                    "TN": 16176,
+                    "TP": 167,
+                    "n_pred": 193,
+                    "n_ref": 182
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_170.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_170.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.48223350253807107,
+                    "FN": 0,
+                    "FP": 204,
+                    "IoU": 0.3177257525083612,
+                    "TN": 16085,
+                    "TP": 95,
+                    "n_pred": 299,
+                    "n_ref": 95
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_176.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_176.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 32,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16352,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 32
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_178.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_178.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.64576802507837,
+                    "FN": 200,
+                    "FP": 478,
+                    "IoU": 0.47685185185185186,
+                    "TN": 15088,
+                    "TP": 618,
+                    "n_pred": 1096,
+                    "n_ref": 818
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_182.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_182.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 6,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16378,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 6
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_198.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_198.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8387096774193549,
+                    "FN": 5,
+                    "FP": 0,
+                    "IoU": 0.7222222222222222,
+                    "TN": 16366,
+                    "TP": 13,
+                    "n_pred": 13,
+                    "n_ref": 18
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_220.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_220.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7540983606557377,
+                    "FN": 1,
+                    "FP": 14,
+                    "IoU": 0.6052631578947368,
+                    "TN": 16346,
+                    "TP": 23,
+                    "n_pred": 37,
+                    "n_ref": 24
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_228.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_228.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.864516129032258,
+                    "FN": 15,
+                    "FP": 6,
+                    "IoU": 0.7613636363636364,
+                    "TN": 16296,
+                    "TP": 67,
+                    "n_pred": 73,
+                    "n_ref": 82
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_229.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_229.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.9227272727272727,
+                    "FN": 32,
+                    "FP": 36,
+                    "IoU": 0.8565400843881856,
+                    "TN": 15910,
+                    "TP": 406,
+                    "n_pred": 442,
+                    "n_ref": 438
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_237.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_237.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 176,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16208,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 176
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_256.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_256.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8569085690856909,
+                    "FN": 344,
+                    "FP": 5,
+                    "IoU": 0.7496413199426112,
+                    "TN": 14990,
+                    "TP": 1045,
+                    "n_pred": 1050,
+                    "n_ref": 1389
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_263.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_263.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6956521739130435,
+                    "FN": 13,
+                    "FP": 1,
+                    "IoU": 0.5333333333333333,
+                    "TN": 16354,
+                    "TP": 16,
+                    "n_pred": 17,
+                    "n_ref": 29
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_266.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_266.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.5901639344262295,
+                    "FN": 24,
+                    "FP": 1,
+                    "IoU": 0.4186046511627907,
+                    "TN": 16341,
+                    "TP": 18,
+                    "n_pred": 19,
+                    "n_ref": 42
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_269.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_269.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.41333333333333333,
+                    "FN": 264,
+                    "FP": 0,
+                    "IoU": 0.2605042016806723,
+                    "TN": 16027,
+                    "TP": 93,
+                    "n_pred": 93,
+                    "n_ref": 357
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_272.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_272.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8574181117533719,
+                    "FN": 62,
+                    "FP": 86,
+                    "IoU": 0.7504215851602024,
+                    "TN": 15791,
+                    "TP": 445,
+                    "n_pred": 531,
+                    "n_ref": 507
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_283.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_283.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.89198606271777,
+                    "FN": 29,
+                    "FP": 157,
+                    "IoU": 0.8050314465408805,
+                    "TN": 15430,
+                    "TP": 768,
+                    "n_pred": 925,
+                    "n_ref": 797
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_320.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_320.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8205128205128205,
+                    "FN": 20,
+                    "FP": 1,
+                    "IoU": 0.6956521739130435,
+                    "TN": 16315,
+                    "TP": 48,
+                    "n_pred": 49,
+                    "n_ref": 68
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_326.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_326.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7615384615384615,
+                    "FN": 27,
+                    "FP": 35,
+                    "IoU": 0.6149068322981367,
+                    "TN": 16223,
+                    "TP": 99,
+                    "n_pred": 134,
+                    "n_ref": 126
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_327.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_327.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.77882797731569,
+                    "FN": 6,
+                    "FP": 111,
+                    "IoU": 0.6377708978328174,
+                    "TN": 16061,
+                    "TP": 206,
+                    "n_pred": 317,
+                    "n_ref": 212
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_329.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_329.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.5882352941176471,
+                    "FN": 312,
+                    "FP": 17,
+                    "IoU": 0.4166666666666667,
+                    "TN": 15820,
+                    "TP": 235,
+                    "n_pred": 252,
+                    "n_ref": 547
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_334.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_334.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 38,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16346,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 38
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_343.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_343.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.9326424870466321,
+                    "FN": 92,
+                    "FP": 90,
+                    "IoU": 0.8737864077669902,
+                    "TN": 14942,
+                    "TP": 1260,
+                    "n_pred": 1350,
+                    "n_ref": 1352
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_345.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_345.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8929503916449086,
+                    "FN": 17,
+                    "FP": 65,
+                    "IoU": 0.8066037735849056,
+                    "TN": 15960,
+                    "TP": 342,
+                    "n_pred": 407,
+                    "n_ref": 359
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_353.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_353.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7951070336391437,
+                    "FN": 5,
+                    "FP": 62,
+                    "IoU": 0.6598984771573604,
+                    "TN": 16187,
+                    "TP": 130,
+                    "n_pred": 192,
+                    "n_ref": 135
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_358.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_358.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7791563275434243,
+                    "FN": 28,
+                    "FP": 61,
+                    "IoU": 0.6382113821138211,
+                    "TN": 16138,
+                    "TP": 157,
+                    "n_pred": 218,
+                    "n_ref": 185
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_371.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_371.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.13513513513513514,
+                    "FN": 64,
+                    "FP": 0,
+                    "IoU": 0.07246376811594203,
+                    "TN": 16315,
+                    "TP": 5,
+                    "n_pred": 5,
+                    "n_ref": 69
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_387.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_387.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6666666666666666,
+                    "FN": 6,
+                    "FP": 1,
+                    "IoU": 0.5,
+                    "TN": 16370,
+                    "TP": 7,
+                    "n_pred": 8,
+                    "n_ref": 13
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_388.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_388.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 54,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16330,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 54
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_393.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_393.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8333333333333334,
+                    "FN": 7,
+                    "FP": 1,
+                    "IoU": 0.7142857142857143,
+                    "TN": 16356,
+                    "TP": 20,
+                    "n_pred": 21,
+                    "n_ref": 27
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_403.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_403.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.1319796954314721,
+                    "FN": 148,
+                    "FP": 23,
+                    "IoU": 0.07065217391304347,
+                    "TN": 16200,
+                    "TP": 13,
+                    "n_pred": 36,
+                    "n_ref": 161
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_443.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_443.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 46,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16338,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 46
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_463.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_463.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 5,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16379,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 5
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_467.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_467.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6984126984126984,
+                    "FN": 2,
+                    "FP": 36,
+                    "IoU": 0.5365853658536586,
+                    "TN": 16302,
+                    "TP": 44,
+                    "n_pred": 80,
+                    "n_ref": 46
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_478.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_478.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.5177664974619289,
+                    "FN": 95,
+                    "FP": 0,
+                    "IoU": 0.3493150684931507,
+                    "TN": 16238,
+                    "TP": 51,
+                    "n_pred": 51,
+                    "n_ref": 146
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_481.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_481.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7272727272727273,
+                    "FN": 12,
+                    "FP": 0,
+                    "IoU": 0.5714285714285714,
+                    "TN": 16356,
+                    "TP": 16,
+                    "n_pred": 16,
+                    "n_ref": 28
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_484.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_484.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 16,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16368,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 16
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_492.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_492.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6896551724137931,
+                    "FN": 0,
+                    "FP": 9,
+                    "IoU": 0.5263157894736842,
+                    "TN": 16365,
+                    "TP": 10,
+                    "n_pred": 19,
+                    "n_ref": 10
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_507.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_507.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8205128205128205,
+                    "FN": 16,
+                    "FP": 5,
+                    "IoU": 0.6956521739130435,
+                    "TN": 16315,
+                    "TP": 48,
+                    "n_pred": 53,
+                    "n_ref": 64
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_541.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_541.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7796610169491526,
+                    "FN": 18,
+                    "FP": 8,
+                    "IoU": 0.6388888888888888,
+                    "TN": 16312,
+                    "TP": 46,
+                    "n_pred": 54,
+                    "n_ref": 64
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_543.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_543.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6379310344827587,
+                    "FN": 57,
+                    "FP": 27,
+                    "IoU": 0.46835443037974683,
+                    "TN": 16226,
+                    "TP": 74,
+                    "n_pred": 101,
+                    "n_ref": 131
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_552.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_552.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.782608695652174,
+                    "FN": 5,
+                    "FP": 0,
+                    "IoU": 0.6428571428571429,
+                    "TN": 16370,
+                    "TP": 9,
+                    "n_pred": 9,
+                    "n_ref": 14
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_558.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_558.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.9354838709677419,
+                    "FN": 2,
+                    "FP": 2,
+                    "IoU": 0.8787878787878788,
+                    "TN": 16351,
+                    "TP": 29,
+                    "n_pred": 31,
+                    "n_ref": 31
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_559.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_559.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.47058823529411764,
+                    "FN": 18,
+                    "FP": 0,
+                    "IoU": 0.3076923076923077,
+                    "TN": 16358,
+                    "TP": 8,
+                    "n_pred": 8,
+                    "n_ref": 26
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_562.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_562.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.775,
+                    "FN": 17,
+                    "FP": 1,
+                    "IoU": 0.6326530612244898,
+                    "TN": 16335,
+                    "TP": 31,
+                    "n_pred": 32,
+                    "n_ref": 48
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_565.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_565.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.2,
+                    "FN": 15,
+                    "FP": 1,
+                    "IoU": 0.1111111111111111,
+                    "TN": 16366,
+                    "TP": 2,
+                    "n_pred": 3,
+                    "n_ref": 17
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_577.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_577.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.5454545454545454,
+                    "FN": 2,
+                    "FP": 3,
+                    "IoU": 0.375,
+                    "TN": 16376,
+                    "TP": 3,
+                    "n_pred": 6,
+                    "n_ref": 5
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_581.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_581.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6428571428571429,
+                    "FN": 33,
+                    "FP": 7,
+                    "IoU": 0.47368421052631576,
+                    "TN": 16308,
+                    "TP": 36,
+                    "n_pred": 43,
+                    "n_ref": 69
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_588.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_588.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8744827586206897,
+                    "FN": 67,
+                    "FP": 115,
+                    "IoU": 0.7769607843137255,
+                    "TN": 15568,
+                    "TP": 634,
+                    "n_pred": 749,
+                    "n_ref": 701
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_594.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_594.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 1,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16383,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 1
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_601.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_601.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.6276595744680851,
+                    "FN": 69,
+                    "FP": 1,
+                    "IoU": 0.4573643410852713,
+                    "TN": 16255,
+                    "TP": 59,
+                    "n_pred": 60,
+                    "n_ref": 128
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_611.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_611.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.9090909090909091,
+                    "FN": 59,
+                    "FP": 14,
+                    "IoU": 0.8333333333333334,
+                    "TN": 15946,
+                    "TP": 365,
+                    "n_pred": 379,
+                    "n_ref": 424
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_619.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_619.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7323340471092077,
+                    "FN": 17,
+                    "FP": 108,
+                    "IoU": 0.5777027027027027,
+                    "TN": 16088,
+                    "TP": 171,
+                    "n_pred": 279,
+                    "n_ref": 188
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_625.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_625.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7663551401869159,
+                    "FN": 46,
+                    "FP": 4,
+                    "IoU": 0.6212121212121212,
+                    "TN": 16252,
+                    "TP": 82,
+                    "n_pred": 86,
+                    "n_ref": 128
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_629.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_629.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.8947935368043088,
+                    "FN": 217,
+                    "FP": 76,
+                    "IoU": 0.8096166341780376,
+                    "TN": 14845,
+                    "TP": 1246,
+                    "n_pred": 1322,
+                    "n_ref": 1463
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_633.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_633.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.7422680412371134,
+                    "FN": 150,
+                    "FP": 50,
+                    "IoU": 0.5901639344262295,
+                    "TN": 15896,
+                    "TP": 288,
+                    "n_pred": 338,
+                    "n_ref": 438
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_637.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_637.png"
+        },
+        {
+            "metrics": {
+                "1": {
+                    "Dice": 0.0,
+                    "FN": 3,
+                    "FP": 0,
+                    "IoU": 0.0,
+                    "TN": 16381,
+                    "TP": 0,
+                    "n_pred": 0,
+                    "n_ref": 3
+                }
+            },
+            "prediction_file": "/home/malek/autoDDPM/nnunet_data/nnunet_results/Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d/fold_2/validation/ATLAS_644.png",
+            "reference_file": "/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/gt_segmentations/ATLAS_644.png"
+        }
+    ]
+}

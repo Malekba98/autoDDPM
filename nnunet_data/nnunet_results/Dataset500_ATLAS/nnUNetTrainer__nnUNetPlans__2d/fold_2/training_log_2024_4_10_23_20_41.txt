@@ -1,0 +1,154 @@
+
+#######################################################################
+Please cite the following paper when using nnU-Net:
+Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature methods, 18(2), 203-211.
+#######################################################################
+ 
+2024-04-10 23:20:41.923290: Using splits from existing split file: /home/malek/autoDDPM/nnunet_data/nnunet_preprocessed/Dataset500_ATLAS/splits_final.json 
+2024-04-10 23:20:41.924021: The split file contains 5 splits. 
+2024-04-10 23:20:41.924150: Desired fold for training: 2 
+2024-04-10 23:20:41.924258: This split has 282 training and 71 validation cases. 
+2024-04-10 23:20:41.925733: predicting ATLAS_004 
+2024-04-10 23:20:41.926861: ATLAS_004, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.519500: predicting ATLAS_014 
+2024-04-10 23:20:42.521033: ATLAS_014, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.543529: predicting ATLAS_017 
+2024-04-10 23:20:42.544423: ATLAS_017, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.562578: predicting ATLAS_027 
+2024-04-10 23:20:42.563422: ATLAS_027, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.580996: predicting ATLAS_031 
+2024-04-10 23:20:42.581798: ATLAS_031, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.600040: predicting ATLAS_047 
+2024-04-10 23:20:42.600868: ATLAS_047, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.618882: predicting ATLAS_050 
+2024-04-10 23:20:42.619631: ATLAS_050, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.637095: predicting ATLAS_074 
+2024-04-10 23:20:42.637893: ATLAS_074, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.655239: predicting ATLAS_082 
+2024-04-10 23:20:42.656060: ATLAS_082, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:42.673036: predicting ATLAS_096 
+2024-04-10 23:20:42.673586: ATLAS_096, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:44.896332: predicting ATLAS_102 
+2024-04-10 23:20:44.896966: ATLAS_102, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:44.951106: predicting ATLAS_110 
+2024-04-10 23:20:44.952273: ATLAS_110, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:44.975380: predicting ATLAS_114 
+2024-04-10 23:20:44.976368: ATLAS_114, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.000702: predicting ATLAS_121 
+2024-04-10 23:20:45.001562: ATLAS_121, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.019461: predicting ATLAS_131 
+2024-04-10 23:20:45.020592: ATLAS_131, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.045039: predicting ATLAS_170 
+2024-04-10 23:20:45.045945: ATLAS_170, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.064685: predicting ATLAS_176 
+2024-04-10 23:20:45.065398: ATLAS_176, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.083780: predicting ATLAS_178 
+2024-04-10 23:20:45.084679: ATLAS_178, shape torch.Size([1, 1, 128, 128]), rank 0 
+2024-04-10 23:20:45.115127: predicting ATLAS_182 
+2024-04-10 23:20:45.116074: ATLAS_182, shape torch.Size([1, 1, 128, 128]), rank 0 
+2024-04-10 23:20:45.146460: predicting ATLAS_198 
+2024-04-10 23:20:45.147384: ATLAS_198, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.165392: predicting ATLAS_220 
+2024-04-10 23:20:45.166422: ATLAS_220, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.184551: predicting ATLAS_228 
+2024-04-10 23:20:45.185435: ATLAS_228, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.202807: predicting ATLAS_229 
+2024-04-10 23:20:45.203526: ATLAS_229, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.221829: predicting ATLAS_237 
+2024-04-10 23:20:45.222612: ATLAS_237, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.240190: predicting ATLAS_256 
+2024-04-10 23:20:45.241112: ATLAS_256, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.263047: predicting ATLAS_263 
+2024-04-10 23:20:45.263760: ATLAS_263, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.281075: predicting ATLAS_266 
+2024-04-10 23:20:45.282112: ATLAS_266, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.300159: predicting ATLAS_269 
+2024-04-10 23:20:45.300917: ATLAS_269, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.318406: predicting ATLAS_272 
+2024-04-10 23:20:45.319324: ATLAS_272, shape torch.Size([1, 1, 128, 128]), rank 0 
+2024-04-10 23:20:45.348729: predicting ATLAS_283 
+2024-04-10 23:20:45.349484: ATLAS_283, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.367836: predicting ATLAS_320 
+2024-04-10 23:20:45.368611: ATLAS_320, shape torch.Size([1, 1, 128, 128]), rank 0 
+2024-04-10 23:20:45.397853: predicting ATLAS_326 
+2024-04-10 23:20:45.398552: ATLAS_326, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.416039: predicting ATLAS_327 
+2024-04-10 23:20:45.416852: ATLAS_327, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.435911: predicting ATLAS_329 
+2024-04-10 23:20:45.436606: ATLAS_329, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.454053: predicting ATLAS_334 
+2024-04-10 23:20:45.454751: ATLAS_334, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.471844: predicting ATLAS_343 
+2024-04-10 23:20:45.472821: ATLAS_343, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.490810: predicting ATLAS_345 
+2024-04-10 23:20:45.491628: ATLAS_345, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.508877: predicting ATLAS_353 
+2024-04-10 23:20:45.509576: ATLAS_353, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.527051: predicting ATLAS_358 
+2024-04-10 23:20:45.527777: ATLAS_358, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.545108: predicting ATLAS_371 
+2024-04-10 23:20:45.545775: ATLAS_371, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.563801: predicting ATLAS_387 
+2024-04-10 23:20:45.564769: ATLAS_387, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.581914: predicting ATLAS_388 
+2024-04-10 23:20:45.582727: ATLAS_388, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.600714: predicting ATLAS_393 
+2024-04-10 23:20:45.601442: ATLAS_393, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.619429: predicting ATLAS_403 
+2024-04-10 23:20:45.620291: ATLAS_403, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.639479: predicting ATLAS_443 
+2024-04-10 23:20:45.640536: ATLAS_443, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.658878: predicting ATLAS_463 
+2024-04-10 23:20:45.659678: ATLAS_463, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.677023: predicting ATLAS_467 
+2024-04-10 23:20:45.677878: ATLAS_467, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.696057: predicting ATLAS_478 
+2024-04-10 23:20:45.696744: ATLAS_478, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.714123: predicting ATLAS_481 
+2024-04-10 23:20:45.714802: ATLAS_481, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.732353: predicting ATLAS_484 
+2024-04-10 23:20:45.733064: ATLAS_484, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.750923: predicting ATLAS_492 
+2024-04-10 23:20:45.751686: ATLAS_492, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.769012: predicting ATLAS_507 
+2024-04-10 23:20:45.769770: ATLAS_507, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.787114: predicting ATLAS_541 
+2024-04-10 23:20:45.787899: ATLAS_541, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.808099: predicting ATLAS_543 
+2024-04-10 23:20:45.809089: ATLAS_543, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.831568: predicting ATLAS_552 
+2024-04-10 23:20:45.832226: ATLAS_552, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.851954: predicting ATLAS_558 
+2024-04-10 23:20:45.852642: ATLAS_558, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.869752: predicting ATLAS_559 
+2024-04-10 23:20:45.870664: ATLAS_559, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.888240: predicting ATLAS_562 
+2024-04-10 23:20:45.888871: ATLAS_562, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.906149: predicting ATLAS_565 
+2024-04-10 23:20:45.906897: ATLAS_565, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.925521: predicting ATLAS_577 
+2024-04-10 23:20:45.926474: ATLAS_577, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.943642: predicting ATLAS_581 
+2024-04-10 23:20:45.944346: ATLAS_581, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.961953: predicting ATLAS_588 
+2024-04-10 23:20:45.962767: ATLAS_588, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.980953: predicting ATLAS_594 
+2024-04-10 23:20:45.981690: ATLAS_594, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:45.999011: predicting ATLAS_601 
+2024-04-10 23:20:45.999837: ATLAS_601, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.017102: predicting ATLAS_611 
+2024-04-10 23:20:46.017982: ATLAS_611, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.036100: predicting ATLAS_619 
+2024-04-10 23:20:46.036816: ATLAS_619, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.055251: predicting ATLAS_625 
+2024-04-10 23:20:46.056282: ATLAS_625, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.074511: predicting ATLAS_629 
+2024-04-10 23:20:46.075225: ATLAS_629, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.092683: predicting ATLAS_633 
+2024-04-10 23:20:46.093358: ATLAS_633, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.111217: predicting ATLAS_637 
+2024-04-10 23:20:46.111792: ATLAS_637, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:46.128988: predicting ATLAS_644 
+2024-04-10 23:20:46.129699: ATLAS_644, shape torch.Size([1, 1, 128, 108]), rank 0 
+2024-04-10 23:20:49.043745: Validation complete 
+2024-04-10 23:20:49.043906: Mean Validation Dice:  0.597516352239499 
