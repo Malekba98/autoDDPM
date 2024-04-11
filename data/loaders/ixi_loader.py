@@ -106,9 +106,15 @@ class AtlasLoader(IXILoader):
     def get_label(self, idx):
         if self.label_dir is not None:
             patho_mask = self.seg_t(self.label_files[idx])
+        else:
+            patho_mask = 0
+
         if self.mask_dir is not None:
             brain_mask = self.seg_t(self.mask_files[idx])
             # print(mask_label.shape)
+        else:
+            brain_mask = 0
+            
         return (patho_mask, brain_mask)
 
     def __getitem__(self, idx):
