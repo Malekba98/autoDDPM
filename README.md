@@ -124,12 +124,12 @@ In braincf conda environment:
 Run nnunet dataset preparation script once without preprocess_train arg to preprocess test data
 
 ```bash
-python core/nnunet_atlas_dataset_prepatation.py
+python core/nnunet_atlas_dataset_preparation.py
 ```
 
 and once with preprocess_train arg to preprocess train data
 ```bash
-python core/nnunet_atlas_dataset_prepatation.py --preprocess_train
+python core/nnunet_atlas_dataset_preparation.py --preprocess_train
 ```
 
 To train nnUNet segmentation model on prepared traind data:
