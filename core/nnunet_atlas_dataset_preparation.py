@@ -96,3 +96,17 @@ if __name__ == "__main__":
             index = int(filename[0].split("_")[-1].replace(".png", ""))
             image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTs/ATLAS_{index:03d}_0000.png"
             shutil.copy(filename[0], image_dest)
+
+            mask_gt = True
+            if mask_gt == True:
+                mask_filename = data[4]
+
+                mask_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTs/ATLAS_{index:03d}.png"
+
+                mask_array = np.array(Image.open(mask_filename[0]))
+
+                # Convert 255 to 1
+                mask_array[mask_array == 255] = 1
+
+                # Save the converted mask back to a file
+                Image.fromarray(mask_array).save(mask_dest)
