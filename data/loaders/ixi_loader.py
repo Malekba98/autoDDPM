@@ -159,3 +159,115 @@ class mask_preprocessing_loader(IXILoader):
             self.label_files[idx],  # mask_filename
             self.mask_files[idx],  # brain_mask_filename
         )
+
+class IXILoaderHarmonize(IXILoader):
+    def __init__(
+        self,
+        data_dir,
+        file_type="",
+        label_dir=None,
+        mask_dir=None,
+        target_size=(256, 256),
+        test=False,
+    ):
+        self.mask_dir = mask_dir
+        if mask_dir is not None:
+            if "csv" in mask_dir[0]:
+                self.mask_files = get_data_from_csv(mask_dir)
+            else:
+                self.mask_files = [
+                    glob.glob(mask_dir_i + file_type) for mask_dir_i in mask_dir
+                ]
+        super(IXILoaderHarmonize, self).__init__(
+            data_dir, file_type, label_dir, mask_dir, target_size, test
+        )
+
+    def get_image_transform(self):
+        default_t = transforms.Compose(
+            [
+                ReadImage(),
+                Pad((1, 1)),
+                Harmonize(),
+                To01(),  # , Norm98(),
+                #Pad((1, 1)),  # Flip(), #  Slice(),
+                AddChannelIfNeeded(),
+                AssertChannelFirst(),
+                self.RES,
+                transforms.ToPILImage(),
+                transforms.ToTensor(),
+            ]
+        )
+        return default_t
+
+    def get_label(self, idx):
+        if self.label_dir is not None:
+            patho_mask = self.seg_t(self.label_files[idx])
+        else:
+            patho_mask = 0
+
+        if self.mask_dir is not None:
+            brain_mask = self.seg_t(self.mask_files[idx])
+            # print(mask_label.shape)
+        else:
+            brain_mask = 0
+            
+        return (patho_mask, brain_mask)
+
+    def __getitem__(self, idx):
+        return (self.im_t(self.files[idx]), *self.get_label(idx))
+    
+
+
+class AtlasLoaderHarmonize(IXILoader):
+    def __init__(
+        self,
+        data_dir,
+        file_type="",
+        label_dir=None,
+        mask_dir=None,
+        target_size=(256, 256),
+        test=False,
+    ):
+        self.mask_dir = mask_dir
+        if mask_dir is not None:
+            if "csv" in mask_dir[0]:
+                self.mask_files = get_data_from_csv(mask_dir)
+            else:
+                self.mask_files = [
+                    glob.glob(mask_dir_i + file_type) for mask_dir_i in mask_dir
+                ]
+        super(AtlasLoaderHarmonize, self).__init__(
+            data_dir, file_type, label_dir, mask_dir, target_size, test
+        )
+
+    def get_image_transform(self):
+        default_t = transforms.Compose(
+            [
+                ReadImage(),
+                HarmonizeToMNI(),
+                To01(),  # , Norm98(),
+                Pad((1, 1)),  # Flip(), #  Slice(),
+                AddChannelIfNeeded(),
+                AssertChannelFirst(),
+                self.RES,
+                transforms.ToPILImage(),
+                transforms.ToTensor(),
+            ]
+        )
+        return default_t
+    def get_label(self, idx):
+        if self.label_dir is not None:
+            patho_mask = self.seg_t(self.label_files[idx])
+        else:
+            patho_mask = 0
+
+        if self.mask_dir is not None:
+            brain_mask = self.seg_t(self.mask_files[idx])
+            # print(mask_label.shape)
+        else:
+            brain_mask = 0
+            
+        return (patho_mask, brain_mask)
+
+    def __getitem__(self, idx):
+        return (self.im_t(self.files[idx]), *self.get_label(idx))

@@ -7,6 +7,7 @@ import torchvision.transforms.functional as transform
 from monai.config.type_definitions import NdarrayOrTensor
 from monai.transforms import Transform
 from monai.utils.enums import TransformBackends
+import torchvision.transforms as transforms
 
 
 class ReadImage(Transform):
@@ -260,3 +261,60 @@ class Zoom(Transform):
         if len(img.shape) == 3:
             img = img[None, ...]
         return F.interpolate(img, size=self.input_size, mode=self.mode)[0]
+
+
+from skimage.exposure import match_histograms
+from PIL import Image
+import numpy as np
+
+class Harmonize:
+
+    def __init__(self):
+        image_reference_path = '/home/malek/autoDDPM/data/MNI152_template/mni_95_slice_template.png'
+        image_reference = Image.open(image_reference_path)
+        self.image_reference = np.array(image_reference)[:,:,0]
+
+
+        pad = Pad()
+
+        self.image_reference = pad(torch.tensor(self.image_reference))
+        self.image_reference = self.image_reference.numpy()
+
+    def __call__(self,image):
+
+        image_np = image.numpy()
+        #image_np = image_np[0]
+        print('shape of image_np',image_np.shape)
+        print('shape of image_reference',self.image_reference.shape)
+        matched_np = match_histograms(image_np, self.image_reference)
+        matched_tensor = torch.from_numpy(matched_np)
+        matched_tensor = matched_tensor.view(image.size())
+        print('shape of matched_tensor',matched_tensor.shape)
+        return matched_tensor
+
+
+class HarmonizeToMNI:
+    def __init__(self):
+        image_reference_path = '/home/malek/autoDDPM/data/MNI152_template/mni_95_slice_template.png'
+        
+        image_reference = Image.open(image_reference_path)
+        self.image_reference = np.array(image_reference)[:,:,0]
+        pad = Pad()
+        resize = transforms.Resize([128,128])
+
+        self.image_reference= pad(torch.tensor(self.image_reference))
+        self.image_reference = resize(self.image_reference.unsqueeze(0)).squeeze(0)
+        self.image_reference = self.image_reference.numpy()
+
+
+    def __call__(self,image):
+
+        image_np = image.numpy()
+        #image_np = image_np[0]
+        print('shape of image_np',image_np.shape)
+        print('shape of image_reference',self.image_reference.shape)
+        matched_np = match_histograms(image_np, self.image_reference)
+        matched_tensor = torch.from_numpy(matched_np)
+        matched_tensor = matched_tensor.view(image.size())
+        print('shape of matched_tensor',matched_tensor.shape)
+        return matched_tensor
