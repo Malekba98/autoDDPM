@@ -13,7 +13,7 @@ import csv
 import os
 import numpy as np
 
-types_of_pathos = {"low": 70,"medium": 100,"high": 150}
+types_of_pathos = {"low": 70, "medium": 100, "high": 150}
 
 PIXELS_THRESHOLD = 1
 dataset = mask_preprocessing_loader(
@@ -39,7 +39,7 @@ for data in loader:
     non_zero_pixels = mask.sum()
     if non_zero_pixels.item() >= PIXELS_THRESHOLD:
         all_pixel_numbers.append(int(non_zero_pixels.item()))
-    #if non_zero_pixels.item() >= PIXELS_THRESHOLD:
+    # if non_zero_pixels.item() >= PIXELS_THRESHOLD:
     #    print("filename", filename[0])
     #    print("mask_filename", mask_filename[0])
     #    print("brain_mask_filename", brain_mask_filename[0])
@@ -54,7 +54,6 @@ between_25_and_75 = np.percentile(all_pixel_numbers, [25, 75])
 
 types_of_pathos["low"] = lower_25_percentile
 types_of_pathos["high"] = higher_25_percentile
-
 
 
 print("Higher 25 percentile:", higher_25_percentile)
@@ -87,8 +86,6 @@ for data in loader:
     file_paths.append([filename[0]])
     mask_file_paths.append([mask_filename[0]])
     brain_mask_file_paths.append([brain_mask_filename[0]])
-
-    
 
 
 high_count = labels.count("high")
@@ -183,4 +180,3 @@ with open(val_file_path, "w", newline="") as file:
 
 print("Train brain mask file saved at:", train_file_path)
 print("Validation brain mask file saved at:", val_file_path)
-

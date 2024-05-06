@@ -20,7 +20,6 @@ from transforms.preprocessing import (
     AssertChannelFirst,
     ReadImage,
     To01,
-    Harmonize
 )
 
 

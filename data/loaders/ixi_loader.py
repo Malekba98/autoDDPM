@@ -114,7 +114,7 @@ class AtlasLoader(IXILoader):
             # print(mask_label.shape)
         else:
             brain_mask = 0
-            
+
         return (patho_mask, brain_mask)
 
     def __getitem__(self, idx):
@@ -160,6 +160,7 @@ class mask_preprocessing_loader(IXILoader):
             self.mask_files[idx],  # brain_mask_filename
         )
 
+
 class IXILoaderHarmonize(IXILoader):
     def __init__(
         self,
@@ -189,7 +190,7 @@ class IXILoaderHarmonize(IXILoader):
                 Pad((1, 1)),
                 Harmonize(),
                 To01(),  # , Norm98(),
-                #Pad((1, 1)),  # Flip(), #  Slice(),
+                # Pad((1, 1)),  # Flip(), #  Slice(),
                 AddChannelIfNeeded(),
                 AssertChannelFirst(),
                 self.RES,
@@ -210,12 +211,11 @@ class IXILoaderHarmonize(IXILoader):
             # print(mask_label.shape)
         else:
             brain_mask = 0
-            
+
         return (patho_mask, brain_mask)
 
     def __getitem__(self, idx):
         return (self.im_t(self.files[idx]), *self.get_label(idx))
-    
 
 
 class AtlasLoaderHarmonize(IXILoader):
@@ -255,6 +255,7 @@ class AtlasLoaderHarmonize(IXILoader):
             ]
         )
         return default_t
+
     def get_label(self, idx):
         if self.label_dir is not None:
             patho_mask = self.seg_t(self.label_files[idx])
@@ -266,7 +267,7 @@ class AtlasLoaderHarmonize(IXILoader):
             # print(mask_label.shape)
         else:
             brain_mask = 0
-            
+
         return (patho_mask, brain_mask)
 
     def __getitem__(self, idx):
