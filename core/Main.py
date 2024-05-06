@@ -73,6 +73,8 @@ class Main(object):
             configurator.start_training(checkpoint)
         elif configurator.dl_config["experiment"]["task"] == "repaint":
             configurator.start_repaint_editing(checkpoint)
+        elif configurator.dl_config["experiment"]["task"] == "sdedit":
+            configurator.start_sd_editing(checkpoint)
         else:
             configurator.start_evaluations(checkpoint["model_weights"])
 

@@ -244,6 +244,56 @@ class PTrainer(Trainer):
             if self.lr_scheduler is not None:
                 self.lr_scheduler.step(epoch_val_loss)
 
+
+    def sdedit(self,model_weights,test_data,task="sdedit"):
+        self.test_model.load_state_dict(model_weights)
+        self.test_model.to(self.device)
+        self.test_model.eval()
+        metrics = {
+            task + "_loss_rec": 0,
+            task + "_loss_mse": 0,
+            task + "_loss_pl": 0,
+        }
+        test_total = 0
+
+        with torch.no_grad():
+            for data in test_data:
+                x = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
+                brain_masks = data[2].to(self.device)
+
+                b, _, _, _ = x.shape
+                test_total += b
+
+                x_ = self.test_model.sdedit(
+                    original_images=x,
+                    patho_masks=patho_masks,
+                    brain_masks=brain_masks,
+                )
+
+
+                loss_rec = self.criterion_rec(x_, x)
+                loss_mse = self.criterion_MSE(x_, x)
+                loss_pl = self.criterion_PL(x_, x)
+
+                metrics[task + "_loss_rec"] += loss_rec.item() * x.size(0)
+                metrics[task + "_loss_mse"] += loss_mse.item() * x.size(0)
+                metrics[task + "_loss_pl"] += loss_pl.item() * x.size(0)
+
+
+                for batch_idx in range(b):
+                    counterfactual= x_[batch_idx].detach().cpu().numpy()
+                    counterfactual[0, 0], counterfactual[0, 1] = 0, 1
+
+                    img = x[batch_idx].detach().cpu().numpy()
+                    img[0, 0], img[0, 1] = 0, 1
+
+                    patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+                    grid_image = np.hstack([img, patho_mask, counterfactual])
+
+                    wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
+        
+
     def repaint(self, model_weights, test_data, task="repaint"):
 
         self.test_model.load_state_dict(model_weights)

@@ -25,5 +25,5 @@ plotly==5.8.0
 wandb==0.16.1
 ruff==0.1.2
 #black==22.10.1
-monai-generative
-gdown
+#monai-generative
+#gdown

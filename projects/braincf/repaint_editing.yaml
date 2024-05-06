@@ -94,16 +94,19 @@ trainer:
           test:
             #- './data/ATLAS/splits_healthy/Atlas_healthy.csv'
             #- './data/fastMRI/normal_train.csv'
-            - './data/ATLAS/splits_over_0/test_healthy/Atlas_healthy.csv'
+            #- './data/ATLAS/splits_over_0/test_healthy/Atlas_healthy.csv'
+            - './data/ATLAS/splits_healthy/Atlas_healthy.csv'
         label_dir:
           test:
             #- './data/ATLAS/splits_over_1/atlas_val_mask_png.csv'
-            - './data/ATLAS/splits_over_0/test_unhealthy/Atlas_mask_unhealthy.csv'
+            #- './data/ATLAS/splits_over_0/test_unhealthy/Atlas_mask_unhealthy.csv'
+            - './data/ATLAS/splits_over_1_stratified/atlas_val_mask_png.csv'
         mask_dir:
           test:
             #- './data/ATLAS/splits_healthy/Atlas_brain_mask_healthy.csv'
             #- './data/fastMRI/normal_brain_mask_train.csv'
-            - './data/ATLAS/splits_over_0/test_healthy/Atlas_brain_mask_healthy.csv'
+            #- './data/ATLAS/splits_over_0/test_healthy/Atlas_brain_mask_healthy.csv'
+            - './data/ATLAS/splits_healthy/Atlas_brain_mask_healthy.csv'
 
 # Downstream tasks
 downstream_tasks:  
