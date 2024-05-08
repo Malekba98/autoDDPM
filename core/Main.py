@@ -57,11 +57,11 @@ class Main(object):
             "################".format(exp_name, method_name)
         )
 
-        config_dict = dict(yaml=config_file, params=configurator.dl_config)
+        config_dict = dict(yaml=self.config_file, params=configurator.dl_config)
 
         wandb.init(project=exp_name, name=method_name, config=config_dict, id=date_time)
 
-        device = "cuda" if config_file["device"] == "gpu" else "cpu"
+        device = "cuda" if self.config_file["device"] == "gpu" else "cpu"
         checkpoint = dict()
         if configurator.dl_config["experiment"]["weights"] is not None:
             checkpoint = torch.load(

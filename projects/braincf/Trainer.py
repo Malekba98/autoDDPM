@@ -2,6 +2,7 @@ import logging
 import os
 from time import time
 
+from sympy import true
 from torch.cuda.amp import GradScaler, autocast
 
 import wandb
@@ -12,6 +13,7 @@ from optim.losses.ln_losses import *
 import cv2
 import copy
 from dl_utils.mask_utils import binarize_mask
+import matplotlib.pyplot as plt
 
 
 class PTrainer(Trainer):
@@ -289,9 +291,25 @@ class PTrainer(Trainer):
                     img[0, 0], img[0, 1] = 0, 1
 
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
-                    grid_image = np.hstack([img, patho_mask, counterfactual])
 
-                    wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
+                    notebook = True
+                    if notebook:
+                        fig, axs = plt.subplots(1, 3)
+                        axs[0].imshow(img[0],cmap='gray')
+                        axs[0].set_title('Original Image')
+                        axs[0].axis('off')
+
+                        axs[1].imshow(patho_mask[0],cmap='gray')
+                        axs[1].set_title('Pathological Mask')
+                        axs[1].axis('off')
+
+                        axs[2].imshow(counterfactual[0],cmap='gray')
+                        axs[2].set_title('Counterfactual')
+                        axs[2].axis('off')
+                        plt.show()
+                    #grid_image = np.hstack([img, patho_mask, counterfactual])
+
+                    #wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
         
 
     def repaint(self, model_weights, test_data, task="repaint"):
