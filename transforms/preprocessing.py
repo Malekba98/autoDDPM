@@ -265,7 +265,6 @@ class Zoom(Transform):
 
 from skimage.exposure import match_histograms
 from PIL import Image
-import numpy as np
 
 
 class Harmonize:

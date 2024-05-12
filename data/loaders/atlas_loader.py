@@ -42,10 +42,13 @@ class AtlasLoader(IXILoader):
         return (patho_mask, brain_mask)
 
     def get_dilated_mask(self, idx):
-        (patho_mask, brain_mask) = self.get_label(idx)
+        dilated_patho_mask = 0
+        if self.label_dir is not None and self.mask_dir is not None:
+            (patho_mask, brain_mask) = self.get_label(idx)
 
-        dilated_patho_mask = dilate_mask(patho_mask, kernel=self.dilation_kernel)
-        dilated_patho_mask[brain_mask == 0] = 0
+            dilated_patho_mask = dilate_mask(patho_mask, kernel=self.dilation_kernel)
+            dilated_patho_mask[brain_mask == 0] = 0
+
         return dilated_patho_mask
 
     def __getitem__(self, idx):

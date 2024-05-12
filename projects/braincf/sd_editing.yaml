@@ -12,7 +12,7 @@ experiment:
   #weights: ./projects/braincf/weights/runs/2024_03_08_19_20_58_561738/best_model.pt # base semantic synth model trained on less data
   #weights: ./projects/braincf/weights/runs/2024_03_10_23_49_49_559289/best_model.pt # base semantic synth model trained on more data
   #weights: ./projects/braincf/weights/runs/2024_03_23_13_58_55_159484/best_model.pt # base semantic synth model trained on all atlas healthy and unhealthy
-  weights: ./projects/braincf/weights/runs/2024_05_06_18_51_40_547296/best_model.pt # base semantic synth model trained on percentile stratified data
+  weights: ./projects/braincf/weights/runs/2024_05_06_18_51_40_547296/best_model.pt # base semantic synth model trained on percentile stratified train/val data
 
 device: gpu
 configurator:
@@ -90,13 +90,43 @@ trainer:
           class_name: AtlasLoader
         data_dir:
           test:
-            - './data/ATLAS/splits_healthy/Atlas_healthy.csv'
+            - './data/ATLAS/splits_healthy_54_sample/Atlas_healthy.csv'
         label_dir:
           test:
-            - './data/ATLAS/splits_over_1_stratified/atlas_val_mask_png.csv'
+            - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_test_mask_png.csv'
         mask_dir:
           test:
-            - './data/ATLAS/splits_healthy/Atlas_brain_mask_healthy.csv'
+            - './data/ATLAS/splits_healthy_54_sample/Atlas_brain_mask_healthy.csv'
+
+  reference_data_loader:
+    module_name: core.DataLoader
+    class_name: DefaultDataLoader
+    params:
+      args:
+        dilation_kernel: 15
+        target_size: *target_size
+        batch_size: *tbatch_size
+        dataset_module:
+          module_name: data.loaders.atlas_loader
+          class_name: AtlasLoader
+        data_dir:
+          test:
+            - './data/ATLAS/splits_reference_test_unhealthy_54_samples/atlas_test_png.csv'
+
+  reference_atlas_same_test_data_loader:
+    module_name: core.DataLoader
+    class_name: DefaultDataLoader
+    params:
+      args:
+        dilation_kernel: 15
+        target_size: *target_size
+        batch_size: *tbatch_size
+        dataset_module:
+          module_name: data.loaders.atlas_loader
+          class_name: AtlasLoader
+        data_dir:
+          test:
+            - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_test_png.csv'
 
 # Downstream tasks
 downstream_tasks:  

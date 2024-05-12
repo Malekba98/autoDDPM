@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 import math
-from tkinter import Image
 
 import cv2
 import lpips
@@ -416,7 +415,7 @@ class DDPM(nn.Module):
                 "x_rec": final_inpainted_image,
             },
         )
-    
+
     def sdedit(
         self,
         original_images: torch.tensor,
@@ -426,7 +425,9 @@ class DDPM(nn.Module):
         verbose=True,
     ):
         batch_size = original_images.shape[0]
-        timesteps = self.inference_scheduler.get_timesteps(noise_level= int(encoding_ratio * 999))
+        timesteps = self.inference_scheduler.get_timesteps(
+            noise_level=int(encoding_ratio * 999)
+        )
 
         # image = torch.randn_like(original_image)
 
@@ -438,7 +439,6 @@ class DDPM(nn.Module):
         # https://www.youtube.com/watch?v=DsEDMjdxOv4&t=5145s&ab_channel=PieterAbbeel
 
         noise = generate_noise(self.train_scheduler.noise_type, original_images)
-
 
         timesteps_noising = torch.full(
             [batch_size],
@@ -477,7 +477,7 @@ class DDPM(nn.Module):
             # inference_scheduler.step() internallhy checks if t>0. if t>0, noise z=0 in the
             # sampling equation. take a look at # 6. Add noise, line 203 in the .step() function
             image, _ = self.inference_scheduler.step(predicted_noise, t, image)
-            
+
         return image
 
     def repaint(

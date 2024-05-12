@@ -99,76 +99,111 @@ print("Number of medium:", medium_count)
 
 print("number of cases", len(labels))
 
+# Split data into train, val, and test sets
+train_ratio = 0.78
+val_ratio = 0.1
+test_ratio = 0.12
 
-# Split data into train and temp sets
-(
-    train_files,
-    val_files,
-    train_labels,
-    val_labels,
-    train_mask_files,
-    val_mask_files,
-    train_brain_mask_files,
-    val_brain_mask_files,
-) = train_test_split(
+train_files, temp_files, train_labels, temp_labels, train_mask_files, temp_mask_files, train_brain_mask_files, temp_brain_mask_files = train_test_split(
     file_paths,
     labels,
     mask_file_paths,
     brain_mask_file_paths,
-    test_size=0.23,
+    random_state=42,
+    test_size=(1 - train_ratio),
     stratify=labels,
 )
 
+val_files, test_files, val_labels, test_labels, val_mask_files, test_mask_files, val_brain_mask_files, test_brain_mask_files = train_test_split(
+    temp_files,
+    temp_labels,
+    temp_mask_files,
+    temp_brain_mask_files,
+    random_state=42,
+    test_size=test_ratio / (val_ratio + test_ratio),
+    stratify=temp_labels,
+)
 
-print("train files", train_files)
+#print("train files", train_files)
+
+#print("val files", val_files)
+#print("test files", test_files)
+
 
 train_file = "atlas_train_png.csv"
 val_file = "atlas_val_png.csv"
 
-output_folder = f"data/ATLAS/splits_over_{PIXELS_THRESHOLD}_stratified"
+test_file = "atlas_test_png.csv"
+
+output_folder = f"data/ATLAS/splits_over_{PIXELS_THRESHOLD}_stratified_all_splits"
+
+
 os.makedirs(output_folder, exist_ok=True)
 
 train_file_path = os.path.join(output_folder, train_file)
 val_file_path = os.path.join(output_folder, val_file)
 
+test_file_path = os.path.join(output_folder, test_file)
 
 with open(train_file_path, "w", newline="") as file:
     writer = csv.writer(file)
     writer.writerows(train_files)
 
+
 with open(val_file_path, "w", newline="") as file:
     writer = csv.writer(file)
     writer.writerows(val_files)
 
+
+with open(test_file_path, "w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerows(test_files)
+
 print("Train file saved at:", train_file_path)
+
 print("Validation file saved at:", val_file_path)
 
+print("Test file saved at:", test_file_path)
+
 # DO SAME FOR MASKS
+
 
 train_mask_file = "atlas_train_mask_png.csv"
 val_mask_file = "atlas_val_mask_png.csv"
 
+test_mask_file = "atlas_test_mask_png.csv"
+
 train_file_path = os.path.join(output_folder, train_mask_file)
 val_file_path = os.path.join(output_folder, val_mask_file)
 
+test_file_path = os.path.join(output_folder, test_mask_file)
+
 with open(train_file_path, "w", newline="") as file:
     writer = csv.writer(file)
+
     writer.writerows(train_mask_files)
 
 with open(val_file_path, "w", newline="") as file:
     writer = csv.writer(file)
     writer.writerows(val_mask_files)
 
+with open(test_file_path, "w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerows(test_mask_files)
+
 print("Train mask file saved at:", train_file_path)
 print("Validation mask file saved at:", val_file_path)
+print("Test mask file saved at:", test_file_path)
 
 # DO SAME FOR BRAIN MASKS
 
 train_brain_mask_file = "atlas_train_brain_mask_png.csv"
 val_brain_mask_file = "atlas_val_brain_mask_png.csv"
+test_brain_mask_file = "atlas_test_brain_mask_png.csv"
 
 train_file_path = os.path.join(output_folder, train_brain_mask_file)
 val_file_path = os.path.join(output_folder, val_brain_mask_file)
+test_file_path = os.path.join(output_folder, test_brain_mask_file)
 
 with open(train_file_path, "w", newline="") as file:
     writer = csv.writer(file)
@@ -178,5 +213,10 @@ with open(val_file_path, "w", newline="") as file:
     writer = csv.writer(file)
     writer.writerows(val_brain_mask_files)
 
+with open(test_file_path, "w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerows(test_brain_mask_files)
+
 print("Train brain mask file saved at:", train_file_path)
 print("Validation brain mask file saved at:", val_file_path)
+print("Test brain mask file saved at:", test_file_path)
