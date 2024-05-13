@@ -41,7 +41,7 @@ model:
     train_scheduler: "ddpm"
     inference_scheduler: "ddpm"
     inference_steps: 1000
-    noise_level_recon: 100
+    noise_level_recon: 999
     noise_type: "gaussian"
     method: "anoDDPM"
     prediction_type: "epsilon"
@@ -64,7 +64,7 @@ trainer:
     checkpoint_path: *checkpoint_path
     batch_size: *tbatch_size
     nr_epochs: 2000
-    val_interval: 1
+    val_interval: 300
     training_mode: "palette training"
     # Loss
     loss:
