@@ -57,3 +57,20 @@ class AtlasLoader(IXILoader):
             *self.get_label(idx),
             self.get_dilated_mask(idx),
         )
+    
+
+class AtlasLoaderPalette(AtlasLoader):
+    def __init__(self, *args, **kwargs):
+        super(AtlasLoaderPalette, self).__init__(*args, **kwargs)
+
+    def get_palette_mask(self, idx):
+        palette_mask = 0
+        if self.label_dir is not None:
+            patho_mask, _ = self.get_label(idx)
+            image = self.im_t(self.files[idx])
+            palette_mask = patho_mask * torch.radndn_like(patho_mask) + (1 - patho_mask) * image
+        return palette_mask
+        
+
+
+        

@@ -99,6 +99,14 @@ class PTrainer(Trainer):
                             noise=noise,
                             timesteps=timesteps,
                         )
+                    elif self.training_params["training_mode"] == "palette training":
+                        palette_masks = data[4].to(self.device)
+                        pred = self.model(
+                            inputs=transformed_images,
+                            patho_masks=palette_masks,
+                            noise=noise,
+                            timesteps=timesteps,
+                        )
                     else:
                         # Get model prediction
                         pred = self.model(
@@ -110,6 +118,7 @@ class PTrainer(Trainer):
                         if self.model.prediction_type == "sample"
                         else noise
                     )
+                    
                     # print("prediction size", pred.size())
                     # print("target size", target.size())
                     loss = self.criterion_rec(pred.float(), target.float())
@@ -192,12 +201,20 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                x_, _ = self.test_model.sample_from_image(
-                    x,
-                    patho_masks,
-                    brain_masks,
-                    noise_level=self.model.noise_level_recon,
-                )
+                if self.training_params["training_mode"] == "semantic synthesis":
+                    x_, _ = self.test_model.sample_from_image(
+                        x,
+                        patho_masks,
+                        brain_masks,
+                        noise_level=self.model.noise_level_recon,
+                    )
+                elif self.training_params["training_mode"] == "palette training":
+                    palette_masks = data[4].to(self.device)
+                    x_, _ = self.test_model.sample_from_image(
+                        x,
+                        palette_masks,
+                        noise_level=self.model.noise_level_recon,
+                    )
 
                 loss_rec = self.criterion_rec(x_, x)
                 loss_mse = self.criterion_MSE(x_, x)
@@ -215,6 +232,7 @@ class PTrainer(Trainer):
 
                     brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+                    
                     grid_image = np.hstack([img, patho_mask, brain_mask, rec])
 
                     wandb.log(

@@ -85,7 +85,7 @@ trainer:
         batch_size: *tbatch_size
         dataset_module:
           module_name: data.loaders.atlas_loader
-          class_name: AtlasLoader
+          class_name: AtlasLoaderPalette
         data_dir:
           train:
             - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_png.csv'
@@ -96,12 +96,7 @@ trainer:
             - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_mask_png.csv'
           val:
             - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_val_mask_png.csv'
-        mask_dir:
-          train:
-            - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_brain_mask_png.csv'
-          val:
-            - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_val_brain_mask_png.csv'
-
+            
 # Downstream tasks
 downstream_tasks:  
   detection:

@@ -416,6 +416,66 @@ class DDPM(nn.Module):
             },
         )
 
+    def palette(
+        self,
+        original_images: torch.tensor,
+        palette_masks: torch.tensor,
+        encoding_ratio=1.0,
+        verbose=True,
+    ):
+        batch_size = original_images.shape[0]
+        timesteps = self.inference_scheduler.get_timesteps(
+            noise_level=int(encoding_ratio * 999)
+        )
+
+        # image = torch.randn_like(original_image)
+
+        # (generates) then adds noise to the original samples up to noise level 999.
+        # the generated signal (image) is not exactly a random gaussian. it is almost
+        # a random gaussian. because it still has some information from the original image if
+        # alpha ( of the scheduler) is not 0 for the last step T (999 here).
+        # see Abbeel lecture L6 on diff models time: 1h:07 mins for more info.
+        # https://www.youtube.com/watch?v=DsEDMjdxOv4&t=5145s&ab_channel=PieterAbbeel
+
+        noise = generate_noise(self.train_scheduler.noise_type, original_images)
+
+        timesteps_noising = torch.full(
+            [batch_size],
+            int(encoding_ratio * self.noise_level_recon),
+            device=original_images.device,
+        ).long()
+
+        image = self.inference_scheduler.add_noise(
+            original_samples=original_images,
+            noise=noise,
+            timesteps=timesteps_noising,
+        )
+
+        if verbose and has_tqdm:
+            progress_bar = tqdm(timesteps)
+        else:
+            progress_bar = iter(timesteps)
+
+        for t in progress_bar:
+
+            timesteps = torch.full([batch_size], t, device=self.device).long()
+            # generate uknown part of diffusion reverse process
+            predicted_noise = self.unet(
+                torch.cat((image, palette_masks), dim=1),
+                timesteps=torch.tensor((t,)).to(image.device),
+                context=None,
+            )
+
+            # inference_scheduler.step() internallhy checks if t>0. if t>0, noise z=0 in the
+            # sampling equation. take a look at # 6. Add noise, line 203 in the .step() function
+            image, _ = self.inference_scheduler.step(predicted_noise, t, image)
+
+        return image
+
+        
+
+
+
     def sdedit(
         self,
         original_images: torch.tensor,
@@ -458,13 +518,6 @@ class DDPM(nn.Module):
             progress_bar = iter(timesteps)
 
         for t in progress_bar:
-            # generate known part with forward process q()
-            if t > 0:
-                noise = generate_noise(
-                    self.inference_scheduler.noise_type, original_images
-                )
-            else:
-                noise = torch.zeros_like(original_images)
 
             timesteps = torch.full([batch_size], t, device=self.device).long()
             # generate uknown part of diffusion reverse process
