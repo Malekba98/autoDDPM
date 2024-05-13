@@ -551,7 +551,7 @@ class PTrainer(Trainer):
             fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
             fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
 
-            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
+            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_palette_masks, all_originals)
             wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
             wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
             
