@@ -421,7 +421,7 @@ class DDPM(nn.Module):
         original_images: torch.tensor,
         patho_masks: torch.tensor,
         brain_masks: torch.tensor,
-        encoding_ratio=0.2,
+        encoding_ratio=0.8,
         verbose=True,
     ):
         batch_size = original_images.shape[0]

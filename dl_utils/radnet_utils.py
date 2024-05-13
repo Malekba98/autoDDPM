@@ -52,3 +52,33 @@ def compute_fid(model, subset1, subset2):
     fid_res = fid(synth_features, real_features)
     return fid_res.item()
 
+def compute_ssim(subset_1,patho_masks,subset_2):
+    """
+    Compute the Structural Similarity Index (SSIM) between two subsets of images, outside the given pathology masks for
+    each pair of images"""
+
+    device = subset_1.device
+    
+    ssim_values = []
+    for i in range(subset_1.shape[0]):  # Iterate over batch dimension
+        # Apply the pathology mask to both subsets
+        subset_1_masked = subset_1[i] * (1 - patho_masks[i])
+        subset_2_masked = subset_2[i] * (1 - patho_masks[i])
+
+        # Calculate SSIM for the masked subsets
+        ssim = SSIMMetric(spatial_dims=2, data_range=1.0, kernel_size=4)
+        ssim_result = ssim(subset_1_masked.unsqueeze(0), subset_2_masked.unsqueeze(0))  # Add batch dimension
+
+        # Store the mean SSIM value
+        ssim_values.append(ssim_result.item())
+
+    # Compute mean and standard deviation of SSIM values
+    ssim_mean = torch.tensor(ssim_values, device=device).mean()
+    ssim_std = torch.tensor(ssim_values, device=device).std()
+
+    return ssim_mean, ssim_std
+
+def compute_msssim(subset_1,subset_2):
+    pass
+
+

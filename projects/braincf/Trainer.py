@@ -13,7 +13,7 @@ import cv2
 import copy
 from dl_utils.mask_utils import binarize_mask
 import matplotlib.pyplot as plt
-from dl_utils.radnet_utils import compute_fid
+from dl_utils.radnet_utils import compute_fid, compute_msssim, compute_ssim
 
 from generative.metrics import FIDMetric, MMDMetric, MultiScaleSSIMMetric, SSIMMetric
 
@@ -255,11 +255,7 @@ class PTrainer(Trainer):
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
         self.test_model.eval()
-        metrics = {
-            task + "_loss_rec": 0,
-            task + "_loss_mse": 0,
-            task + "_loss_pl": 0,
-        }
+
         test_total = 0
 
         first_batch = True
@@ -280,24 +276,17 @@ class PTrainer(Trainer):
 
                 # [16,1,128.128]
                 if first_batch:
+                    all_patho_masks = patho_masks.detach()
                     all_counterfactuals = x_.detach()
                     all_originals = x.detach()
                     first_batch = False
                 else:
+                    all_patho_masks = torch.cat((all_patho_masks, patho_masks.detach()), dim=0)
                     all_counterfactuals = torch.cat((all_counterfactuals, x_.detach()), dim=0)
                     all_originals = torch.cat((all_originals, x.detach()), dim=0)
 
                 print('shape of all counterfactuals', all_counterfactuals.shape)
                 print('shape of all originals', all_originals.shape)
-
-
-                loss_rec = self.criterion_rec(x_, x)
-                loss_mse = self.criterion_MSE(x_, x)
-                loss_pl = self.criterion_PL(x_, x)
-
-                metrics[task + "_loss_rec"] += loss_rec.item() * x.size(0)
-                metrics[task + "_loss_mse"] += loss_mse.item() * x.size(0)
-                metrics[task + "_loss_pl"] += loss_pl.item() * x.size(0)
 
                 for batch_idx in range(b):
                     counterfactual = x_[batch_idx].detach().cpu().numpy()
@@ -351,6 +340,17 @@ class PTrainer(Trainer):
             fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
             fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
 
+            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
+            wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
+            wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
+            
+            #msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
+
+
+
+            # baseline would be to compare the original images with the reference 
+            # and 
+
             print(f"FID Score (originals,counterfactuals): {fid_original_counterfactuals:.2f}")
             print(f"FID Score (reference_unhealthy,counterfactuals): {fid_reference_counterfactuals:.2f}")
             print(f"FID Score (reference_same_atlas,counterfactuals): {fid_reference_same_atlas_counterfactuals:.2f}")
@@ -360,8 +360,105 @@ class PTrainer(Trainer):
             wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
 
 
+    def repaint(self, model_weights, test_data,reference_data,reference_same_atlas_data, task="repaint"):
+        self.test_model.load_state_dict(model_weights)
+        self.test_model.to(self.device)
+        self.test_model.eval()
 
-    def repaint(self, model_weights, test_data, task="repaint"):
+        test_total = 0
+
+        first_batch = True
+        with torch.no_grad():
+            for data in test_data:
+                x = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
+                brain_masks = data[2].to(self.device)
+                dilated_patho_masks = data[3].to(self.device)
+                inpaint_masks = dilated_patho_masks
+
+                b, _, _, _ = x.shape
+                test_total += b
+
+                #inpaint_masks = patho_masks
+                
+                x_ = self.test_model.repaint(
+                    original_images=x,
+                    inpaint_masks=inpaint_masks,
+                    patho_masks=patho_masks,
+                    brain_masks=brain_masks,
+                )
+
+                if first_batch:
+                    all_patho_masks = patho_masks.detach()
+                    all_counterfactuals = x_.detach()
+                    all_originals = x.detach()
+                    first_batch = False
+                else:
+                    all_patho_masks = torch.cat((all_patho_masks, patho_masks.detach()), dim=0)
+                    all_counterfactuals = torch.cat((all_counterfactuals, x_.detach()), dim=0)
+                    all_originals = torch.cat((all_originals, x.detach()), dim=0)
+
+                print('shape of all counterfactuals', all_counterfactuals.shape)
+                print('shape of all originals', all_originals.shape)
+
+                for batch_idx in range(b):
+                    counterfactual = x_[batch_idx].detach().cpu().numpy()
+                    counterfactual[0, 0], counterfactual[0, 1] = 0, 1
+
+                    img = x[batch_idx].detach().cpu().numpy()
+                    img[0, 0], img[0, 1] = 0, 1
+
+                    patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+
+                    grid_image = np.hstack([img, patho_mask, counterfactual])
+                    wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
+            
+            first_batch = True
+            with torch.no_grad():
+                for data in reference_data:
+                    x = data[0].to(self.device)
+                    if first_batch:
+                        all_unhealthy = x.detach()
+                        first_batch = False
+                    else:
+                        all_unhealthy = torch.cat((all_unhealthy, x.detach()), dim=0)
+
+            first_batch = True
+            with torch.no_grad():
+                for data in reference_same_atlas_data:
+                    x = data[0].to(self.device)
+                    if first_batch:
+                        all_same_atlas = x.detach()
+                        first_batch = False
+                    else:
+                        all_same_atlas = torch.cat((all_same_atlas, x.detach()), dim=0)
+
+            fid_original_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_originals)
+            fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
+            fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
+
+            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
+            wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
+            wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
+            
+            #msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
+
+
+
+            # baseline would be to compare the original images with the reference 
+            # and 
+
+            print(f"FID Score (originals,counterfactuals): {fid_original_counterfactuals:.2f}")
+            print(f"FID Score (reference_unhealthy,counterfactuals): {fid_reference_counterfactuals:.2f}")
+            print(f"FID Score (reference_same_atlas,counterfactuals): {fid_reference_same_atlas_counterfactuals:.2f}")
+
+            wandb.log({"FID Score (originals,counterfactuals)": fid_original_counterfactuals})
+            wandb.log({"FID Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
+            wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
+
+
+    def repaint_(self, model_weights, test_data, task="repaint"):
+        
 
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
