@@ -71,6 +71,8 @@ class Main(object):
 
         if configurator.dl_config["experiment"]["task"] == "train":
             configurator.start_training(checkpoint)
+        elif configurator.dl_config["experiment"]["task"] == "palette":
+            configurator.start_palette_editing(checkpoint)
         elif configurator.dl_config["experiment"]["task"] == "repaint":
             configurator.start_repaint_editing(checkpoint)
         elif configurator.dl_config["experiment"]["task"] == "sdedit":

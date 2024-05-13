@@ -7,7 +7,7 @@ checkpoint_path: &checkpoint_path './projects/braincf/weights/runs/'
 # Experiment
 #
 experiment:
-  name: Semantic_synthesis
+  name: Palette training
   task: train
   weights: 
 
@@ -41,7 +41,7 @@ model:
     train_scheduler: "ddpm"
     inference_scheduler: "ddpm"
     inference_steps: 1000
-    noise_level_recon: 999
+    noise_level_recon: 100
     noise_type: "gaussian"
     method: "anoDDPM"
     prediction_type: "epsilon"
@@ -64,8 +64,8 @@ trainer:
     checkpoint_path: *checkpoint_path
     batch_size: *tbatch_size
     nr_epochs: 2000
-    val_interval: 300
-    training_mode: "semantic synthesis"
+    val_interval: 1
+    training_mode: "palette training"
     # Loss
     loss:
       module_name: optim.losses.ln_losses
@@ -96,7 +96,7 @@ trainer:
             - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_mask_png.csv'
           val:
             - './data/ATLAS/splits_over_1_stratified_all_splits/atlas_val_mask_png.csv'
-            
+
 # Downstream tasks
 downstream_tasks:  
   detection:

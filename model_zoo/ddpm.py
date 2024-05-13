@@ -425,8 +425,9 @@ class DDPM(nn.Module):
     ):
         batch_size = original_images.shape[0]
         timesteps = self.inference_scheduler.get_timesteps(
-            noise_level=int(encoding_ratio * 999)
+            noise_level=int(encoding_ratio * self.noise_level_recon)
         )
+
 
         # image = torch.randn_like(original_image)
 
@@ -472,10 +473,6 @@ class DDPM(nn.Module):
 
         return image
 
-        
-
-
-
     def sdedit(
         self,
         original_images: torch.tensor,
@@ -486,7 +483,7 @@ class DDPM(nn.Module):
     ):
         batch_size = original_images.shape[0]
         timesteps = self.inference_scheduler.get_timesteps(
-            noise_level=int(encoding_ratio * 999)
+            noise_level=int(encoding_ratio * self.noise_level_recon)
         )
 
         # image = torch.randn_like(original_image)
@@ -542,7 +539,7 @@ class DDPM(nn.Module):
         verbose=True,
     ):
         batch_size = original_images.shape[0]
-        timesteps = self.inference_scheduler.get_timesteps(noise_level=999)
+        timesteps = self.inference_scheduler.get_timesteps(noise_level=self.noise_level_recon)
 
         # image = torch.randn_like(original_image)
 
@@ -555,7 +552,7 @@ class DDPM(nn.Module):
 
         noise = generate_noise(self.train_scheduler.noise_type, original_images)
 
-        timesteps_full_noise = torch.full([batch_size], 999, device=self.device).long()
+        timesteps_full_noise = torch.full([batch_size], self.noise_level_recon, device=self.device).long()
 
         image = self.inference_scheduler.add_noise(
             original_samples=original_images,

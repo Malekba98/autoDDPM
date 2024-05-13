@@ -99,6 +99,41 @@ class DLConfigurator(object):
         )
         self.start_evaluations(trained_model_state)
 
+    def start_palette_editing(self, global_model):
+        data = self.load_data(self.dl_config["trainer"]["data_loader"], train=True)
+        reference_unhealthy_data = self.load_data(
+            self.dl_config["trainer"]["reference_data_loader"], train=True
+        )
+        reference_same_atlas_data = self.load_data(
+            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"], train=True
+        )
+        trainer_class = import_module(
+            self.dl_config["trainer"]["module_name"],
+            self.dl_config["trainer"]["class_name"],
+        )
+        self.trainer = trainer_class(
+            training_params=self.dl_config["trainer"]["params"],
+            model=copy.deepcopy(self.model),
+            data=data,
+            device=self.device,
+            log_wandb=True,
+        )
+
+        model_state, opt_state, epoch = None, None, 0
+        if self.trainer is None:
+            logging.error(
+                "[Configurator::train::ERROR]: Trainer not defined! Shutting down..."
+            )
+            exit()
+        if "model_weights" in global_model.keys():
+            model_state = global_model["model_weights"]
+            logging.info("[Configurator::train::INFO]: Model weights loaded!")
+
+        logging.info(
+            "[Configurator::train]: ################ Starting palette editing ################"
+        )
+        self.trainer.palette(model_state, data.test_dataloader(),reference_unhealthy_data.test_dataloader(),reference_same_atlas_data.test_dataloader(), task="palette")
+
     def start_sd_editing(self, global_model):
         data = self.load_data(self.dl_config["trainer"]["data_loader"], train=True)
         reference_unhealthy_data = self.load_data(

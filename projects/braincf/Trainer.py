@@ -210,10 +210,9 @@ class PTrainer(Trainer):
                     )
                 elif self.training_params["training_mode"] == "palette training":
                     palette_masks = data[4].to(self.device)
-                    x_, _ = self.test_model.sample_from_image(
+                    x_ = self.test_model.palette(
                         x,
-                        palette_masks,
-                        noise_level=self.model.noise_level_recon,
+                        palette_masks
                     )
 
                 loss_rec = self.criterion_rec(x_, x)
@@ -233,7 +232,15 @@ class PTrainer(Trainer):
                     brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
                     
-                    grid_image = np.hstack([img, patho_mask, brain_mask, rec])
+                    if self.training_params["training_mode"] == "palette training":
+                        print("shape of img", img.shape)
+                        print("shape of palette_mask", palette_masks[batch_idx].shape)
+                        print("shape of brain_mask", brain_mask.shape)
+                        print("shape of rec", rec.shape)
+                        palette_mask = palette_masks[batch_idx].detach().cpu().numpy()
+                        grid_image = np.hstack([img, palette_mask, rec ])
+                    else:
+                        grid_image = np.hstack([img, patho_mask, brain_mask, rec])
 
                     wandb.log(
                         {
@@ -474,6 +481,94 @@ class PTrainer(Trainer):
             wandb.log({"FID Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
             wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
 
+    def palette(self, model_weights, test_data,reference_data,reference_same_atlas_data, task="palette"):
+        self.test_model.load_state_dict(model_weights)
+        self.test_model.to(self.device)
+        self.test_model.eval()
+
+        test_total = 0
+
+        first_batch = True
+        with torch.no_grad():
+            for data in test_data:
+                x = data[0].to(self.device)
+                palette_masks = data[4].to(self.device)
+
+                b, _, _, _ = x.shape
+                test_total += b
+
+                x_ = self.test_model.palette(
+                    original_images=x,
+                    palette_masks=palette_masks
+                )
+
+                if first_batch:
+                    all_counterfactuals = x_.detach()
+                    all_originals = x.detach()
+                    all_palette_masks = palette_masks.detach()
+                    first_batch = False
+                else:
+                    all_counterfactuals = torch.cat((all_counterfactuals, x_.detach()), dim=0)
+                    all_originals = torch.cat((all_originals, x.detach()), dim=0)
+                    all_palette_masks = torch.cat((all_palette_masks, palette_masks.detach()), dim=0)
+
+                print('shape of all counterfactuals', all_counterfactuals.shape)
+                print('shape of all originals', all_originals.shape)
+
+                for batch_idx in range(b):
+                    counterfactual = x_[batch_idx].detach().cpu().numpy()
+                    counterfactual[0, 0], counterfactual[0, 1] = 0, 1
+
+                    img = x[batch_idx].detach().cpu().numpy()
+                    img[0, 0], img[0, 1] = 0, 1
+
+                    palette_mask = palette_masks[batch_idx].detach().cpu().numpy()
+
+                    grid_image = np.hstack([img, palette_mask, rec])
+                    wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
+
+            first_batch = True
+            with torch.no_grad():
+                for data in reference_data:
+                    x = data[0].to(self.device)
+                    if first_batch:
+                        all_unhealthy = x.detach()
+                        first_batch = False
+                    else:
+                        all_unhealthy = torch.cat((all_unhealthy, x.detach()), dim=0)
+
+            first_batch = True
+            with torch.no_grad():
+                for data in reference_same_atlas_data:
+                    x = data[0].to(self.device)
+                    if first_batch:
+                        all_same_atlas = x.detach()
+                        first_batch = False
+                    else:
+                        all_same_atlas = torch.cat((all_same_atlas, x.detach()), dim=0)
+
+            fid_original_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_originals)
+            fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
+            fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
+
+            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
+            wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
+            wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
+            
+            #msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
+
+
+
+            # baseline would be to compare the original images with the reference 
+            # and 
+
+            print(f"FID Score (originals,counterfactuals): {fid_original_counterfactuals:.2f}")
+            print(f"FID Score (reference_unhealthy,counterfactuals): {fid_reference_counterfactuals:.2f}")
+            print(f"FID Score (reference_same_atlas,counterfactuals): {fid_reference_same_atlas_counterfactuals:.2f}")
+
+            wandb.log({"FID Score (originals,counterfactuals)": fid_original_counterfactuals})
+            wandb.log({"FID Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
+            wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
 
     def repaint_(self, model_weights, test_data, task="repaint"):
         
