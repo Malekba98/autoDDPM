@@ -428,7 +428,6 @@ class DDPM(nn.Module):
             noise_level=int(encoding_ratio * self.noise_level_recon)
         )
 
-
         # image = torch.randn_like(original_image)
 
         # (generates) then adds noise to the original samples up to noise level 999.
@@ -478,7 +477,7 @@ class DDPM(nn.Module):
         original_images: torch.tensor,
         patho_masks: torch.tensor,
         brain_masks: torch.tensor,
-        encoding_ratio=0.8,
+        encoding_ratio=0.2,
         verbose=True,
     ):
         batch_size = original_images.shape[0]
@@ -539,7 +538,9 @@ class DDPM(nn.Module):
         verbose=True,
     ):
         batch_size = original_images.shape[0]
-        timesteps = self.inference_scheduler.get_timesteps(noise_level=self.noise_level_recon)
+        timesteps = self.inference_scheduler.get_timesteps(
+            noise_level=self.noise_level_recon
+        )
 
         # image = torch.randn_like(original_image)
 
@@ -552,7 +553,9 @@ class DDPM(nn.Module):
 
         noise = generate_noise(self.train_scheduler.noise_type, original_images)
 
-        timesteps_full_noise = torch.full([batch_size], self.noise_level_recon, device=self.device).long()
+        timesteps_full_noise = torch.full(
+            [batch_size], self.noise_level_recon, device=self.device
+        ).long()
 
         image = self.inference_scheduler.add_noise(
             original_samples=original_images,

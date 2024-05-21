@@ -1,5 +1,6 @@
 import torch
 from generative.metrics import FIDMetric, MMDMetric, MultiScaleSSIMMetric, SSIMMetric
+from numpy import std
 
 
 def subtract_mean(x: torch.Tensor) -> torch.Tensor:
@@ -14,7 +15,7 @@ def spatial_average(x: torch.Tensor, keepdim: bool = True) -> torch.Tensor:
     return x.mean([2, 3], keepdim=keepdim)
 
 
-def get_features(image,model):
+def get_features(image, model):
     # If input has just 1 channel, repeat channel to have 3 channels
     if image.shape[1]:
         image = image.repeat(1, 3, 1, 1)
@@ -34,31 +35,71 @@ def get_features(image,model):
     return feature_image
 
 
-def compute_fid(model, subset1, subset2):
-    synth_features = []
+def compute_fid(model, subset1, subset2, bootstrap=False):
+
     real_features = []
 
-    real_eval_feats = get_features(subset1,model)
+    real_eval_feats = get_features(subset1, model)
     real_features.append(real_eval_feats)
-
-    # Get the features for the synthetic data
-    synth_eval_feats = get_features(subset2,model)
-    synth_features.append(synth_eval_feats)
-
-    synth_features = torch.vstack(synth_features)
     real_features = torch.vstack(real_features)
 
-    fid = FIDMetric()
-    fid_res = fid(synth_features, real_features)
+    if bootstrap:
+        b = subset2.shape[0]
+        sum_ = 0
+        fids = []
+        for _ in range(10):
+            synth_features = []
+            # Generate random indices
+            indices = torch.randint(b, (b,))
+            print(indices)
+
+            # Use the indices to index into the tensor
+            sampled_tensor = subset2[indices]
+
+            print(sampled_tensor.shape)  # Prints: torch.Size([b, c, 128, 18])
+
+            # Get the features for the synthetic data
+            synth_eval_feats = get_features(sampled_tensor, model)
+            synth_features.append(synth_eval_feats)
+            synth_features = torch.vstack(synth_features)
+
+            fid = FIDMetric()
+            fid_res = fid(synth_features, real_features)
+            fid_res = round(fid_res.item(), 2)
+
+            sum_ += fid_res
+            fids.append(fid_res)
+
+        mean_fid = sum_ / 10
+        std_fid = std(fids)
+        return mean_fid, std_fid
+
+    else:
+        real_features = []
+        synth_features = []
+
+        real_eval_feats = get_features(subset1, model)
+        real_features.append(real_eval_feats)
+
+        synth_eval_feats = get_features(subset2, model)
+        synth_features.append(synth_eval_feats)
+
+        synth_features = torch.vstack(synth_features)
+        real_features = torch.vstack(real_features)
+
+        fid = FIDMetric()
+        fid_res = fid(synth_features, real_features)
+
     return fid_res.item()
 
-def compute_ssim(subset_1,patho_masks,subset_2):
+
+def compute_ssim(subset_1, patho_masks, subset_2):
     """
     Compute the Structural Similarity Index (SSIM) between two subsets of images, outside the given pathology masks for
     each pair of images"""
 
     device = subset_1.device
-    
+
     ssim_values = []
     for i in range(subset_1.shape[0]):  # Iterate over batch dimension
         # Apply the pathology mask to both subsets
@@ -67,7 +108,9 @@ def compute_ssim(subset_1,patho_masks,subset_2):
 
         # Calculate SSIM for the masked subsets
         ssim = SSIMMetric(spatial_dims=2, data_range=1.0, kernel_size=4)
-        ssim_result = ssim(subset_1_masked.unsqueeze(0), subset_2_masked.unsqueeze(0))  # Add batch dimension
+        ssim_result = ssim(
+            subset_1_masked.unsqueeze(0), subset_2_masked.unsqueeze(0)
+        )  # Add batch dimension
 
         # Store the mean SSIM value
         ssim_values.append(ssim_result.item())
@@ -78,7 +121,6 @@ def compute_ssim(subset_1,patho_masks,subset_2):
 
     return ssim_mean, ssim_std
 
-def compute_msssim(subset_1,subset_2):
+
+def compute_msssim(subset_1, subset_2):
     pass
-
-

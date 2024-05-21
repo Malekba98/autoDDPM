@@ -16,15 +16,51 @@ import matplotlib.pyplot as plt
 from dl_utils.radnet_utils import compute_fid, compute_msssim, compute_ssim
 
 from generative.metrics import FIDMetric, MMDMetric, MultiScaleSSIMMetric, SSIMMetric
+from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor, join
+import torch
+from optim.metrics import compute_dice, dice_coefficient_batch, dice_coefficient_batch_
+import numpy as np
+from dl_utils.fid_score import save_fid_stats, calculate_fid_given_images
+
+PROPS = {
+    "sitk_stuff": {
+        "spacing": (1.0, 1.0),
+        "origin": (0.0, 0.0),
+        "direction": (1.0, 0.0, 0.0, 1.0),
+    },
+    "spacing": [999.0, 1.0, 1.0],
+}
 
 
 class PTrainer(Trainer):
     def __init__(self, training_params, model, data, device, log_wandb=True):
         super(PTrainer, self).__init__(training_params, model, data, device, log_wandb)
         self.val_interval = training_params["val_interval"]
-        self.radnet = torch.hub.load("Warvito/radimagenet-models:main", model="radimagenet_resnet50",verbose=True)
+        self.radnet = torch.hub.load(
+            "Warvito/radimagenet-models:main",
+            model="radimagenet_resnet50",
+            verbose=True,
+        )
         self.radnet.to(device)
         self.radnet.eval()
+
+        self.nnunet = nnUNetPredictor(
+            tile_step_size=0.5,
+            use_gaussian=True,
+            use_mirroring=True,
+            perform_everything_on_device=True,
+            device=torch.device("cuda", 0),
+            verbose=False,
+            verbose_preprocessing=False,
+            allow_tqdm=True,
+        )
+        nnUNet_results = "/home/malek/mock/autoDDPM/nnunet_data/nnunet_results"
+
+        self.nnunet.initialize_from_trained_model_folder(
+            join(nnUNet_results, "Dataset500_ATLAS/nnUNetTrainer__nnUNetPlans__2d"),
+            use_folds=(0, 1, 2, 3, 4),
+            checkpoint_name="checkpoint_final.pth",
+        )
 
     def train(self, model_state=None, opt_state=None, start_epoch=0):
         """
@@ -118,7 +154,7 @@ class PTrainer(Trainer):
                         if self.model.prediction_type == "sample"
                         else noise
                     )
-                    
+
                     # print("prediction size", pred.size())
                     # print("target size", target.size())
                     loss = self.criterion_rec(pred.float(), target.float())
@@ -210,10 +246,7 @@ class PTrainer(Trainer):
                     )
                 elif self.training_params["training_mode"] == "palette training":
                     palette_masks = data[4].to(self.device)
-                    x_ = self.test_model.palette(
-                        x,
-                        palette_masks
-                    )
+                    x_ = self.test_model.palette(x, palette_masks)
 
                 loss_rec = self.criterion_rec(x_, x)
                 loss_mse = self.criterion_MSE(x_, x)
@@ -231,14 +264,14 @@ class PTrainer(Trainer):
 
                     brain_mask = brain_masks[batch_idx].detach().cpu().numpy()
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
-                    
+
                     if self.training_params["training_mode"] == "palette training":
                         print("shape of img", img.shape)
                         print("shape of palette_mask", palette_masks[batch_idx].shape)
                         print("shape of brain_mask", brain_mask.shape)
                         print("shape of rec", rec.shape)
                         palette_mask = palette_masks[batch_idx].detach().cpu().numpy()
-                        grid_image = np.hstack([img, palette_mask, rec ])
+                        grid_image = np.hstack([img, palette_mask, rec])
                     else:
                         grid_image = np.hstack([img, patho_mask, brain_mask, rec])
 
@@ -276,7 +309,15 @@ class PTrainer(Trainer):
             if self.lr_scheduler is not None:
                 self.lr_scheduler.step(epoch_val_loss)
 
-    def sdedit(self, model_weights, test_data,reference_data,reference_same_atlas_data, task="sdedit"):
+    def sdedit(
+        self,
+        model_weights,
+        test_data,
+        reference_data,
+        reference_same_atlas_data,
+        encoding_ratio,
+        task="sdedit",
+    ):
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
         self.test_model.eval()
@@ -284,6 +325,7 @@ class PTrainer(Trainer):
         test_total = 0
 
         first_batch = True
+
         with torch.no_grad():
             for data in test_data:
                 x = data[0].to(self.device)
@@ -297,21 +339,33 @@ class PTrainer(Trainer):
                     original_images=x,
                     patho_masks=patho_masks,
                     brain_masks=brain_masks,
+                    encoding_ratio=encoding_ratio,
                 )
+
+                counterfactuals_np = x_.detach().cpu().numpy()
+                predicted_masks = self._predict_segmentation_mask(counterfactuals_np, b)
 
                 # [16,1,128.128]
                 if first_batch:
                     all_patho_masks = patho_masks.detach()
                     all_counterfactuals = x_.detach()
                     all_originals = x.detach()
+                    all_predicted_masks = predicted_masks
                     first_batch = False
                 else:
-                    all_patho_masks = torch.cat((all_patho_masks, patho_masks.detach()), dim=0)
-                    all_counterfactuals = torch.cat((all_counterfactuals, x_.detach()), dim=0)
+                    all_patho_masks = torch.cat(
+                        (all_patho_masks, patho_masks.detach()), dim=0
+                    )
+                    all_counterfactuals = torch.cat(
+                        (all_counterfactuals, x_.detach()), dim=0
+                    )
                     all_originals = torch.cat((all_originals, x.detach()), dim=0)
+                    all_predicted_masks.extend(predicted_masks)
 
-                print('shape of all counterfactuals', all_counterfactuals.shape)
-                print('shape of all originals', all_originals.shape)
+                print("shape of all counterfactuals", all_counterfactuals.shape)
+                print("shape of all originals", all_originals.shape)
+
+                # print('len of segmentation maps',len(segmentation_maps))
 
                 for batch_idx in range(b):
                     counterfactual = x_[batch_idx].detach().cpu().numpy()
@@ -324,7 +378,7 @@ class PTrainer(Trainer):
 
                     notebook = False
                     if notebook:
-                        fig, axs = plt.subplots(1, 3)
+                        fig, axs = plt.subplots(1, 4)
                         axs[0].imshow(img[0], cmap="gray")
                         axs[0].set_title("Original Image")
                         axs[0].axis("off")
@@ -333,14 +387,26 @@ class PTrainer(Trainer):
                         axs[1].set_title("Pathological Mask")
                         axs[1].axis("off")
 
-                        axs[2].imshow(counterfactual[0], cmap="gray")
-                        axs[2].set_title("Counterfactual")
+                        axs[2].imshow(predicted_masks[batch_idx][0], cmap="gray")
+                        axs[2].set_title("NNunet predicted mask")
                         axs[2].axis("off")
+
+                        # print('shape of counterfactual[0]', counterfactual[0].shape)
+                        axs[3].imshow(counterfactual[0], cmap="gray")
+                        axs[3].set_title("Counterfactual")
+                        axs[3].axis("off")
                         plt.show()
                     else:
-                        grid_image = np.hstack([img, patho_mask, counterfactual])
+                        grid_image = np.hstack(
+                            [
+                                img,
+                                patho_mask,
+                                predicted_masks[batch_idx],
+                                counterfactual,
+                            ]
+                        )
                         wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
-            
+
             first_batch = True
             with torch.no_grad():
                 for data in reference_data:
@@ -361,31 +427,23 @@ class PTrainer(Trainer):
                     else:
                         all_same_atlas = torch.cat((all_same_atlas, x.detach()), dim=0)
 
-            fid_original_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_originals)
-            fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
-            fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
+            self._compute_metrics(
+                all_counterfactuals,
+                all_originals,
+                all_patho_masks,
+                all_unhealthy,
+                all_same_atlas,
+                all_predicted_masks,
+            )
 
-            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
-            wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
-            wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
-            
-            #msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
-
-
-
-            # baseline would be to compare the original images with the reference 
-            # and 
-
-            print(f"FID Score (originals,counterfactuals): {fid_original_counterfactuals:.2f}")
-            print(f"FID Score (reference_unhealthy,counterfactuals): {fid_reference_counterfactuals:.2f}")
-            print(f"FID Score (reference_same_atlas,counterfactuals): {fid_reference_same_atlas_counterfactuals:.2f}")
-
-            wandb.log({"FID Score (originals,counterfactuals)": fid_original_counterfactuals})
-            wandb.log({"FID Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
-            wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
-
-
-    def repaint(self, model_weights, test_data,reference_data,reference_same_atlas_data, task="repaint"):
+    def repaint(
+        self,
+        model_weights,
+        test_data,
+        reference_data,
+        reference_same_atlas_data,
+        task="repaint",
+    ):
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
         self.test_model.eval()
@@ -404,27 +462,35 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                #inpaint_masks = patho_masks
-                
+                # inpaint_masks = patho_masks
+
                 x_ = self.test_model.repaint(
                     original_images=x,
                     inpaint_masks=inpaint_masks,
                     patho_masks=patho_masks,
                     brain_masks=brain_masks,
                 )
+                counterfactuals_np = x_.detach().cpu().numpy()
+                predicted_masks = self._predict_segmentation_mask(counterfactuals_np, b)
 
                 if first_batch:
                     all_patho_masks = patho_masks.detach()
                     all_counterfactuals = x_.detach()
                     all_originals = x.detach()
+                    all_predicted_masks = predicted_masks
                     first_batch = False
                 else:
-                    all_patho_masks = torch.cat((all_patho_masks, patho_masks.detach()), dim=0)
-                    all_counterfactuals = torch.cat((all_counterfactuals, x_.detach()), dim=0)
+                    all_patho_masks = torch.cat(
+                        (all_patho_masks, patho_masks.detach()), dim=0
+                    )
+                    all_counterfactuals = torch.cat(
+                        (all_counterfactuals, x_.detach()), dim=0
+                    )
                     all_originals = torch.cat((all_originals, x.detach()), dim=0)
+                    all_predicted_masks.extend(predicted_masks)
 
-                print('shape of all counterfactuals', all_counterfactuals.shape)
-                print('shape of all originals', all_originals.shape)
+                print("shape of all counterfactuals", all_counterfactuals.shape)
+                print("shape of all originals", all_originals.shape)
 
                 for batch_idx in range(b):
                     counterfactual = x_[batch_idx].detach().cpu().numpy()
@@ -435,9 +501,11 @@ class PTrainer(Trainer):
 
                     patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
 
-                    grid_image = np.hstack([img, patho_mask, counterfactual])
+                    grid_image = np.hstack(
+                        [img, patho_mask, predicted_masks[batch_idx], counterfactual]
+                    )
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
-            
+
             first_batch = True
             with torch.no_grad():
                 for data in reference_data:
@@ -458,30 +526,23 @@ class PTrainer(Trainer):
                     else:
                         all_same_atlas = torch.cat((all_same_atlas, x.detach()), dim=0)
 
-            fid_original_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_originals)
-            fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
-            fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
+            self._compute_metrics(
+                all_counterfactuals,
+                all_originals,
+                all_patho_masks,
+                all_unhealthy,
+                all_same_atlas,
+                all_predicted_masks,
+            )
 
-            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
-            wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
-            wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
-            
-            #msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
-
-
-
-            # baseline would be to compare the original images with the reference 
-            # and 
-
-            print(f"FID Score (originals,counterfactuals): {fid_original_counterfactuals:.2f}")
-            print(f"FID Score (reference_unhealthy,counterfactuals): {fid_reference_counterfactuals:.2f}")
-            print(f"FID Score (reference_same_atlas,counterfactuals): {fid_reference_same_atlas_counterfactuals:.2f}")
-
-            wandb.log({"FID Score (originals,counterfactuals)": fid_original_counterfactuals})
-            wandb.log({"FID Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
-            wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
-
-    def palette(self, model_weights, test_data,reference_data,reference_same_atlas_data, task="palette"):
+    def palette(
+        self,
+        model_weights,
+        test_data,
+        reference_data,
+        reference_same_atlas_data,
+        task="palette",
+    ):
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
         self.test_model.eval()
@@ -492,28 +553,41 @@ class PTrainer(Trainer):
         with torch.no_grad():
             for data in test_data:
                 x = data[0].to(self.device)
+                patho_masks = data[1].to(self.device)
                 palette_masks = data[4].to(self.device)
 
                 b, _, _, _ = x.shape
                 test_total += b
 
                 x_ = self.test_model.palette(
-                    original_images=x,
-                    palette_masks=palette_masks
+                    original_images=x, palette_masks=palette_masks
                 )
+
+                counterfactuals_np = x_.detach().cpu().numpy()
+                predicted_masks = self._predict_segmentation_mask(counterfactuals_np, b)
 
                 if first_batch:
                     all_counterfactuals = x_.detach()
                     all_originals = x.detach()
                     all_palette_masks = palette_masks.detach()
+                    all_patho_masks = patho_masks.detach()
+                    all_predicted_masks = predicted_masks
                     first_batch = False
                 else:
-                    all_counterfactuals = torch.cat((all_counterfactuals, x_.detach()), dim=0)
+                    all_counterfactuals = torch.cat(
+                        (all_counterfactuals, x_.detach()), dim=0
+                    )
                     all_originals = torch.cat((all_originals, x.detach()), dim=0)
-                    all_palette_masks = torch.cat((all_palette_masks, palette_masks.detach()), dim=0)
+                    all_palette_masks = torch.cat(
+                        (all_palette_masks, palette_masks.detach()), dim=0
+                    )
+                    all_patho_masks = torch.cat(
+                        (all_patho_masks, patho_masks.detach()), dim=0
+                    )
+                    all_predicted_masks.extend(predicted_masks)
 
-                print('shape of all counterfactuals', all_counterfactuals.shape)
-                print('shape of all originals', all_originals.shape)
+                print("shape of all counterfactuals", all_counterfactuals.shape)
+                print("shape of all originals", all_originals.shape)
 
                 for batch_idx in range(b):
                     counterfactual = x_[batch_idx].detach().cpu().numpy()
@@ -522,9 +596,13 @@ class PTrainer(Trainer):
                     img = x[batch_idx].detach().cpu().numpy()
                     img[0, 0], img[0, 1] = 0, 1
 
+                    patho_mask = patho_masks[batch_idx].detach().cpu().numpy()
+
                     palette_mask = palette_masks[batch_idx].detach().cpu().numpy()
 
-                    grid_image = np.hstack([img, palette_mask, rec])
+                    grid_image = np.hstack(
+                        [img, patho_mask, predicted_masks[batch_idx], counterfactual]
+                    )
                     wandb.log({task + "/Example_": [wandb.Image(grid_image)]})
 
             first_batch = True
@@ -547,31 +625,16 @@ class PTrainer(Trainer):
                     else:
                         all_same_atlas = torch.cat((all_same_atlas, x.detach()), dim=0)
 
-            fid_original_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_originals)
-            fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
-            fid_reference_same_atlas_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_same_atlas)
-
-            ssim_original_counterfactuals_mean,ssim_original_counterfactuals_std = compute_ssim(all_counterfactuals, all_palette_masks, all_originals)
-            wandb.log({"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean})
-            wandb.log({"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std})
-            
-            #msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
-
-
-
-            # baseline would be to compare the original images with the reference 
-            # and 
-
-            print(f"FID Score (originals,counterfactuals): {fid_original_counterfactuals:.2f}")
-            print(f"FID Score (reference_unhealthy,counterfactuals): {fid_reference_counterfactuals:.2f}")
-            print(f"FID Score (reference_same_atlas,counterfactuals): {fid_reference_same_atlas_counterfactuals:.2f}")
-
-            wandb.log({"FID Score (originals,counterfactuals)": fid_original_counterfactuals})
-            wandb.log({"FID Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
-            wandb.log({"FID Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals})
+            self._compute_metrics(
+                all_counterfactuals,
+                all_originals,
+                all_patho_masks,
+                all_unhealthy,
+                all_same_atlas,
+                all_predicted_masks,
+            )
 
     def repaint_(self, model_weights, test_data, task="repaint"):
-        
 
         self.test_model.load_state_dict(model_weights)
         self.test_model.to(self.device)
@@ -894,4 +957,90 @@ class PTrainer(Trainer):
                 # print('shape of generated mask',generated_mask.shape)
                 # print('shape of patho mask',patho_mask.shape)
                 mask_image = np.hstack([non_binarized_mask])
+
                 wandb.log({task + "/mask_": [wandb.Image(mask_image)]})
+
+    def _predict_segmentation_mask(self, counterfactuals_np, batch_size):
+        counterfactuals_np = [
+            np.expand_dims(counterfactuals_np[i], axis=0) for i in range(batch_size)
+        ]
+
+        iterator = self.nnunet.get_data_iterator_from_raw_npy_data(
+            counterfactuals_np, None, [PROPS for _ in range(batch_size)], None, 1
+        )
+        predicted_masks = self.nnunet.predict_from_data_iterator(iterator, False, 1)
+        return predicted_masks
+
+    def _compute_metrics(
+        self,
+        all_counterfactuals,
+        all_originals,
+        all_patho_masks,
+        all_unhealthy,
+        all_same_atlas,
+        all_predicted_masks,
+    ):
+        # fid_original_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_originals)
+        # fid_reference_counterfactuals = compute_fid(self.radnet, all_counterfactuals, all_unhealthy)
+        fid_reference_same_atlas_counterfactuals, std_fid_same_atlas_counterfactuals = (
+            compute_fid(
+                self.radnet, all_counterfactuals, all_same_atlas, bootstrap=True
+            )
+        )
+
+        set_size = all_counterfactuals.shape[0]
+        # fid_inception_original_counterfactuals = calculate_fid_given_images([all_originals,all_counterfactuals],set_size,self.device,2048,4)
+        # fid_inception_reference_counterfactuals = calculate_fid_given_images([all_unhealthy,all_counterfactuals],set_size,self.device,2048,4)
+        fid_inception_reference_same_atlas_counterfactuals, std_fid_inception_same_atlas_counterfactuals = calculate_fid_given_images(
+            [all_same_atlas, all_counterfactuals], set_size, self.device, 2048, 4,bootstrap=True
+        )
+
+        ssim_original_counterfactuals_mean, ssim_original_counterfactuals_std = (
+            compute_ssim(all_counterfactuals, all_patho_masks, all_originals)
+        )
+
+        wandb.log(
+            {"ssim(original,counterfactuals)_mean": ssim_original_counterfactuals_mean}
+        )
+        wandb.log(
+            {"ssim(original,counterfactuals)_std": ssim_original_counterfactuals_std}
+        )
+
+        # msssim_original_counterfactuals = compute_msssim(all_counterfactuals, all_patho_masks, all_originals)
+        # wandb.log({"FID Radnet Score (originals,counterfactuals)": fid_original_counterfactuals})
+        # wandb.log({"FID Radnet Score (reference_unhealthy,counterfactuals)": fid_reference_counterfactuals})
+        wandb.log(
+            {
+                "FID Radnet Score (reference_same_atlas,counterfactuals)": fid_reference_same_atlas_counterfactuals
+            }
+        )
+        wandb.log(
+            {
+                "FID Radnet Score (reference_same_atlas,counterfactuals)_std": std_fid_same_atlas_counterfactuals
+            }
+        )
+
+        # wandb.log({"FID Inception Score (originals,counterfactuals)": fid_inception_original_counterfactuals})
+        # wandb.log({"FID Inception Score (reference_unhealthy,counterfactuals)": fid_inception_reference_counterfactuals})
+        wandb.log(
+            {
+                "FID Inception Score (reference_same_atlas,counterfactuals)": fid_inception_reference_same_atlas_counterfactuals
+            }
+        )
+
+        wandb.log(
+            {
+                "FID Inception Score (reference_same_atlas,counterfactuals)_std": std_fid_inception_same_atlas_counterfactuals
+            }
+        )
+
+        all_patho_masks = all_patho_masks.detach().cpu().numpy()
+        all_predicted_masks = np.stack(all_predicted_masks)
+        print("type of all patho masks", type(all_patho_masks))
+        print("shape of all patho masks", all_patho_masks.shape)
+        print("shape of predicted patho masks", all_predicted_masks.shape)
+
+        # Compute the Dice coefficient for each batch
+        dice = dice_coefficient_batch(all_patho_masks, all_predicted_masks)
+        wandb.log({"DICE Score (predicted,conditional) masks": dice})
+        print("dice", dice)

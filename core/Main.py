@@ -59,7 +59,7 @@ class Main(object):
 
         config_dict = dict(yaml=self.config_file, params=configurator.dl_config)
 
-        wandb.init(project=exp_name, name=method_name, config=config_dict, id=date_time)
+        # wandb.init(project=exp_name, name=method_name, config=config_dict, id=date_time)
 
         device = "cuda" if self.config_file["device"] == "gpu" else "cpu"
         checkpoint = dict()
@@ -70,13 +70,37 @@ class Main(object):
             )
 
         if configurator.dl_config["experiment"]["task"] == "train":
+            wandb.init(
+                project=exp_name, name=method_name, config=config_dict, id=date_time
+            )
             configurator.start_training(checkpoint)
         elif configurator.dl_config["experiment"]["task"] == "palette":
+            wandb.init(
+                project=exp_name, name=method_name, config=config_dict, id=date_time
+            )
             configurator.start_palette_editing(checkpoint)
         elif configurator.dl_config["experiment"]["task"] == "repaint":
+            wandb.init(
+                project=exp_name, name=method_name, config=config_dict, id=date_time
+            )
             configurator.start_repaint_editing(checkpoint)
+            # for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
+            #    for dilation_kernel in configurator.dl_config["trainer"]["data_loader"]["params"]["args"]["dilation_kernel"]:
+            #        configurator.start_repaint_editing(checkpoint,resample_steps,dilation_kernel)
         elif configurator.dl_config["experiment"]["task"] == "sdedit":
-            configurator.start_sd_editing(checkpoint)
+            for encoding_ratio in configurator.dl_config["trainer"]["params"][
+                "encoding_ratio"
+            ]:
+                now = datetime.now()
+                date_time = now.strftime("%Y_%m_%d_%H_%M_%S_%f")
+                wandb.init(
+                    project=exp_name,
+                    name=method_name + str(encoding_ratio),
+                    config=config_dict,
+                    id=date_time,
+                )
+                configurator.start_sd_editing(checkpoint, encoding_ratio)
+                wandb.finish()
         else:
             configurator.start_evaluations(checkpoint["model_weights"])
 

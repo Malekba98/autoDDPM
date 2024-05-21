@@ -105,7 +105,8 @@ class DLConfigurator(object):
             self.dl_config["trainer"]["reference_data_loader"], train=True
         )
         reference_same_atlas_data = self.load_data(
-            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"], train=True
+            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"],
+            train=True,
         )
         trainer_class = import_module(
             self.dl_config["trainer"]["module_name"],
@@ -132,15 +133,22 @@ class DLConfigurator(object):
         logging.info(
             "[Configurator::train]: ################ Starting palette editing ################"
         )
-        self.trainer.palette(model_state, data.test_dataloader(),reference_unhealthy_data.test_dataloader(),reference_same_atlas_data.test_dataloader(), task="palette")
+        self.trainer.palette(
+            model_state,
+            data.test_dataloader(),
+            reference_unhealthy_data.test_dataloader(),
+            reference_same_atlas_data.test_dataloader(),
+            task="palette",
+        )
 
-    def start_sd_editing(self, global_model):
+    def start_sd_editing(self, global_model, encoding_ratio):
         data = self.load_data(self.dl_config["trainer"]["data_loader"], train=True)
         reference_unhealthy_data = self.load_data(
             self.dl_config["trainer"]["reference_data_loader"], train=True
         )
         reference_same_atlas_data = self.load_data(
-            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"], train=True
+            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"],
+            train=True,
         )
         trainer_class = import_module(
             self.dl_config["trainer"]["module_name"],
@@ -167,7 +175,14 @@ class DLConfigurator(object):
         logging.info(
             "[Configurator::train]: ################ Starting sd editing ################"
         )
-        self.trainer.sdedit(model_state, data.test_dataloader(),reference_unhealthy_data.test_dataloader(),reference_same_atlas_data.test_dataloader(), task="sdedit")
+        self.trainer.sdedit(
+            model_state,
+            data.test_dataloader(),
+            reference_unhealthy_data.test_dataloader(),
+            reference_same_atlas_data.test_dataloader(),
+            encoding_ratio,
+            task="sdedit",
+        )
 
     def start_repaint_editing(self, global_model):
         data = self.load_data(self.dl_config["trainer"]["data_loader"], train=True)
@@ -175,7 +190,8 @@ class DLConfigurator(object):
             self.dl_config["trainer"]["reference_data_loader"], train=True
         )
         reference_same_atlas_data = self.load_data(
-            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"], train=True
+            self.dl_config["trainer"]["reference_atlas_same_test_data_loader"],
+            train=True,
         )
         trainer_class = import_module(
             self.dl_config["trainer"]["module_name"],
@@ -202,7 +218,13 @@ class DLConfigurator(object):
         logging.info(
             "[Configurator::train]: ################ Starting repaint editing ################"
         )
-        self.trainer.repaint(model_state, data.test_dataloader(),reference_unhealthy_data.test_dataloader(),reference_same_atlas_data.test_dataloader(), task="repaint")
+        self.trainer.repaint(
+            model_state,
+            data.test_dataloader(),
+            reference_unhealthy_data.test_dataloader(),
+            reference_same_atlas_data.test_dataloader(),
+            task="repaint",
+        )
 
     def start_evaluations(self, global_model):
         # Downstream Tasks

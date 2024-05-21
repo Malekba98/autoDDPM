@@ -115,9 +115,9 @@ You have to choose a threshold for binarizing the probable anomaly masks of the 
 
 Set nnUNet environment variables
 ``` bash
-export nnUNet_raw="/home/malek/autoDDPM/nnunet_data/nnunet_raw"
-export nnUNet_preprocessed="/home/malek/autoDDPM/nnunet_data/nnunet_preprocessed"
-export nnUNet_results="/home/malek/autoDDPM/nnunet_data/nnunet_results" 
+export nnUNet_raw="/home/malek/mock/autoDDPM/nnunet_data/nnunet_raw"
+export nnUNet_preprocessed="/home/malek/mock/autoDDPM/nnunet_data/nnunet_preprocessed"
+export nnUNet_results="/home/malek/mock/autoDDPM/nnunet_data/nnunet_results" 
 ```
 
 In braincf conda environment:
@@ -152,6 +152,8 @@ Run the main script with the corresponding config like this:
 
 ```bash
 python core/Main.py --config_path ./projects/braincf/brain_cf.yaml
+python core/Main.py --config_path ./projects/braincf/sd_editing.yaml
+
 ```
 
 Refer to the autoddpm.yaml for the default configuration. Store the pre-trained model from <a href="https://www.dropbox.com/s/ooq7vdp9fp4ufag/latest_model.pt.zip?dl=0"> HERE</a> into the specified directory to skip the training part.

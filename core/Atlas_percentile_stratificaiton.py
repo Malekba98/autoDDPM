@@ -104,7 +104,16 @@ train_ratio = 0.78
 val_ratio = 0.1
 test_ratio = 0.12
 
-train_files, temp_files, train_labels, temp_labels, train_mask_files, temp_mask_files, train_brain_mask_files, temp_brain_mask_files = train_test_split(
+(
+    train_files,
+    temp_files,
+    train_labels,
+    temp_labels,
+    train_mask_files,
+    temp_mask_files,
+    train_brain_mask_files,
+    temp_brain_mask_files,
+) = train_test_split(
     file_paths,
     labels,
     mask_file_paths,
@@ -114,7 +123,16 @@ train_files, temp_files, train_labels, temp_labels, train_mask_files, temp_mask_
     stratify=labels,
 )
 
-val_files, test_files, val_labels, test_labels, val_mask_files, test_mask_files, val_brain_mask_files, test_brain_mask_files = train_test_split(
+(
+    val_files,
+    test_files,
+    val_labels,
+    test_labels,
+    val_mask_files,
+    test_mask_files,
+    val_brain_mask_files,
+    test_brain_mask_files,
+) = train_test_split(
     temp_files,
     temp_labels,
     temp_mask_files,
@@ -124,10 +142,10 @@ val_files, test_files, val_labels, test_labels, val_mask_files, test_mask_files,
     stratify=temp_labels,
 )
 
-#print("train files", train_files)
+# print("train files", train_files)
 
-#print("val files", val_files)
-#print("test files", test_files)
+# print("val files", val_files)
+# print("test files", test_files)
 
 
 train_file = "atlas_train_png.csv"
