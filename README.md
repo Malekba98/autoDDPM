@@ -153,7 +153,8 @@ Run the main script with the corresponding config like this:
 ```bash
 python core/Main.py --config_path ./projects/braincf/brain_cf.yaml
 python core/Main.py --config_path ./projects/braincf/sd_editing.yaml
-
+python core/Main.py --config_path ./projects/braincf/repaint_editing.yaml
+python core/Main.py --config_path ./projects/braincf/palette_editing.yaml
 ```
 
 Refer to the autoddpm.yaml for the default configuration. Store the pre-trained model from <a href="https://www.dropbox.com/s/ooq7vdp9fp4ufag/latest_model.pt.zip?dl=0"> HERE</a> into the specified directory to skip the training part.

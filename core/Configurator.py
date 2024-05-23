@@ -184,7 +184,7 @@ class DLConfigurator(object):
             task="sdedit",
         )
 
-    def start_repaint_editing(self, global_model):
+    def start_repaint_editing(self, global_model,dilation_kernel=25,resample_steps=1):
         data = self.load_data(self.dl_config["trainer"]["data_loader"], train=True)
         reference_unhealthy_data = self.load_data(
             self.dl_config["trainer"]["reference_data_loader"], train=True
@@ -224,6 +224,7 @@ class DLConfigurator(object):
             reference_unhealthy_data.test_dataloader(),
             reference_same_atlas_data.test_dataloader(),
             task="repaint",
+            #resample_steps=resample_steps,
         )
 
     def start_evaluations(self, global_model):

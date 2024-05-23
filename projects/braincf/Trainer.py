@@ -462,7 +462,7 @@ class PTrainer(Trainer):
                 b, _, _, _ = x.shape
                 test_total += b
 
-                # inpaint_masks = patho_masks
+                #inpaint_masks = patho_masks
 
                 x_ = self.test_model.repaint(
                     original_images=x,

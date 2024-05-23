@@ -84,6 +84,12 @@ class Main(object):
                 project=exp_name, name=method_name, config=config_dict, id=date_time
             )
             configurator.start_repaint_editing(checkpoint)
+
+            #for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
+            #    configurator.start_repaint_editing(checkpoint,resample_steps)
+
+
+
             # for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
             #    for dilation_kernel in configurator.dl_config["trainer"]["data_loader"]["params"]["args"]["dilation_kernel"]:
             #        configurator.start_repaint_editing(checkpoint,resample_steps,dilation_kernel)

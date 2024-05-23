@@ -7,13 +7,14 @@ checkpoint_path: &checkpoint_path './projects/braincf/weights/runs/'
 # Experiment
 #
 experiment:
-  name: sdedit
-  task: sdedit
+  name: palette
+  task: palette
   #weights: ./projects/braincf/weights/runs/2024_03_08_19_20_58_561738/best_model.pt # base semantic synth model trained on less data
   #weights: ./projects/braincf/weights/runs/2024_03_10_23_49_49_559289/best_model.pt # base semantic synth model trained on more data
   #weights: ./projects/braincf/weights/runs/2024_03_23_13_58_55_159484/best_model.pt # base semantic synth model trained on all atlas healthy and unhealthy
   #weights: ./projects/braincf/weights/runs/2024_05_06_18_51_40_547296/best_model.pt # base semantic synth model trained on percentile stratified train/val data
-  weights: ./projects/braincf/weights/runs/2024_05_12_12_51_09_914283/model_1500.pt # base semantic synth model trained on percentile stratified train/val/test data
+  #weights: ./projects/braincf/weights/runs/2024_05_12_12_51_09_914283/model_1500.pt # base semantic synth model trained on percentile stratified train/val/test data
+  weights: ./projects/braincf/weights/runs/2024_05_13_22_25_53_992848/model_1500.pt
 
 device: gpu
 configurator:
@@ -88,7 +89,7 @@ trainer:
         batch_size: *tbatch_size
         dataset_module:
           module_name: data.loaders.atlas_loader
-          class_name: AtlasLoader
+          class_name: AtlasLoaderPalette
         data_dir:
           test:
             - './data/ATLAS/splits_healthy_54_sample/Atlas_healthy.csv'
