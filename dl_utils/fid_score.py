@@ -369,7 +369,9 @@ def calculate_fid_given_paths(paths, batch_size, device, dims, num_workers=1):
     return fid_value
 
 
-def calculate_fid_given_images(images, batch_size, device, dims, num_workers=1, bootstrap=False):
+def calculate_fid_given_images(
+    images, batch_size, device, dims, num_workers=1, bootstrap=False, indices_=None
+):
     """Calculates the FID of two paths"""
     assert len(images) == 2, "Please provide two sets of images"
 
@@ -385,8 +387,13 @@ def calculate_fid_given_images(images, batch_size, device, dims, num_workers=1, 
         b = images[1].shape[0]
         sum_ = 0
         fids = []
-        for _ in range(10):
-            indices = torch.randint(b, (b,))
+        for i in range(10):
+            if indices_ is None:
+                # Generate random indices
+                indices = torch.randint(b, (b,))
+            else:
+                indices = indices_[i]
+
             print(indices)
 
             # Use the indices to index into the tensor

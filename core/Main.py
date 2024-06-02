@@ -85,10 +85,8 @@ class Main(object):
             )
             configurator.start_repaint_editing(checkpoint)
 
-            #for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
+            # for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
             #    configurator.start_repaint_editing(checkpoint,resample_steps)
-
-
 
             # for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
             #    for dilation_kernel in configurator.dl_config["trainer"]["data_loader"]["params"]["args"]["dilation_kernel"]:

@@ -1,3 +1,4 @@
+from curses import noecho
 import torch
 from generative.metrics import FIDMetric, MMDMetric, MultiScaleSSIMMetric, SSIMMetric
 from numpy import std
@@ -35,7 +36,7 @@ def get_features(image, model):
     return feature_image
 
 
-def compute_fid(model, subset1, subset2, bootstrap=False):
+def compute_fid(model, subset1, subset2, bootstrap=False, indices_=None):
 
     real_features = []
 
@@ -47,10 +48,16 @@ def compute_fid(model, subset1, subset2, bootstrap=False):
         b = subset2.shape[0]
         sum_ = 0
         fids = []
-        for _ in range(10):
+
+        for i in range(10):
             synth_features = []
-            # Generate random indices
-            indices = torch.randint(b, (b,))
+            
+            if indices_ is None:
+                # Generate random indices
+                indices = torch.randint(b, (b,))
+            else:
+                indices = indices_[i]
+
             print(indices)
 
             # Use the indices to index into the tensor

@@ -49,7 +49,7 @@ model:
     noise_type: "gaussian"
     method: "anoDDPM"
     prediction_type: "epsilon"
-    resample_steps: 3
+    resample_steps: 1
     encoding_ratio: 0.05
     binarization_threshold: 0.5
 
