@@ -224,7 +224,7 @@ class DLConfigurator(object):
             reference_unhealthy_data.test_dataloader(),
             reference_same_atlas_data.test_dataloader(),
             task="repaint",
-            # resample_steps=resample_steps,
+            resample_steps=resample_steps,
         )
 
     def start_evaluations(self, global_model):

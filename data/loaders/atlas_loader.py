@@ -50,12 +50,23 @@ class AtlasLoader(IXILoader):
             dilated_patho_mask[brain_mask == 0] = 0
 
         return dilated_patho_mask
+    
+    def get_filename(self,idx):
+        return self.files[idx]
+
+    def get_mask_filename(self,idx):
+        if self.label_dir is not None:
+            return self.label_files[idx]
+        else:
+            return ''
 
     def __getitem__(self, idx):
         return (
             self.im_t(self.files[idx]),
             *self.get_label(idx),
             self.get_dilated_mask(idx),
+            self.get_filename(idx),  # filename
+            self.get_mask_filename(idx),  # mask_filename
         )
 
 
@@ -72,6 +83,7 @@ class AtlasLoaderPalette(AtlasLoader):
                 patho_mask * torch.randn_like(patho_mask) + (1 - patho_mask) * image
             )
         return palette_mask
+    
 
     def __getitem__(self, idx):
         return (
@@ -79,4 +91,6 @@ class AtlasLoaderPalette(AtlasLoader):
             *self.get_label(idx),
             self.get_dilated_mask(idx),
             self.get_palette_mask(idx),
+            self.get_filename(idx),  # filename
+            self.get_mask_filename(idx),  # mask_filename
         )

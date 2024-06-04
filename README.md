@@ -115,9 +115,9 @@ You have to choose a threshold for binarizing the probable anomaly masks of the 
 
 Set nnUNet environment variables
 ``` bash
-export nnUNet_raw="/home/malek/mock/autoDDPM/nnunet_data/nnunet_raw"
-export nnUNet_preprocessed="/home/malek/mock/autoDDPM/nnunet_data/nnunet_preprocessed"
-export nnUNet_results="/home/malek/mock/autoDDPM/nnunet_data/nnunet_results" 
+export nnUNet_raw="/home/malek/mock/autoDDPM/nnunet_data_new/nnunet_raw"
+export nnUNet_preprocessed="/home/malek/mock/autoDDPM/nnunet_data_new/nnunet_preprocessed"
+export nnUNet_results="/home/malek/mock/autoDDPM/nnunet_data_new/nnunet_results" 
 ```
 
 In braincf conda environment:
@@ -145,7 +145,7 @@ nnUNetv2_train 500 2d 4
 
 If you encounter module called data not found error, Run
 ```bash
-export PYTHONPATH="${PYTHONPATH}:/home/malek/autoDDPM"
+export PYTHONPATH="${PYTHONPATH}:/home/malek/mock/autoDDPM"
 ```
 
 Run the main script with the corresponding config like this:
@@ -154,6 +154,7 @@ Run the main script with the corresponding config like this:
 python core/Main.py --config_path ./projects/braincf/brain_cf.yaml
 python core/Main.py --config_path ./projects/braincf/sd_editing.yaml
 python core/Main.py --config_path ./projects/braincf/repaint_editing.yaml
+python core/Main.py --config_path ./projects/braincf/original_repaint_editing.yaml
 python core/Main.py --config_path ./projects/braincf/palette_editing.yaml
 ```
 

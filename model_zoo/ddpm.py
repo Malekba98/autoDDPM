@@ -535,6 +535,7 @@ class DDPM(nn.Module):
         inpaint_masks: torch.tensor,
         patho_masks: torch.tensor,
         brain_masks: torch.tensor,
+        resample_steps=1,
         verbose=True,
     ):
         batch_size = original_images.shape[0]
@@ -570,7 +571,7 @@ class DDPM(nn.Module):
 
         for t in progress_bar:
 
-            for u in range(self.resample_steps):
+            for u in range(resample_steps):
                 # generate known part with forward process q()
                 if t > 0:
                     noise = generate_noise(
@@ -598,7 +599,7 @@ class DDPM(nn.Module):
                 # join known and uknown parts
                 image = inpaint_masks * x_unknown + (1 - inpaint_masks) * x_known
 
-                if t > 0 and u < (self.resample_steps - 1):
+                if t > 0 and u < (resample_steps - 1):
                     # sample from q(xt/x_t-1): diffuse back to xt
                     image = torch.sqrt(
                         1 - self.inference_scheduler.betas[t - 1]

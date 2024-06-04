@@ -1,9 +1,10 @@
 import torch
 
-image_dir = ["./data/ATLAS/splits_over_1/atlas_train_png.csv"]
-label_dir = ["./data/ATLAS/splits_over_1/atlas_train_mask_png.csv"]
+image_dir = ["./data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_png.csv"]
+label_dir = ["./data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_mask_png.csv"]
 
-mask_dir = ["./data/ATLAS/splits_over_1/atlas_train_brain_mask_png.csv"]
+mask_dir = ["./data/ATLAS/splits_over_1_stratified_all_splits/atlas_train_brain_mask_png.csv"]
+
 
 from torch.utils.data import DataLoader
 import sys
@@ -59,8 +60,8 @@ if __name__ == "__main__":
             # ATLAS_001_0000.png
             index = int(filename[0].split("_")[-1].replace(".png", ""))
 
-            image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTr/ATLAS_{index:03d}_0000.png"
-            mask_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTr/ATLAS_{index:03d}.png"
+            image_dest = f"./nnunet_data_new/nnunet_raw/Dataset500_ATLAS/imagesTr/ATLAS_{index:03d}_0000.png"
+            mask_dest = f"./nnunet_data_new/nnunet_raw/Dataset500_ATLAS/labelsTr/ATLAS_{index:03d}.png"
             shutil.copy(filename[0], image_dest)
             # shutil.copy(mask_filename[0], mask_dest)
 
@@ -72,10 +73,10 @@ if __name__ == "__main__":
             # Save the converted mask back to a file
             Image.fromarray(mask_array).save(mask_dest)
     else:
-        image_dir = ["./data/ATLAS/splits_over_1/atlas_val_png.csv"]
-        label_dir = ["./data/ATLAS/splits_over_1/atlas_val_mask_png.csv"]
+        image_dir = ["./data/ATLAS/splits_over_1_stratified_all_splits/atlas_val_png.csv"]
+        label_dir = ["./data/ATLAS/splits_over_1_stratified_all_splits/atlas_val_mask_png.csv"]
 
-        mask_dir = ["./data/ATLAS/splits_over_1/atlas_val_brain_mask_png.csv"]
+        mask_dir = ["./data/ATLAS/splits_over_1_stratified_all_splits/atlas_val_brain_mask_png.csv"]
 
         dataset = mask_preprocessing_loader(
             image_dir,
@@ -94,14 +95,14 @@ if __name__ == "__main__":
             idx = data[2]
 
             index = int(filename[0].split("_")[-1].replace(".png", ""))
-            image_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/imagesTs/ATLAS_{index:03d}_0000.png"
+            image_dest = f"./nnunet_data_new/nnunet_raw/Dataset500_ATLAS/imagesTs/ATLAS_{index:03d}_0000.png"
             shutil.copy(filename[0], image_dest)
 
             mask_gt = True
             if mask_gt == True:
                 mask_filename = data[4]
 
-                mask_dest = f"./nnunet_data/nnunet_raw/Dataset500_ATLAS/labelsTs/ATLAS_{index:03d}.png"
+                mask_dest = f"./nnunet_data_new/nnunet_raw/Dataset500_ATLAS/labelsTs/ATLAS_{index:03d}.png"
 
                 mask_array = np.array(Image.open(mask_filename[0]))
 

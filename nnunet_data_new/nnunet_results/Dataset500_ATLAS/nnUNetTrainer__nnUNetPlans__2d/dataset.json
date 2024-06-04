@@ -1,0 +1,11 @@
+{
+    "channel_names": {
+        "0": "T1"
+    },
+    "labels": {
+        "background": 0,
+        "stroke": 1
+    },
+    "numTraining": 345,
+    "file_ending": ".png"
+}

@@ -80,13 +80,24 @@ class Main(object):
             )
             configurator.start_palette_editing(checkpoint)
         elif configurator.dl_config["experiment"]["task"] == "repaint":
-            wandb.init(
-                project=exp_name, name=method_name, config=config_dict, id=date_time
-            )
-            configurator.start_repaint_editing(checkpoint)
+            #wandb.init(
+            #    project=exp_name, name=method_name, config=config_dict, id=date_time
+            #)
+            #configurator.start_repaint_editing(checkpoint)
 
-            # for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
-            #    configurator.start_repaint_editing(checkpoint,resample_steps)
+            for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
+                now = datetime.now()
+                date_time = now.strftime("%Y_%m_%d_%H_%M_%S_%f")
+                wandb.init(
+                    project=exp_name,
+                    name=method_name +'originalr'+ str(resample_steps),
+                    config=config_dict,
+                    id=date_time,
+                )
+
+                configurator.start_repaint_editing(checkpoint,resample_steps)
+
+                wandb.finish()
 
             # for resample_steps in configurator.dl_config["model"]["params"]["resample_steps"]:
             #    for dilation_kernel in configurator.dl_config["trainer"]["data_loader"]["params"]["args"]["dilation_kernel"]:
