@@ -1,0 +1,1068 @@
+[
+    {
+        "_id": "665f3093244527ac78288d38",
+        "username": "Cosmin ",
+        "responses": [
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_123_prior_499_cf_145_a62d0e74d34aa95040e0.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_176_prior_155_cf_201_f5d74d95261d39875de8.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_540_prior_490_cf_169_7cf91f467462e25fbaad.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_600_prior_477_cf_113_46d7cd9e2120da6c2a62.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_71_prior_258_cf_57_c048de5286de3938853a.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_540_prior_490_cf_169_ba12b1842ef2318715cf.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_561_prior_511_cf_197_1a1a6caced05cfc1a722.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_554_prior_89_cf_93_7c39e57fd494c464ac7f.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_266_prior_547_cf_13_0ed305108b54f7549a6f.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_561_prior_511_cf_197_9ab5d5ee6da8c5a13ced.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_304_prior_19_cf_9_66f6bb58089dc26f1fb9.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_41_prior_370_cf_61_00591018648103f48e28.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_561_prior_511_cf_197_e45bb10858c16abe3b71.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_129_prior_399_cf_53_8beb40dbc3f04da05c05.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_266_prior_547_cf_13_5dd9c3ccc79dde84d380.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_232.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_71_prior_258_cf_57_f1c5f9335ba2ae1f3330.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_554.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_304.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_304_prior_19_cf_9_236cf5c38263e830658f.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_325_prior_474_cf_25_b1feae5cceb31b841e6e.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_123_prior_499_cf_145_ca92513e1ecdb3f3df4a.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_231_prior_556_cf_193_5e3a03e992846955f4cd.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_554_prior_89_cf_93_5e3aacbfc07155ae1dc0.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_600_prior_477_cf_113_916f22501d2511697d5f.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_463_prior_417_cf_89_bbf84e49461e6c6beed7.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_266_prior_547_cf_13_9fdf870769e7fe00961a.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_123_prior_499_cf_145_2e9e5bbc3e500e796f8c.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_129_prior_399_cf_53_1646fce2b3c95966e7f7.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_339_prior_404_cf_65_1648878c6fdaf29152b0.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_463_prior_417_cf_89_f9370cb17ae07c454c62.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_320_prior_7_cf_161_ac5d4245db68524ddd30.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_176_prior_155_cf_201_297d30c33658b3c4088c.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_232_prior_415_cf_69_db14fa9bc1691e3c4d06.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_71_prior_258_cf_57_bb147b1609d233b5777e.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_185_prior_427_cf_125_289107319340549cd34c.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_325_prior_474_cf_25_b80073cb3666e6496284.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_260_prior_205_cf_49_927e8875b99807514a01.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_540_prior_490_cf_169_a9df331fde9d485bd702.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_129_prior_399_cf_53_065095678bbeb26775f5.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_231.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_600_prior_477_cf_113_72b34e0ad2c4602847a1.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_266_prior_547_cf_13_f340f610ba3b135b9991.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_231_prior_556_cf_193_5afeb240deed01374ad8.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_339.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_339_prior_404_cf_65_fd778218e467eb5c1845.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_463_prior_417_cf_89_3197a09e8582be0431c6.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_320_prior_7_cf_161_b24f1ee7688e3776eff7.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_71.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_185.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_463_prior_417_cf_89_6a0c7672a0742d7be080.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_554_prior_89_cf_93_eed1c508145f2946209e.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_339_prior_404_cf_65_fbca8b5e7e088b8c68d4.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_339_prior_404_cf_65_1d1838dbf90f2ace858f.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_320_prior_7_cf_161_9c0121642ec0f85c4076.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_260.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_185_prior_427_cf_125_adcc1c65179b764ecd5f.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_41_prior_370_cf_61_0f473e595fa46e914fa7.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_260_prior_205_cf_49_fa4e1b7d42fdc8c0a038.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_379_prior_584_cf_157_98481ba0100c060a2a5b.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_325_prior_474_cf_25_5c27daabbaa022004da3.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_41_prior_370_cf_61_15dcda95310588da2329.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_540_prior_490_cf_169_8d541bd276ce0cc4426a.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_540.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_304_prior_19_cf_9_b93d964eb1166e2ed93c.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_123.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_123_prior_499_cf_145_deaaa600146151066dc9.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_600_prior_477_cf_113_52d4f5434ac611ae7d49.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_71_prior_258_cf_57_4951112c13a4f1f662f0.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_129_prior_399_cf_53_fef95cb3618acade521b.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_185_prior_427_cf_125_a0241f0a902e194e77ba.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_561.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_304_prior_19_cf_9_0749bf4c03ab497b41dc.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_379.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_41.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_232_prior_415_cf_69_586f2a96d92ef2dc3c4e.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_232_prior_415_cf_69_45e6241c5bb6c8738c5d.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_554_prior_89_cf_93_330e01d8c4911d11adad.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_379_prior_584_cf_157_0e6668abe4d9604060cd.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_176_prior_155_cf_201_92292487ef150201d8bb.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_325.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_232_prior_415_cf_69_c986d2c5f99af3246238.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_185_prior_427_cf_125_2dda9ce7d483db4578eb.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_325_prior_474_cf_25_515af706f546b3543f18.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_260_prior_205_cf_49_2e9d41d378909087e093.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_176_prior_155_cf_201_698c1caec45e4772645f.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_266.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_129.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_320.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_379_prior_584_cf_157_18c22ac3d84d3f5bed8c.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_260_prior_205_cf_49_5b0e6937d59bcea53116.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_231_prior_556_cf_193_525cf346cb3b913555ed.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_561_prior_511_cf_197_67dab56da213bc58974d.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_463.png",
+                "Realness": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/adapted_repaint/mask_320_prior_7_cf_161_72fd3c75aa6f8f1e4e7f.png",
+                "Realness": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/original_repaint/mask_231_prior_556_cf_193_56f54d74fadae7a38953.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_600.png",
+                "Realness": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/real_samples/Atlas_train_176.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/sdedit/mask_41_prior_370_cf_61_cc1d93ce84f9e86c0270.png",
+                "Realness": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/turing_test/palette/mask_379_prior_584_cf_157_b752d1fe1194effd3e50.png",
+                "Realness": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_41_prior_370_pair_60_c3fdac8828c20fb098ec.png",
+                "LocationScale": 3,
+                "AlterHealthy": 4,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_304_prior_19_pair_8_9cb61a4dc6e6ed80ece5.png",
+                "LocationScale": 3,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_554_prior_89_pair_92_c1e7fe0c778d45a6bc4c.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_540_prior_490_pair_168_3b8ed87f2ad0350e3aae.png",
+                "LocationScale": 4,
+                "AlterHealthy": 4,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_463_prior_417_pair_88_8ccfda65ca4401f2e12f.png",
+                "LocationScale": 1,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_325_prior_474_pair_24_76202be608baec3a307b.png",
+                "LocationScale": 2,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_561_prior_511_pair_196_af854de36af3f173a650.png",
+                "LocationScale": 3,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_540_prior_490_pair_168_25b5ebf10c9380869e06.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_540_prior_490_pair_168_6344c18bd8220e975594.png",
+                "LocationScale": 4,
+                "AlterHealthy": 4,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_41_prior_370_pair_60_e49a3556fd49705bf70d.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_463_prior_417_pair_88_8e63dca0fb51cf260c68.png",
+                "LocationScale": 1,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_232_prior_415_pair_68_f9cf633fc039493050be.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_266_prior_547_pair_12_d872de99fa7bd37d3ab7.png",
+                "LocationScale": 5,
+                "AlterHealthy": 4,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_325_prior_474_pair_24_c572fd73d1e279886e49.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_304_prior_19_pair_8_43a75b58914bea101b1e.png",
+                "LocationScale": 3,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_260_prior_205_pair_48_bc7237b7f6ca7f9fb797.png",
+                "LocationScale": 3,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_379_prior_584_pair_156_123e227eecf3e27f0ac5.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_232_prior_415_pair_68_9f3f9ff7e1b525140c0a.png",
+                "LocationScale": 2,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_600_prior_477_pair_112_075d8cee4a82dd8117c4.png",
+                "LocationScale": 5,
+                "AlterHealthy": 2,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_260_prior_205_pair_48_8a850b59539e9652a9ad.png",
+                "LocationScale": 3,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_123_prior_499_pair_144_e7b913c419739e748192.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_71_prior_258_pair_56_c09a20311d3c43800e4d.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_561_prior_511_pair_196_3c4d69676a7f44275e36.png",
+                "LocationScale": 1,
+                "AlterHealthy": 2,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_600_prior_477_pair_112_ac764ddfb0f45aabfb27.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_320_prior_7_pair_160_8d41f918f721414ab38a.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_41_prior_370_pair_60_5f287a199c6d8ef0aa7f.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_231_prior_556_pair_192_04d32b1b8185d5e17cf4.png",
+                "LocationScale": 4,
+                "AlterHealthy": 2,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_71_prior_258_pair_56_8be9acca6700879e3e6e.png",
+                "LocationScale": 5,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_554_prior_89_pair_92_bf2b4b05c81ae8863a56.png",
+                "LocationScale": 5,
+                "AlterHealthy": 1,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_379_prior_584_pair_156_c2e90176348a8e7fc512.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_185_prior_427_pair_124_5210951ce1b3e7609bbf.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_176_prior_155_pair_200_be6d9b693ce3a90a1e1a.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_185_prior_427_pair_124_a337c209d3e70ba8cc00.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_231_prior_556_pair_192_01b88a8d95579ea9d8cb.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_231_prior_556_pair_192_d8ce0ba9e7b71c0ebed4.png",
+                "LocationScale": 1,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_554_prior_89_pair_92_27046c86694b7505f8b0.png",
+                "LocationScale": 2,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_554_prior_89_pair_92_df02cecf464797323880.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_232_prior_415_pair_68_8f9b2486eb4e71abc511.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_71_prior_258_pair_56_455b02499513fce2d153.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_463_prior_417_pair_88_c6ea0173fc7839080dea.png",
+                "LocationScale": 4,
+                "AlterHealthy": 2,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_260_prior_205_pair_48_de2ffadf2e10507d5ca9.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_325_prior_474_pair_24_200481698ac154abe4bf.png",
+                "LocationScale": 4,
+                "AlterHealthy": 4,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_129_prior_399_pair_52_bebfe90ffdd945e3551a.png",
+                "LocationScale": 3,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_463_prior_417_pair_88_38c0fbdf40c153acb2da.png",
+                "LocationScale": 1,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_129_prior_399_pair_52_26f0aeb3becc348d8380.png",
+                "LocationScale": 3,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_266_prior_547_pair_12_242d711535ffebefbdc8.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_304_prior_19_pair_8_782b8544d80b9aa982bb.png",
+                "LocationScale": 1,
+                "AlterHealthy": 4,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_185_prior_427_pair_124_19e9a763255b66455bc9.png",
+                "LocationScale": 3,
+                "AlterHealthy": 1,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_339_prior_404_pair_64_ece837686486d46a0373.png",
+                "LocationScale": 2,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_123_prior_499_pair_144_def471c548e612ca9341.png",
+                "LocationScale": 2,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_320_prior_7_pair_160_6dd5117d605b88c1687d.png",
+                "LocationScale": 3,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_339_prior_404_pair_64_5ca36d14b52869f10a37.png",
+                "LocationScale": 4,
+                "AlterHealthy": 4,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_266_prior_547_pair_12_4c19f12ebdfc4069a6da.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_176_prior_155_pair_200_6f2cb8b4717ab78c3139.png",
+                "LocationScale": 3,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_123_prior_499_pair_144_888a5bbb52b267da38a5.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_185_prior_427_pair_124_bebd3b173b2ba241bef8.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_232_prior_415_pair_68_7e5b0a960f9eba08cc97.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_129_prior_399_pair_52_1c497216d9f5a80d843f.png",
+                "LocationScale": 1,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_379_prior_584_pair_156_7803c9222109146f2616.png",
+                "LocationScale": 2,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_260_prior_205_pair_48_6a4b73d925b351455c6f.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_231_prior_556_pair_192_328b846af43bb1df8448.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_41_prior_370_pair_60_5d2a390c85f2a64f6462.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_600_prior_477_pair_112_2ed7a43c5c243e354bb7.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_176_prior_155_pair_200_673a481c1343d0c56f0e.png",
+                "LocationScale": 5,
+                "AlterHealthy": 1,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_339_prior_404_pair_64_bd7b429aa88f78fd5e0e.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_561_prior_511_pair_196_65b811f320f9ca9a3908.png",
+                "LocationScale": 2,
+                "AlterHealthy": 5,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_320_prior_7_pair_160_c443790b7f5dc06e2cf1.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_71_prior_258_pair_56_573183b67361c629a533.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 3
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_325_prior_474_pair_24_24704bdd2678da523abe.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_600_prior_477_pair_112_c9d2bfeaf1e0167a13c0.png",
+                "LocationScale": 4,
+                "AlterHealthy": 4,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_266_prior_547_pair_12_ce8f5d6859a1e595db4c.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_129_prior_399_pair_52_6baa95788c336bc9aa1b.png",
+                "LocationScale": 2,
+                "AlterHealthy": 1,
+                "RealisticChanges": 2
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_339_prior_404_pair_64_c09605905c2d24957529.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_320_prior_7_pair_160_198f4db8ddfacbb853e8.png",
+                "LocationScale": 5,
+                "AlterHealthy": 5,
+                "RealisticChanges": 4
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_379_prior_584_pair_156_b99fbbc3f8ea198ab142.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/adapted_repaint/mask_176_prior_155_pair_200_6331f0220aa2eb6e1b84.png",
+                "LocationScale": 4,
+                "AlterHealthy": 5,
+                "RealisticChanges": 5
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/original_repaint/mask_123_prior_499_pair_144_f69bc35c9908ce8330e5.png",
+                "LocationScale": 2,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_561_prior_511_pair_196_3b100e699c7f8db6edba.png",
+                "LocationScale": 2,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/palette/mask_304_prior_19_pair_8_b93a86059f5c652e7b02.png",
+                "LocationScale": 1,
+                "AlterHealthy": 5,
+                "RealisticChanges": 1
+            },
+            {
+                "Username": "Cosmin ",
+                "Filename": "./images/pairs_test/sdedit/mask_540_prior_490_pair_168_bdc8eef4b58a414335a1.png",
+                "LocationScale": 4,
+                "AlterHealthy": 1,
+                "RealisticChanges": 4
+            }
+        ]
+    }
+]
